@@ -1,0 +1,131 @@
+.sidebar {
+    width: 260px;
+    background-color: #FFFFFF;
+    border-right: 1px solid #E0E0E0;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.5rem;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    transition: transform 0.3s ease-in-out;
+    z-index: 50;
+}
+
+.logoContainer {
+    margin-bottom: 2.5rem;
+    padding-left: 0.5rem;
+}
+
+.logoTitle {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0F1828;
+    font-family: 'Roboto', sans-serif;
+}
+
+.logoSubtitle {
+    font-size: 0.75rem;
+    color: #7A747F;
+    font-weight: 500;
+}
+
+.nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.navLink {
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    color: #7A747F;
+    background-color: transparent;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.activeLink {
+    color: #0065F4;
+    background-color: #F2F7FF;
+    font-weight: 700;
+}
+
+.navLink:hover:not(.activeLink) {
+    background-color: #F9FAFB;
+    color: #0F1828;
+}
+
+.logoutButton {
+    margin-top: auto;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: 1px solid #E0E0E0;
+    border-radius: 12px;
+    color: #495564;
+    cursor: pointer;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.logoutButton:hover {
+    background-color: #FFF0F0;
+    border-color: #FEB2B2;
+    color: #E53E3E;
+}
+
+.hamburgerBtn {
+    display: none;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 60;
+    background: #FFFFFF;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: #0F1828;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    z-index: 40;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 1024px) {
+    .sidebar {
+        transform: translateX(-100%);
+        box-shadow: 4px 0 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .hamburgerBtn {
+        display: block;
+    }
+
+    .overlay.open {
+        display: block;
+    }
+}

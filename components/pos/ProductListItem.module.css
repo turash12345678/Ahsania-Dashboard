@@ -1,0 +1,267 @@
+/* ProductListItem.module.css */
+
+.container {
+  display: flex;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+  width: 100%;
+  background-color: white;
+  align-items: center;
+  user-select: none;
+}
+
+/* Default State */
+.default {
+  justify-content: space-between;
+  border-radius: 8px;
+}
+
+.default:hover {
+  background-color: #f9f9f9;
+}
+
+.default:active,
+.pressed {
+  transform: scale(0.98);
+  background-color: #f0f0f0;
+}
+
+/* Selected State */
+.selected {
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  background-color: #f0f3f8;
+  border-radius: 12px;
+  align-items: stretch;
+}
+
+.selected > :first-child {
+  align-self: flex-start;
+}
+
+/* Image Container */
+.imageContainer {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.imagePlaceholder {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #49cfe3 0%, #29a0b6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.imagePlaceholder svg {
+  width: 28px;
+  height: 28px;
+  opacity: 0.8;
+}
+
+.imagePlaceholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Checkmark for Selected */
+.checkmark {
+  position: absolute;
+  right: -8px;
+  bottom: -8px;
+  width: 28px;
+  height: 28px;
+  background-color: #1e40af;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.checkmark svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Info Container (Default State) */
+.infoContainer {
+  flex: 1;
+  min-width: 0;
+}
+
+.productName {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.default .productName {
+  font-size: 18px;
+}
+
+.price {
+  font-size: 14px;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+/* Selected State Container */
+.selectedContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Quantity Control */
+.quantityControl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: white;
+  padding: 6px;
+  border-radius: 32px;
+  border: 1px solid #e5e7eb;
+  width: fit-content;
+}
+
+.quantityButton {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #f3f4f6;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #111827;
+  transition: all 0.15s ease-out;
+  padding: 0;
+  font-size: 16px;
+}
+
+.quantityButton:hover {
+  background-color: #e5e7eb;
+  transform: scale(1.05);
+}
+
+.quantityButton:active {
+  transform: scale(0.95);
+  background-color: #d1d5db;
+}
+
+.quantityButton svg {
+  width: 18px;
+  height: 18px;
+}
+
+.quantityValue {
+  font-size: 16px;
+  font-weight: 500;
+  color: #111827;
+  min-width: 24px;
+  text-align: center;
+}
+
+/* Price Input Fields */
+.priceFields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+}
+
+.priceInput {
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e40af;
+  text-align: center;
+  transition: all 0.2s ease-out;
+  cursor: pointer;
+}
+
+.priceInput:first-child {
+  color: #1e40af;
+  background-color: #f3f4f6;
+  cursor: default;
+}
+
+.priceInput:last-child {
+  color: #111827;
+}
+
+.priceInput:focus {
+  outline: none;
+  border-color: #1e40af;
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+}
+
+.priceInput::placeholder {
+  color: #9ca3af;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .container {
+    padding: 6px;
+  }
+
+  .imagePlaceholder {
+    width: 48px;
+    height: 48px;
+  }
+
+  .imagePlaceholder svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .productName {
+    font-size: 14px;
+  }
+
+  .default .productName {
+    font-size: 16px;
+  }
+
+  .priceInput {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+}

@@ -1,0 +1,59 @@
+/* ProductList.module.css */
+
+.container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: #f8fafc;
+  border-radius: 20px 20px 0 0;
+  padding: 2px;
+  gap: 2px;
+}
+
+.scrollArea {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px;
+}
+
+/* Smooth Scrollbar */
+.scrollArea::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollArea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollArea::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.scrollArea::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Firefox */
+.scrollArea {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .container {
+    padding: 1px;
+    gap: 1px;
+  }
+
+  .scrollArea {
+    padding: 4px;
+    gap: 1px;
+  }
+}

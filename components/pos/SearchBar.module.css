@@ -1,0 +1,93 @@
+/* SearchBar.module.css */
+
+.container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 8px;
+  width: 100%;
+}
+
+/* Action Buttons */
+.actionButton {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  transition: all 0.15s ease-out;
+  padding: 0;
+}
+
+.actionButton:hover {
+  color: #374151;
+  transform: scale(1.1);
+}
+
+.actionButton:active {
+  transform: scale(0.95);
+  color: #111827;
+}
+
+.actionButton svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Search Input */
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 20px;
+  background-color: white;
+  border: none;
+  border-radius: 32px;
+  font-size: 16px;
+  font-weight: 400;
+  color: #111827;
+  transition: all 0.2s ease-out;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.searchInput::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.searchInput:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.15);
+}
+
+.searchInput.focused {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .container {
+    gap: 8px;
+    padding: 6px;
+  }
+
+  .actionButton {
+    width: 36px;
+    height: 36px;
+  }
+
+  .actionButton svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .searchInput {
+    font-size: 14px;
+    padding: 10px 16px;
+  }
+}

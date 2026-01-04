@@ -1,0 +1,119 @@
+/* POSCart.module.css */
+
+.cartContainer {
+  background: linear-gradient(to bottom, #e9edf6 0%, #e9edf6 85%, transparent 100%);
+  padding: 16px;
+  padding-bottom: 48px;
+  border-top: 1px solid #d1d5db;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Total Section */
+.totalSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+
+.label {
+  font-size: 20px;
+  font-weight: 500;
+  color: #111827;
+  letter-spacing: 0.02em;
+}
+
+.totalAmount {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e40af;
+  text-align: right;
+}
+
+/* Complete Sale Button */
+.saleButton {
+  width: 100%;
+  padding: 12px 20px;
+  height: 55px;
+  background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+  color: white;
+  border: none;
+  border-radius: 32px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.saleButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(30, 64, 175, 0.35);
+}
+
+.saleButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.2);
+}
+
+.saleButtonHover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(30, 64, 175, 0.35);
+}
+
+.buttonText {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ripple Effect on Click (Optional) */
+.saleButton::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .cartContainer {
+    padding: 12px;
+    padding-bottom: 44px;
+    gap: 16px;
+  }
+
+  .label {
+    font-size: 18px;
+  }
+
+  .totalAmount {
+    font-size: 20px;
+  }
+
+  .saleButton {
+    height: 50px;
+    font-size: 16px;
+    padding: 10px 16px;
+  }
+}

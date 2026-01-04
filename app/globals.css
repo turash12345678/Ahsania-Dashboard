@@ -1,0 +1,223 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* Force Rebuild */
+
+:root {
+  /* Professional Light Theme */
+  --bg-app: #f8fafc;
+  /* Light gray background */
+  --bg-card: #ffffff;
+  /* White cards */
+  --bg-sidebar: #ffffff;
+  /* White sidebar */
+
+  --border: #e2e8f0;
+  /* Light borders */
+  --border-highlight: #cbd5e1;
+
+  --text-primary: #0f172a;
+  /* Dark blue-gray text */
+  --text-secondary: #64748b;
+  /* Muted slate text */
+
+  --accent: #2563eb;
+  /* Royal Blue primary */
+  --accent-fg: #ffffff;
+  /* White text on accent */
+
+  --danger: #ef4444;
+  --success: #22c55e;
+
+  --radius: 8px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Layout Utilities */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background-color: var(--accent);
+  color: var(--accent-fg);
+}
+
+.btn-primary:hover {
+  background-color: #1d4ed8;
+}
+
+.btn-secondary {
+  background-color: white;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+  border-color: var(--text-secondary);
+  background-color: #f1f5f9;
+}
+
+.input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background-color: #ffffff;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.label {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+
+/* Table Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+  background-color: #f8fafc;
+}
+
+td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+/* Status Bar (Mobile Style) */
+.status-bar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 10px 24px;
+  height: 52px;
+  background-color: #f0f3f8;
+  border-bottom: none;
+}
+
+.status-time {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: #1d1b20;
+  line-height: 1;
+}
+
+.status-time p {
+  margin: 0;
+}
+
+.status-icons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.status-icon {
+  width: 17px;
+  height: 17px;
+  color: #1d1b20;
+}
+
+/* Gesture Bar (Mobile Style) */
+.gesture-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  background-color: white;
+  padding: 0;
+}
+
+.gesture-handle {
+  width: 108px;
+  height: 4px;
+  background-color: #1d1b20;
+  border-radius: 12px;
+  opacity: 0.15;
+}
+
+/* Responsive Layout Helpers */
+.layout-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  width: 100%;
+  /* Ensure it takes full width when needed */
+  transition: padding 0.3s;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding: 1rem;
+    padding-top: 4rem;
+    /* Space for hamburger */
+  }
+}
