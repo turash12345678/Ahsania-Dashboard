@@ -41,7 +41,8 @@ export default function PosContainer() {
         if (productsRes.ok) {
           const pData = await productsRes.json();
           const mappedProducts = (Array.isArray(pData) ? pData : pData.data || []).map((p: any) => ({
-            id: String(p.id),
+            id: `p-${p.id}`,
+            originalId: String(p.id),
             productName: p.name,
             productImage: null,
             buyingPrice: p.buy_price || 0,
@@ -55,7 +56,8 @@ export default function PosContainer() {
         if (servicesRes.ok) {
           const sData = await servicesRes.json();
           const mappedServices = (Array.isArray(sData) ? sData : sData.data || []).map((s: any) => ({
-            id: String(s.id),
+            id: `s-${s.id}`,
+            originalId: String(s.id),
             productName: s.name,
             productImage: null,
             buyingPrice: 0,
@@ -85,10 +87,7 @@ export default function PosContainer() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   // State for quantities
-  const [quantities, setQuantities] = useState<Record<string, number>>({
-    "1": 1, "2": 1, "3": 1, "4": 1, "5": 1,
-    "6": 1, "7": 1, "8": 1, "9": 1, "10": 1,
-  });
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
 
   // State for price options (fixed vs custom)
   const [priceOptions, setPriceOptions] = useState<Record<string, 'fixed' | 'custom'>>({});
@@ -175,8 +174,12 @@ export default function PosContainer() {
         ? product.sellingPrice
         : (parseFloat(customPrices[id] || "0") || 0);
 
+      // Use originalId for backend
+      // @ts-ignore
+      const realId = product.originalId || id;
+
       return {
-        id: product.id,
+        id: realId,
         type: product.type || 'product',
         quantity: qty,
         price: unitPrice
