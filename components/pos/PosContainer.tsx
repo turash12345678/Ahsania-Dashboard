@@ -45,8 +45,8 @@ export default function PosContainer() {
             originalId: String(p.id),
             productName: p.name,
             productImage: null,
-            buyingPrice: p.buy_price || 0,
-            sellingPrice: p.sell_price || 0,
+            buyingPrice: Number(p.buy_price) || 0,
+            sellingPrice: Number(p.sell_price) || 0,
             type: 'product',
             salesCount: p.sales_count || 0
           }));
@@ -61,7 +61,7 @@ export default function PosContainer() {
             productName: s.name,
             productImage: null,
             buyingPrice: 0,
-            sellingPrice: s.price || 0,
+            sellingPrice: Number(s.price) || 0,
             type: 'service',
             salesCount: s.sales_count || 0
           }));
@@ -140,12 +140,14 @@ export default function PosContainer() {
         let price = 0;
 
         if (option === 'fixed') {
-          price = product.sellingPrice; // Use default selling price (200)
+          price = Number(product.sellingPrice) || 0; // Use default selling price
         } else {
           // Custom price mode: Use only the custom input value
           const customVal = parseFloat(customPrices[id] || "0");
           price = isNaN(customVal) ? 0 : customVal;
         }
+
+        console.log(`Calc Item ${id}: Option=${option}, Price=${price}`); // Debug log
 
         sum += price * qty;
       }
@@ -214,6 +216,7 @@ export default function PosContainer() {
     }
   };
 
+
   return (
     <div className="flex justify-center min-h-screen bg-gray-200 font-sans">
       {/* Mobile Frame - Updated for Safe Area */}
@@ -273,5 +276,6 @@ export default function PosContainer() {
         </div>
       </div>
     </div>
+    </div >
   );
 }
