@@ -1,4 +1,5 @@
 import { Minus, Plus, Check, Image as ImageIcon } from "lucide-react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 interface ProductItemProps {
@@ -14,6 +15,7 @@ interface ProductItemProps {
   customPrice: string;
   onPriceOptionChange: (option: 'fixed' | 'custom') => void;
   onCustomPriceChange: (value: string) => void;
+  stock: number | null;
 }
 
 export function ProductItem({
@@ -27,18 +29,28 @@ export function ProductItem({
   onQuantityChange,
   priceOption,
   customPrice,
-  onPriceOptionChange,
   onCustomPriceChange,
+  stock
 }: ProductItemProps) {
+
+  // Determine if out of stock
+  // Services have stock = null, so they are never out of stock
+  // Products have numeric stock. If 0, it's out of stock.
+  const isOutOfStock = stock !== null && stock <= 0;
 
   return (
     <div
       onClick={() => {
+        if (isOutOfStock) {
+          toast.error("This product isn't available on your stock");
+          return;
+        }
         // Toggle selection logic handled by parent
         onSelect();
       }}
       className={cn(
         "w-full transition-all duration-300 ease-in-out cursor-pointer",
+        isOutOfStock ? "opacity-60 grayscale cursor-not-allowed" : "",
         isSelected
           ? "bg-[#EFF3F9] rounded-[36px_36px_26px_26px] p-2"
           : "bg-white rounded-[5px] p-2 hover:bg-gray-50"

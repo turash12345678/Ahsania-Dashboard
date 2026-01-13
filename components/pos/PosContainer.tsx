@@ -20,6 +20,7 @@ interface Product {
   sellingPrice: number;
   type?: 'product' | 'service';
   salesCount: number;
+  stockQuantity: number | null; // null for services or unlimited
 }
 
 export default function PosContainer() {
@@ -48,7 +49,8 @@ export default function PosContainer() {
             buyingPrice: Number(p.buy_price) || 0,
             sellingPrice: Number(p.sell_price) || 0,
             type: 'product',
-            salesCount: p.sales_count || 0
+            salesCount: p.sales_count || 0,
+            stockQuantity: p.stock_quantity !== undefined ? Number(p.stock_quantity) : 0
           }));
           combinedData = [...combinedData, ...mappedProducts];
         }
@@ -63,7 +65,8 @@ export default function PosContainer() {
             buyingPrice: 0,
             sellingPrice: Number(s.price) || 0,
             type: 'service',
-            salesCount: s.sales_count || 0
+            salesCount: s.sales_count || 0,
+            stockQuantity: null // Services have no stock limit
           }));
           combinedData = [...combinedData, ...mappedServices];
         }
@@ -232,38 +235,61 @@ export default function PosContainer() {
         <div className="flex-1 px-1.5 pb-0 overflow-hidden flex flex-col relative z-10">
           {/* List Container (Frame 15) */}
           <div className="flex-1 bg-white rounded-[38px] p-1 space-y-1 overflow-y-auto no-scrollbar mb-[calc(170px+env(safe-area-inset-bottom))] mt-[0px] mr-[0px] mb-[144px] ml-[0px]">
-            {products
-              .filter(p => {
-                const term = searchTerm.toLowerCase();
-                const matchesName = p.productName.toLowerCase().includes(term);
-                const matchesBuyPrice = p.buyingPrice.toString().includes(term);
-                const matchesSellPrice = p.sellingPrice.toString().includes(term);
-                return matchesName || matchesBuyPrice || matchesSellPrice;
-              })
-              .map((product) => (
-                <ProductItem
-                  key={product.id}
-                  id={product.id}
-                  name={product.productName}
-                  buyingPrice={product.buyingPrice} // Pass cost price
-                  sellingPrice={product.sellingPrice} // Pass sell price
-                  isSelected={selectedIds.has(product.id)}
-                  quantity={quantities[product.id] || 1}
-                  onSelect={() => handleSelect(product.id)}
-                  onQuantityChange={(delta) => handleQuantityChange(product.id, delta)}
-                  priceOption={priceOptions[product.id] || 'fixed'}
-                  customPrice={customPrices[product.id] || ""}
-                  onPriceOptionChange={(opt) => handlePriceOptionChange(product.id, opt)}
-                  onCustomPriceChange={(val) => handleCustomPriceChange(product.id, val)}
-                />
-              ))}
-          </div>
-        </div>
+            <div className="flex-1 bg-white rounded-[38px] p-1 space-y-1 overflow-y-auto no-scrollbar mb-[calc(170px+env(safe-area-inset-bottom))] mt-[0px] mr-[0px] mb-[144px] ml-[0px]">
+              {(() => {
+                // Sorting Logic:
+                // 1. Split into "Selected" and "Unselected".
+                // 2. "Selected" items ALWAYS appear at the top (Pinned).
+                // 3. "Unselected" items are filtered by search term.
 
-        {/* Bottom Bar - Floating Absolute Bottom */}
-        {/* Added pb-[env(safe-area-inset-bottom)] to handle bottom gesture bar space */}
-        <div className="absolute bottom-0 left-0 right-0 z-30 pb-[env(safe-area-inset-bottom)] bg-[#E8EDF7] rounded-t-[28px]">
-          {/* Note: I added bg and radius to the wrapper to ensure safe area background matches the bar if needed, 
+                const term = searchTerm.toLowerCase();
+
+                // Helper to check if item matches search
+                const matchesSearch = (p: Product) => {
+                  const matchesName = p.productName.toLowerCase().includes(term);
+                  const matchesBuyPrice = p.buyingPrice.toString().includes(term);
+                  const matchesSellPrice = p.sellingPrice.toString().includes(term);
+                  return matchesName || matchesBuyPrice || matchesSellPrice;
+                };
+
+                const pinnedItems = products.filter(p => selectedIds.has(p.id));
+                const unselectedItems = products.filter(p => !selectedIds.has(p.id));
+
+                const filteredUnselected = unselectedItems.filter(matchesSearch);
+
+                // If user is searching, do they want to see pinned items that DON'T match?
+                // Request: "Search kore kiso select korar por... Notun kore abar kiso search kore selct korte gele,, age ki ki product select korsi...oigula dekha jay na"
+                // This implies they WANT to see pinned items always.
+
+                // Combine: Pinned + Filtered Unselected
+                const displayList = [...pinnedItems, ...filteredUnselected];
+
+                return displayList.map((product) => (
+                  <ProductItem
+                    key={product.id}
+                    id={product.id}
+                    name={product.productName}
+                    buyingPrice={product.buyingPrice} // Pass cost price
+                    sellingPrice={product.sellingPrice} // Pass sell price
+                    stock={product.stockQuantity} // Pass stock info
+                    isSelected={selectedIds.has(product.id)}
+                    quantity={quantities[product.id] || 1}
+                    onSelect={() => handleSelect(product.id)}
+                    onQuantityChange={(delta) => handleQuantityChange(product.id, delta)}
+                    priceOption={priceOptions[product.id] || 'fixed'}
+                    customPrice={customPrices[product.id] || ""}
+                    onPriceOptionChange={(opt) => handlePriceOptionChange(product.id, opt)}
+                    onCustomPriceChange={(val) => handleCustomPriceChange(product.id, val)}
+                  />
+                ));
+              })()}
+            </div>
+          </div>
+
+          {/* Bottom Bar - Floating Absolute Bottom */}
+          {/* Added pb-[env(safe-area-inset-bottom)] to handle bottom gesture bar space */}
+          <div className="absolute bottom-0 left-0 right-0 z-30 pb-[env(safe-area-inset-bottom)] bg-[#E8EDF7] rounded-t-[28px]">
+            {/* Note: I added bg and radius to the wrapper to ensure safe area background matches the bar if needed, 
               but BottomBar component likely has its own styling. 
               Actually, BottomBar usually has the background. If I add padding here, the background might need to extend.
               If BottomBar has fixed height, adding padding to this wrapper pushes it up.
@@ -272,9 +298,9 @@ export default function PosContainer() {
               BUT if I pad this container, there will be transparent space at the bottom if the background isn't set.
               I'll apply the background color to this wrapper to be safe.
           */}
-          <BottomBar total={total} currency="৳" onCheckout={handleCheckout} />
+            <BottomBar total={total} currency="৳" onCheckout={handleCheckout} />
+          </div>
         </div>
       </div>
-    </div>
-  );
+      );
 }
