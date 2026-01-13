@@ -52,6 +52,7 @@ export function Header({ searchTerm, onSearchChange }: HeaderProps) {
             placeholder={isListening ? "Listening..." : "Search in List"}
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
+            onFocus={() => onSearchChange("")} // Auto-clear on click/focus
             className="w-full bg-transparent outline-none text-[20px] leading-[30px] text-[#7A747F] placeholder-[#7A747F] font-roboto font-normal text-center"
           />
         </div>

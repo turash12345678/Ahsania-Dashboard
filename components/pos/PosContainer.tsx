@@ -276,6 +276,5 @@ export default function PosContainer() {
         </div>
       </div>
     </div>
-    </div >
   );
 }
