@@ -86,16 +86,21 @@
 .hamburgerBtn {
     display: none;
     position: fixed;
-    top: 1rem;
-    left: 1rem;
+    top: 12px;
+    left: 12px;
     z-index: 60;
     background: #FFFFFF;
     border: 1px solid #E0E0E0;
-    border-radius: 8px;
-    padding: 0.5rem;
+    border-radius: 12px;
+    padding: 10px;
     cursor: pointer;
     color: #0F1828;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hamburgerBtn:active {
+    transform: scale(0.95);
 }
 
 .overlay {

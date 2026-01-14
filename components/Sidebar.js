@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { Menu, LogOut } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
 export default function Sidebar() {
@@ -34,7 +35,7 @@ export default function Sidebar() {
                 onClick={toggleSidebar}
                 aria-label="Toggle Menu"
             >
-                ☰
+                <Menu size={24} />
             </button>
 
             {/* Overlay (Mobile Only) */}

@@ -179,13 +179,13 @@ export default function ProductsPage() {
         <div className="layout-container bg-[#F9FAFB]">
             <Sidebar />
 
-            <main className="main-content p-8 overflow-y-auto h-screen lg:ml-[260px]">
-                <header className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                    <div>
+            <main className="main-content p-3 md:p-6 lg:p-8 overflow-y-auto h-[100dvh] lg:ml-[260px]">
+                <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                    <div className="pl-12 lg:pl-0">
                         <h1 className="text-2xl font-bold text-[#111827]">Products Inventory</h1>
                         <p className="text-[#6B7280] text-sm">Manage your product catalog and stock.</p>
                     </div>
-                    <div className="flex gap-3 items-center">
+                    <div className="flex gap-2 items-center flex-wrap w-full md:w-auto">
                         {/* Search Box */}
                         <div className="relative">
                             <input

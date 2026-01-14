@@ -122,9 +122,20 @@ export default function PosContainer() {
   };
 
   const handleCustomPriceChange = (id: string, value: string) => {
+    // Normalize Bangla digits to English
+    const normalize = (str: string) => {
+      const banglaDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+      return str.split('').map(char => {
+        const idx = banglaDigits.indexOf(char);
+        return idx > -1 ? String(idx) : char;
+      }).join('');
+    };
+
+    const engValue = normalize(value);
+
     // Allow only numeric input
-    if (/^\d*$/.test(value)) {
-      setCustomPrices((prev) => ({ ...prev, [id]: value }));
+    if (/^\d*$/.test(engValue)) {
+      setCustomPrices((prev) => ({ ...prev, [id]: engValue }));
     }
   };
 
@@ -224,7 +235,7 @@ export default function PosContainer() {
     <div className="flex justify-center min-h-screen bg-gray-200 font-sans">
       {/* Mobile Frame - Updated for Safe Area */}
       {/* Added pt-[env(safe-area-inset-top)] to handle top status bar space */}
-      <div className="w-full max-w-[412px] bg-[#EFF3F9] h-screen shadow-2xl flex flex-col relative overflow-hidden pt-[env(safe-area-inset-top)]">
+      <div className="w-full max-w-[412px] bg-[#EFF3F9] h-[100dvh] shadow-2xl flex flex-col relative overflow-hidden pt-[env(safe-area-inset-top)]">
 
         {/* Header - Fixed Top */}
         <div className="shrink-0 z-20 relative">
@@ -234,7 +245,7 @@ export default function PosContainer() {
         {/* Main Content Area - Full Height */}
         <div className="flex-1 px-1.5 pb-0 overflow-hidden flex flex-col relative z-10">
           {/* List Container (Frame 15) */}
-          <div className="flex-1 bg-white rounded-[38px] p-1 space-y-1 overflow-y-auto no-scrollbar mb-[calc(170px+env(safe-area-inset-bottom))] mt-[0px] mr-[0px] mb-[144px] ml-[0px]">
+          <div className="flex-1 bg-white rounded-[38px] p-1 space-y-1 overflow-y-auto no-scrollbar pb-[calc(140px+env(safe-area-inset-bottom))] mt-2">
             {(() => {
               // Sorting Logic:
               // 1. Split into "Selected" and "Unselected".
@@ -251,17 +262,20 @@ export default function PosContainer() {
                 return matchesName || matchesBuyPrice || matchesSellPrice;
               };
 
-              const pinnedItems = products.filter(p => selectedIds.has(p.id));
-              const unselectedItems = products.filter(p => !selectedIds.has(p.id));
+              // If user is searching, they want to see ONLY search results (User Request Step 234).
+              // "Jokhon search korte jabo... Tokhon sudhu matro jeta search korbo.... oi product gulai show korbe"
 
-              const filteredUnselected = unselectedItems.filter(matchesSearch);
+              let displayList: Product[] = [];
 
-              // If user is searching, do they want to see pinned items that DON'T match?
-              // Request: "Search kore kiso select korar por... Notun kore abar kiso search kore selct korte gele,, age ki ki product select korsi...oigula dekha jay na"
-              // This implies they WANT to see pinned items always.
-
-              // Combine: Pinned + Filtered Unselected
-              const displayList = [...pinnedItems, ...filteredUnselected];
+              if (term) {
+                // Search Mode: Strict filtering, no special pinning at top (unless sorted by default)
+                displayList = products.filter(matchesSearch);
+              } else {
+                // Default Mode: Pin Selected Items to Top
+                const pinnedItems = products.filter(p => selectedIds.has(p.id));
+                const unselectedItems = products.filter(p => !selectedIds.has(p.id));
+                displayList = [...pinnedItems, ...unselectedItems];
+              }
 
               return displayList.map((product) => (
                 <ProductItem

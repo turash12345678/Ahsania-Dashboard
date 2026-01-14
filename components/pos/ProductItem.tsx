@@ -29,6 +29,7 @@ export function ProductItem({
   onQuantityChange,
   priceOption,
   customPrice,
+  onPriceOptionChange, // Re-added this
   onCustomPriceChange,
   stock
 }: ProductItemProps) {

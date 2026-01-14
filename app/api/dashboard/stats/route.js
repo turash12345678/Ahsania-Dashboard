@@ -113,6 +113,48 @@ export async function GET(request) {
             args: [selectedStart, selectedEnd]
         });
 
+        // --- FETCH ITEMS FOR HISTORY ---
+        const sales = dailyHistoryRes.rows;
+        if (sales.length > 0) {
+            const saleIds = sales.map(s => s.id);
+            const placeholders = saleIds.map(() => '?').join(',');
+
+            // Fetch items with names joined from products/services tables
+            const itemsRes = await db.execute({
+                sql: `
+                    SELECT 
+                        si.sale_id, 
+                        si.quantity, 
+                        si.price_at_sale, 
+                        si.item_type,
+                        p.name as product_name,
+                        s.name as service_name
+                    FROM sale_items si
+                    LEFT JOIN products p ON si.item_id = p.id AND si.item_type = 'product'
+                    LEFT JOIN services s ON si.item_id = s.id AND si.item_type = 'service'
+                    WHERE si.sale_id IN (${placeholders})
+                `,
+                args: saleIds
+            });
+
+            // Group items by sale_id
+            const itemsMap = {};
+            itemsRes.rows.forEach(item => {
+                if (!itemsMap[item.sale_id]) itemsMap[item.sale_id] = [];
+                itemsMap[item.sale_id].push({
+                    name: item.item_type === 'product' ? item.product_name : item.service_name,
+                    quantity: item.quantity,
+                    price: item.price_at_sale,
+                    type: item.item_type
+                });
+            });
+
+            // Attach items to sales
+            sales.forEach(sale => {
+                sale.items = itemsMap[sale.id] || [];
+            });
+        }
+
         // E. Monthly Graph
         const graphResult = await db.execute({
             sql: "SELECT date(sale_date) as date, SUM(total_amount) as total FROM sales WHERE sale_date >= ? AND sale_date <= ? GROUP BY date(sale_date)",

@@ -6,7 +6,7 @@ interface BottomBarProps {
 
 export function BottomBar({ total, currency, onCheckout }: BottomBarProps) {
   return (
-    <div className="bg-[#E8EDF7] rounded-t-[28px] p-[16px] pt-4 pb-10 w-full z-20">
+    <div className="bg-[#E8EDF7] rounded-t-[28px] p-[16px] pt-4 pb-4 w-full z-20">
       {/* Total Row */}
       <div className="flex justify-between items-center mb-4 px-2">
         <span className="font-roboto font-medium text-[22px] text-[#0F1828]">

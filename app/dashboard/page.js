@@ -147,7 +147,7 @@ export default function Dashboard() {
         <div className="flex flex-row justify-start items-start min-h-screen bg-[#EEF3FA] relative">
             <Sidebar />
 
-            <main className="flex flex-col items-start p-8 gap-8 w-full max-w-[1600px] overflow-y-auto lg:ml-[260px]">
+            <main className="flex flex-col items-start p-3 md:p-6 lg:p-8 gap-4 lg:gap-8 w-full max-w-[1600px] overflow-y-auto lg:ml-[260px]">
 
                 {/* --- HEADER --- */}
                 <header className="flex flex-row justify-between items-center w-full p-4 bg-white rounded-[24px] shadow-sm h-[90px]">
