@@ -321,7 +321,6 @@ export default function ProductsPage() {
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                     <div className="pl-12 lg:pl-0">
                         <h1 className="text-2xl font-bold text-[#111827]">Products Inventory</h1>
-                        <h1 className="text-2xl font-bold text-[#111827]">Products Inventory</h1>
                         <p className="text-[#6B7280] text-sm">Manage your product catalog and stock.</p>
                         {/* Layer 3 Sidebar */}
                         <ProductDetailsSidebar product={selectedProduct} onClose={() => setSelectedProduct(null)} />
