@@ -32,6 +32,7 @@ export default function ProductsPage() {
     const [priceMin, setPriceMin] = useState('');
     const [priceMax, setPriceMax] = useState('');
     const [filterBySellPrice, setFilterBySellPrice] = useState(false);
+    const [monthFilter, setMonthFilter] = useState(''); // New State for Month Filter
 
     // Import
     const fileInputRef = useRef(null);
@@ -262,7 +263,12 @@ export default function ProductsPage() {
         const max = priceMax ? parseFloat(priceMax) : Infinity;
         const matchesPrice = price >= min && price <= max;
 
-        return matchesSearch && matchesCategory && matchesPrice;
+        // Month Filter Logic
+        const matchesMonth = monthFilter
+            ? (product.created_at || '').startsWith(monthFilter)
+            : true;
+
+        return matchesSearch && matchesCategory && matchesPrice && matchesMonth;
     }).sort((a, b) => {
         if (sortOption === 'date_desc') return new Date(b.created_at || 0) - new Date(a.created_at || 0);
         if (sortOption === 'date_asc') return new Date(a.created_at || 0) - new Date(b.created_at || 0);
@@ -339,6 +345,17 @@ export default function ProductsPage() {
                                 <option value="">All Categories</option>
                                 {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                             </select>
+
+                            {/* Month Filter */}
+                            <div className="flex items-center gap-1 border border-[#E5E7EB] rounded-lg px-2 py-1.5 bg-white">
+                                <span className="text-xs font-medium text-gray-500">Entry Month:</span>
+                                <input
+                                    type="month"
+                                    className="text-sm focus:outline-none"
+                                    value={monthFilter}
+                                    onChange={(e) => setMonthFilter(e.target.value)}
+                                />
+                            </div>
 
                             {/* Price Range */}
                             <div className="flex items-center gap-1 border-l border-r border-[#E5E7EB] px-2">
