@@ -26,6 +26,13 @@ export default function ProductsPage() {
     const [showCategoryManager, setShowCategoryManager] = useState(false);
     const [newCategoryName, setNewCategoryName] = useState('');
 
+    // Filter & Sort State
+    const [filterCategory, setFilterCategory] = useState('');
+    const [sortOption, setSortOption] = useState('date_desc'); // date_desc, date_asc, sales_desc
+    const [priceMin, setPriceMin] = useState('');
+    const [priceMax, setPriceMax] = useState('');
+    const [filterBySellPrice, setFilterBySellPrice] = useState(false);
+
     // Import
     const fileInputRef = useRef(null);
     const [isImporting, setIsImporting] = useState(false);
@@ -244,10 +251,24 @@ export default function ProductsPage() {
     // Search State
     const [searchQuery, setSearchQuery] = useState('');
 
-    const filteredProducts = products.filter(product =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (product.category_name && product.category_name.toLowerCase().includes(searchQuery.toLowerCase()))
-    );
+    const filteredProducts = products.filter(product => {
+        const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (product.category_name && product.category_name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+        const matchesCategory = filterCategory ? product.category_id == filterCategory : true;
+
+        const price = filterBySellPrice ? product.sell_price : product.buy_price;
+        const min = priceMin ? parseFloat(priceMin) : 0;
+        const max = priceMax ? parseFloat(priceMax) : Infinity;
+        const matchesPrice = price >= min && price <= max;
+
+        return matchesSearch && matchesCategory && matchesPrice;
+    }).sort((a, b) => {
+        if (sortOption === 'date_desc') return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+        if (sortOption === 'date_asc') return new Date(a.created_at || 0) - new Date(b.created_at || 0);
+        if (sortOption === 'sales_desc') return (b.sales_count || 0) - (a.sales_count || 0);
+        return 0;
+    });
 
     return (
         <div className="layout-container bg-[#F9FAFB]">
@@ -259,40 +280,97 @@ export default function ProductsPage() {
                         <h1 className="text-2xl font-bold text-[#111827]">Products Inventory</h1>
                         <p className="text-[#6B7280] text-sm">Manage your product catalog and stock.</p>
                     </div>
-                    <div className="flex gap-2 items-center flex-wrap w-full md:w-auto">
-                        {/* Search Box */}
-                        <div className="relative">
+                    <div className="flex flex-col gap-3 w-full md:w-auto">
+                        <div className="flex gap-2 items-center flex-wrap justify-end">
+                            {/* Search Box */}
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    placeholder="Search products..."
+                                    className="pl-4 pr-10 py-2 rounded-xl border border-[#E5E7EB] focus:outline-none focus:ring-2 focus:ring-[#0065F4] w-64"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
+                            </div>
+
                             <input
-                                type="text"
-                                placeholder="Search products..."
-                                className="pl-4 pr-10 py-2 rounded-xl border border-[#E5E7EB] focus:outline-none focus:ring-2 focus:ring-[#0065F4] w-64"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
+                                type="file"
+                                ref={fileInputRef}
+                                className="hidden"
+                                accept=".xlsx, .xls, .csv, .pdf"
+                                onChange={handleFileChange}
                             />
+                            <button
+                                className="flex items-center gap-2 px-4 py-2 bg-white border border-[#E5E7EB] text-[#374151] rounded-xl font-semibold shadow-sm hover:bg-gray-50 transition-colors"
+                                onClick={handleImportClick}
+                                disabled={isImporting}
+                            >
+                                <FileSpreadsheet size={18} className="text-[#10B981]" />
+                                {isImporting ? 'Importing...' : 'Import Excel'}
+                            </button>
+                            <button
+                                className="flex items-center gap-2 px-4 py-2 bg-[#0065F4] text-white rounded-xl font-semibold shadow hover:bg-[#0052cc] transition-colors"
+                                onClick={openAddModal}
+                                title="Shortcut: Shift + N"
+                            >
+                                <Plus size={18} /> Add Product
+                            </button>
                         </div>
 
-                        <input
-                            type="file"
-                            ref={fileInputRef}
-                            className="hidden"
-                            accept=".xlsx, .xls, .csv, .pdf"
-                            onChange={handleFileChange}
-                        />
-                        <button
-                            className="flex items-center gap-2 px-4 py-2 bg-white border border-[#E5E7EB] text-[#374151] rounded-xl font-semibold shadow-sm hover:bg-gray-50 transition-colors"
-                            onClick={handleImportClick}
-                            disabled={isImporting}
-                        >
-                            <FileSpreadsheet size={18} className="text-[#10B981]" />
-                            {isImporting ? 'Importing...' : 'Import Excel'}
-                        </button>
-                        <button
-                            className="flex items-center gap-2 px-4 py-2 bg-[#0065F4] text-white rounded-xl font-semibold shadow hover:bg-[#0052cc] transition-colors"
-                            onClick={openAddModal}
-                            title="Shortcut: Shift + N"
-                        >
-                            <Plus size={18} /> Add Product
-                        </button>
+                        {/* Filters & Sorting Toolbar */}
+                        <div className="flex flex-wrap items-center gap-2 justify-end bg-white p-2 rounded-xl border border-[#E5E7EB] shadow-sm">
+                            {/* Sort */}
+                            <select
+                                className="px-3 py-1.5 rounded-lg border border-[#E5E7EB] text-sm focus:outline-none focus:ring-2 focus:ring-[#0065F4]"
+                                value={sortOption}
+                                onChange={(e) => setSortOption(e.target.value)}
+                            >
+                                <option value="date_desc">Newest First</option>
+                                <option value="date_asc">Oldest First</option>
+                                <option value="sales_desc">Most Sold</option>
+                            </select>
+
+                            {/* Category Filter */}
+                            <select
+                                className="px-3 py-1.5 rounded-lg border border-[#E5E7EB] text-sm focus:outline-none focus:ring-2 focus:ring-[#0065F4]"
+                                value={filterCategory}
+                                onChange={(e) => setFilterCategory(e.target.value)}
+                            >
+                                <option value="">All Categories</option>
+                                {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                            </select>
+
+                            {/* Price Range */}
+                            <div className="flex items-center gap-1 border-l border-r border-[#E5E7EB] px-2">
+                                <span className="text-xs font-medium text-gray-500">Price:</span>
+                                <input
+                                    type="number"
+                                    placeholder="Min"
+                                    className="w-16 px-2 py-1 rounded-md border border-[#E5E7EB] text-sm focus:outline-none focus:ring-1 focus:ring-[#0065F4]"
+                                    value={priceMin}
+                                    onChange={(e) => setPriceMin(e.target.value)}
+                                />
+                                <span className="text-gray-400">-</span>
+                                <input
+                                    type="number"
+                                    placeholder="Max"
+                                    className="w-16 px-2 py-1 rounded-md border border-[#E5E7EB] text-sm focus:outline-none focus:ring-1 focus:ring-[#0065F4]"
+                                    value={priceMax}
+                                    onChange={(e) => setPriceMax(e.target.value)}
+                                />
+                            </div>
+
+                            {/* Sell Price Toggle */}
+                            <label className="flex items-center gap-2 cursor-pointer px-2">
+                                <input
+                                    type="checkbox"
+                                    checked={filterBySellPrice}
+                                    onChange={(e) => setFilterBySellPrice(e.target.checked)}
+                                    className="rounded border-gray-300 text-[#0065F4] focus:ring-[#0065F4]"
+                                />
+                                <span className="text-sm text-gray-700">Filter by Sell Price</span>
+                            </label>
+                        </div>
                     </div>
                 </header>
 
