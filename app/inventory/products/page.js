@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Sidebar from '@/components/Sidebar';
-import { Pencil, Trash2, Plus, FileSpreadsheet, Upload, X, Settings } from 'lucide-react';
+import { Pencil, Trash2, Plus, X, Settings } from 'lucide-react';
 import CategoryManagerModal from '@/components/CategoryManagerModal';
 
 export default function ProductsPage() {
@@ -34,9 +34,7 @@ export default function ProductsPage() {
     const [filterBySellPrice, setFilterBySellPrice] = useState(false);
     const [monthFilter, setMonthFilter] = useState(''); // New State for Month Filter
 
-    // Import
-    const fileInputRef = useRef(null);
-    const [isImporting, setIsImporting] = useState(false);
+
 
     const [user, setUser] = useState(null);
 
@@ -214,49 +212,7 @@ export default function ProductsPage() {
         setShowModal(true);
     };
 
-    // Import Logic
-    const handleImportClick = () => {
-        fileInputRef.current?.click();
-    };
 
-    const handleFileChange = async (e) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-
-        setIsImporting(true);
-        const formData = new FormData();
-        formData.append('file', file);
-
-        try {
-            const res = await fetch('/api/inventory/bulk-import', {
-                method: 'POST',
-                body: formData
-            });
-
-            // Try to parse JSON, if fails, read text (could be 500 HTML)
-            let result;
-            const contentType = res.headers.get("content-type");
-            if (contentType && contentType.indexOf("application/json") !== -1) {
-                result = await res.json();
-            } else {
-                const text = await res.text();
-                throw new Error(`Server returned non-JSON response (${res.status}): ${text.slice(0, 100)}...`);
-            }
-
-            if (res.ok) {
-                alert(`Imported ${result.count || 0} products successfully!\n${(result.errors && result.errors.length > 0) ? 'Errors:\n' + result.errors.join('\n') : ''}`);
-                fetchProducts();
-            } else {
-                alert('Import Failed: ' + (result.error || result.message || 'Unknown error'));
-            }
-        } catch (err) {
-            console.error(err);
-            alert('Failed to upload file: ' + err.message);
-        } finally {
-            setIsImporting(false);
-            if (fileInputRef.current) fileInputRef.current.value = ''; // Reset input
-        }
-    };
 
     // Search State
     const [searchQuery, setSearchQuery] = useState('');
@@ -308,21 +264,7 @@ export default function ProductsPage() {
                                 />
                             </div>
 
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                className="hidden"
-                                accept=".xlsx, .xls, .csv, .pdf"
-                                onChange={handleFileChange}
-                            />
-                            <button
-                                className="flex items-center gap-2 px-4 py-2 bg-white border border-[#E5E7EB] text-[#374151] rounded-xl font-semibold shadow-sm hover:bg-gray-50 transition-colors"
-                                onClick={handleImportClick}
-                                disabled={isImporting}
-                            >
-                                <FileSpreadsheet size={18} className="text-[#10B981]" />
-                                {isImporting ? 'Importing...' : 'Import Excel'}
-                            </button>
+
                             <button
                                 className="flex items-center gap-2 px-4 py-2 bg-[#0065F4] text-white rounded-xl font-semibold shadow hover:bg-[#0052cc] transition-colors"
                                 onClick={openAddModal}
