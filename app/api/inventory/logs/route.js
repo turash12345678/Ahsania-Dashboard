@@ -19,7 +19,7 @@ export async function GET(request) {
 
         // Fetch Total Earned from Sale Items
         const salesResult = await db.execute({
-            sql: `SELECT SUM(quantity * unit_price) as total_earned FROM sale_items WHERE item_id = ? AND item_type = 'product'`,
+            sql: `SELECT SUM(quantity * price_at_sale) as total_earned FROM sale_items WHERE item_id = ? AND item_type = 'product'`,
             args: [productId]
         });
 
