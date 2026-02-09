@@ -33,10 +33,9 @@ export async function POST(request) {
             sql: `UPDATE products SET 
                   stock_quantity = ?, 
                   buy_price = ?, 
-                  sell_price = ?,
-                  updated_at = ? 
+                  sell_price = ? 
                   WHERE id = ?`,
-            args: [newStock, bPrice, sPrice, new Date().toISOString(), product_id]
+            args: [newStock, bPrice, sPrice, product_id]
         });
 
         // 3. Create Stock Log (Batch)

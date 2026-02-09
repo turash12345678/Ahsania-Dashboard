@@ -499,7 +499,6 @@ export default function ProductsPage() {
                             <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="space-y-4">
                                 <div>
                                     <label className="block text-sm font-medium text-[#374151] mb-1">Product Name</label>
-                                    <label className="block text-sm font-medium text-[#374151] mb-1">Product Name</label>
                                     <input
                                         className="w-full px-4 py-2 rounded-xl border border-[#D1D5DB] focus:outline-none focus:ring-2 focus:ring-[#0065F4] focus:border-transparent transition-shadow"
                                         required
@@ -513,17 +512,23 @@ export default function ProductsPage() {
                                     {/* Layer 2: Smart Restock Info Box */}
                                     {existingProduct && !isEditMode && (
                                         <div
-                                            className="mt-2 p-3 bg-blue-50 border border-blue-100 rounded-lg flex items-center justify-between cursor-pointer hover:bg-blue-100 transition-colors group"
+                                            className="mt-3 p-4 bg-indigo-50 border border-indigo-200 rounded-xl flex items-center justify-between cursor-pointer hover:bg-indigo-100 transition-all shadow-sm group"
                                             onClick={() => setSelectedProduct(existingProduct)}
                                         >
-                                            <div className="flex flex-col">
-                                                <span className="text-xs text-blue-600 font-semibold uppercase tracking-wider">Restock Mode Active</span>
-                                                <span className="text-sm text-blue-800 font-medium">
-                                                    Current Stock: <span className="font-bold">{existingProduct.stock_quantity}</span>
+                                            <div className="flex flex-col gap-1">
+                                                <span className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">
+                                                    📦 Stock Overview
                                                 </span>
+                                                <div className="text-base font-bold text-indigo-900 flex items-center gap-2">
+                                                    <span className="bg-indigo-200 text-indigo-800 text-xs px-2 py-0.5 rounded-md">
+                                                        {new Date(existingProduct.created_at || new Date()).toLocaleString('default', { month: 'short' })} - {new Date().toLocaleString('default', { month: 'short' })}
+                                                    </span>
+                                                    <span>|</span>
+                                                    <span>Total: {existingProduct.stock_quantity} In Stock</span>
+                                                </div>
                                             </div>
-                                            <div className="flex items-center gap-1 text-blue-600 text-xs font-semibold group-hover:underline">
-                                                View History <ExternalLink size={14} />
+                                            <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center text-indigo-600 shadow-sm group-hover:scale-110 transition-transform">
+                                                <ExternalLink size={16} />
                                             </div>
                                         </div>
                                     )}
