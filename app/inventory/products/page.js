@@ -432,14 +432,23 @@ export default function ProductsPage() {
                             <tbody className="divide-y divide-[#E5E7EB]">
                                 {filteredProducts.map(product => (
                                     <tr key={product.id} className="hover:bg-[#F9FAFB] transition-colors">
-                                        <td className="p-4 text-sm font-medium text-[#111827]">{product.name}</td>
+                                        <td
+                                            className="p-4 text-sm font-medium text-[#111827] cursor-pointer hover:text-[#0065F4] transition-colors"
+                                            onClick={() => setSelectedProduct(product)}
+                                        >
+                                            {product.name}
+                                        </td>
                                         <td className="p-4 text-sm text-[#4B5563]">
                                             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-800">
                                                 {product.category_name || 'Uncategorized'}
                                             </span>
                                         </td>
-                                        <td className="p-4 text-sm text-[#4B5563]">৳{product.buy_price}</td>
-                                        <td className="p-4 text-sm font-bold text-[#10B981]">৳{product.sell_price}</td>
+                                        <td className="p-4 text-sm text-[#4B5563]">
+                                            <span className="font-extrabold mr-1">৳</span>{product.buy_price}
+                                        </td>
+                                        <td className="p-4 text-sm font-bold text-[#10B981]">
+                                            <span className="font-extrabold mr-1">৳</span>{product.sell_price}
+                                        </td>
                                         <td className="p-4 text-sm text-[#4B5563]">
                                             {product.stock_quantity < 10 ? (
                                                 <span className="text-red-600 font-bold flex items-center gap-1">

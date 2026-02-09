@@ -41,7 +41,7 @@ export default function ProductDetailsSidebar({ product, onClose }) {
     const totalInvestment = logs.reduce((sum, log) => sum + (log.buy_price * log.quantity), 0);
 
     return (
-        <div className="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-[70] transform transition-transform duration-300 ease-out border-l border-gray-100 flex flex-col">
+        <div className="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-[100] transform transition-transform duration-300 ease-out border-l border-gray-100 flex flex-col">
             {/* Header */}
             <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                 <div>
@@ -89,8 +89,12 @@ export default function ProductDetailsSidebar({ product, onClose }) {
                                                 <div className="text-[10px] text-gray-400 uppercase tracking-wide">{log.note || 'Restock'}</div>
                                             </td>
                                             <td className="px-4 py-3 text-right font-medium text-gray-900">{log.quantity}</td>
-                                            <td className="px-4 py-3 text-right text-gray-600">৳ {log.buy_price}</td>
-                                            <td className="px-4 py-3 text-right text-emerald-600">৳ {log.sell_price || '-'}</td>
+                                            <td className="px-4 py-3 text-right text-gray-600">
+                                                <span className="font-extrabold mr-1">৳</span>{log.buy_price}
+                                            </td>
+                                            <td className="px-4 py-3 text-right text-emerald-600">
+                                                <span className="font-extrabold mr-1">৳</span>{log.sell_price || '-'}
+                                            </td>
                                         </tr>
                                     ))
                                 )}
@@ -103,12 +107,18 @@ export default function ProductDetailsSidebar({ product, onClose }) {
                 <div className="grid grid-cols-2 gap-4">
                     <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
                         <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Total Invest</p>
-                        <p className="text-2xl font-bold text-gray-900">৳ {totalInvestment.toLocaleString()}</p>
+                        <p className="text-2xl font-bold text-gray-900 flex items-center">
+                            <span className="text-2xl mr-1 font-extrabold">৳</span>
+                            {totalInvestment.toLocaleString()}
+                        </p>
                     </div>
 
                     <div className="p-4 bg-emerald-50/50 rounded-xl border border-emerald-100">
                         <p className="text-xs font-medium text-emerald-600 uppercase tracking-wider mb-1">Total Earned</p>
-                        <p className="text-2xl font-bold text-emerald-700">৳ {totalEarned.toLocaleString()}</p>
+                        <p className="text-2xl font-bold text-emerald-700 flex items-center">
+                            <span className="text-2xl mr-1 font-extrabold">৳</span>
+                            {totalEarned.toLocaleString()}
+                        </p>
                     </div>
                 </div>
 
