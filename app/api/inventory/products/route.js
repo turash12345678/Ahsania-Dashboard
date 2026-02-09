@@ -215,6 +215,29 @@ export async function DELETE(request) {
             return new Response(JSON.stringify({ error: 'Product ID is required' }), { status: 400 });
         }
 
+        // [NEW] Check for existing sales
+        const salesCheck = await db.execute({
+            sql: "SELECT COUNT(*) as count FROM sale_items WHERE item_id = ? AND item_type = 'product'",
+            args: [id]
+        });
+
+        if (salesCheck.rows[0].count > 0) {
+            return new Response(JSON.stringify({
+                error: 'Cannot delete product',
+                message: 'This product has associated sales history. Deleting it would compromise sales data.'
+            }), {
+                status: 400,
+                headers: { 'Content-Type': 'application/json' },
+            });
+        }
+
+        // [NEW] Delete associated stock logs first (foreign key cleanup)
+        await db.execute({
+            sql: "DELETE FROM stock_logs WHERE product_id = ?",
+            args: [id]
+        });
+
+        // Delete the product
         const result = await db.execute({
             sql: 'DELETE FROM products WHERE id = ?',
             args: [id]
@@ -230,6 +253,6 @@ export async function DELETE(request) {
         });
     } catch (error) {
         console.error('Product DELETE Error:', error);
-        return new Response(JSON.stringify({ error: 'Failed to delete product' }), { status: 500 });
+        return new Response(JSON.stringify({ error: 'Failed to delete product', message: error.message }), { status: 500 });
     }
 }
