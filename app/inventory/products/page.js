@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Sidebar from '@/components/Sidebar';
-import { Pencil, Trash2, Plus, X, Settings } from 'lucide-react';
+import { Pencil, Trash2, Plus, X, Settings, ExternalLink } from 'lucide-react';
 import CategoryManagerModal from '@/components/CategoryManagerModal';
+import ProductDetailsSidebar from '@/components/ProductDetailsSidebar';
 
 export default function ProductsPage() {
     const [products, setProducts] = useState([]);
@@ -12,6 +13,12 @@ export default function ProductsPage() {
     const [isEditMode, setIsEditMode] = useState(false);
     const [editId, setEditId] = useState(null);
     const [stickyDate, setStickyDate] = useState(new Date().toISOString().split('T')[0]);
+
+    // Layer 2: Smart Detection & Restock
+    const [existingProduct, setExistingProduct] = useState(null); // If typed name matches existing
+
+    // Layer 3: Sidebar
+    const [selectedProduct, setSelectedProduct] = useState(null);
 
     const [formData, setFormData] = useState({
         name: '',
@@ -126,8 +133,38 @@ export default function ProductsPage() {
         }
     };
 
+    // Smart Detection Logic
+    useEffect(() => {
+        if (!showModal || isEditMode) {
+            setExistingProduct(null);
+            return;
+        }
+
+        const trimmedName = formData.name.trim().toLowerCase();
+        if (!trimmedName) {
+            setExistingProduct(null);
+            return;
+        }
+
+        const match = products.find(p => p.name.toLowerCase() === trimmedName);
+        if (match) {
+            setExistingProduct(match);
+            // Auto-fill category if not set
+            if (!formData.category_id) setFormData(prev => ({ ...prev, category_id: match.category_id }));
+        } else {
+            setExistingProduct(null);
+        }
+    }, [formData.name, showModal, isEditMode, products]);
+
     const handleSubmit = async (e) => {
         if (e) e.preventDefault();
+
+        // Branch: Restock vs Create/Update
+        if (existingProduct && !isEditMode) {
+            await handleRestock();
+            return;
+        }
+
         const url = '/api/inventory/products';
         const method = isEditMode ? 'PUT' : 'POST';
 
@@ -241,6 +278,41 @@ export default function ProductsPage() {
         return 0;
     });
 
+    const handleRestock = async () => {
+        const cleanData = {
+            product_id: existingProduct.id,
+            quantity: normalizeNumber(formData.stock_quantity),
+            buy_price: normalizeNumber(formData.buy_price),
+            sell_price: normalizeNumber(formData.sell_price),
+            created_at: formData.created_at || stickyDate
+        };
+
+        const res = await fetch('/api/inventory/restock', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(cleanData),
+        });
+
+        if (res.ok) {
+            if (formData.created_at) setStickyDate(formData.created_at);
+            setShowModal(false);
+            setFormData({
+                name: '',
+                category_id: formData.category_id || '',
+                buy_price: '',
+                sell_price: '',
+                stock_quantity: '',
+                created_at: formData.created_at || stickyDate
+            });
+            setExistingProduct(null);
+            fetchProducts();
+            alert('Stock added successfully!');
+        } else {
+            const result = await res.json();
+            alert('Failed to restock: ' + (result.error || result.message));
+        }
+    };
+
     return (
         <div className="layout-container bg-[#F9FAFB]">
             <Sidebar />
@@ -249,7 +321,10 @@ export default function ProductsPage() {
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                     <div className="pl-12 lg:pl-0">
                         <h1 className="text-2xl font-bold text-[#111827]">Products Inventory</h1>
+                        <h1 className="text-2xl font-bold text-[#111827]">Products Inventory</h1>
                         <p className="text-[#6B7280] text-sm">Manage your product catalog and stock.</p>
+                        {/* Layer 3 Sidebar */}
+                        <ProductDetailsSidebar product={selectedProduct} onClose={() => setSelectedProduct(null)} />
                     </div>
                     <div className="flex flex-col gap-3 w-full md:w-auto">
                         <div className="flex gap-2 items-center flex-wrap justify-end">
@@ -424,6 +499,7 @@ export default function ProductsPage() {
                             <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="space-y-4">
                                 <div>
                                     <label className="block text-sm font-medium text-[#374151] mb-1">Product Name</label>
+                                    <label className="block text-sm font-medium text-[#374151] mb-1">Product Name</label>
                                     <input
                                         className="w-full px-4 py-2 rounded-xl border border-[#D1D5DB] focus:outline-none focus:ring-2 focus:ring-[#0065F4] focus:border-transparent transition-shadow"
                                         required
@@ -431,7 +507,26 @@ export default function ProductsPage() {
                                         onChange={e => setFormData({ ...formData, name: e.target.value })}
                                         placeholder="e.g. Premium Scarf"
                                         autoFocus // Focus on name when modal opens
+                                        disabled={isEditMode && existingProduct} // Can't rename in restock mode effectively? Actually standard edit mode handles this.
                                     />
+
+                                    {/* Layer 2: Smart Restock Info Box */}
+                                    {existingProduct && !isEditMode && (
+                                        <div
+                                            className="mt-2 p-3 bg-blue-50 border border-blue-100 rounded-lg flex items-center justify-between cursor-pointer hover:bg-blue-100 transition-colors group"
+                                            onClick={() => setSelectedProduct(existingProduct)}
+                                        >
+                                            <div className="flex flex-col">
+                                                <span className="text-xs text-blue-600 font-semibold uppercase tracking-wider">Restock Mode Active</span>
+                                                <span className="text-sm text-blue-800 font-medium">
+                                                    Current Stock: <span className="font-bold">{existingProduct.stock_quantity}</span>
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-1 text-blue-600 text-xs font-semibold group-hover:underline">
+                                                View History <ExternalLink size={14} />
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-[#374151] mb-1">Category</label>
