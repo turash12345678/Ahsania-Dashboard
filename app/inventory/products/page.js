@@ -232,20 +232,29 @@ export default function ProductsPage() {
                 method: 'POST',
                 body: formData
             });
-            const result = await res.json();
+
+            // Try to parse JSON, if fails, read text (could be 500 HTML)
+            let result;
+            const contentType = res.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                result = await res.json();
+            } else {
+                const text = await res.text();
+                throw new Error(`Server returned non-JSON response (${res.status}): ${text.slice(0, 100)}...`);
+            }
 
             if (res.ok) {
-                alert(`Imported ${result.count} products successfully!\n${result.errors.length > 0 ? 'Errors:\n' + result.errors.join('\n') : ''}`);
+                alert(`Imported ${result.count || 0} products successfully!\n${(result.errors && result.errors.length > 0) ? 'Errors:\n' + result.errors.join('\n') : ''}`);
                 fetchProducts();
             } else {
-                alert('Import Failed: ' + (result.error || 'Unknown error'));
+                alert('Import Failed: ' + (result.error || result.message || 'Unknown error'));
             }
         } catch (err) {
             console.error(err);
-            alert('Failed to upload file');
+            alert('Failed to upload file: ' + err.message);
         } finally {
             setIsImporting(false);
-            e.target.value = null; // Reset input
+            if (fileInputRef.current) fileInputRef.current.value = ''; // Reset input
         }
     };
 
