@@ -197,6 +197,30 @@ export async function GET(request) {
         // G. Stock Alerts (Only show if stock is 1 or less)
         const lowStockResult = await db.execute("SELECT name, stock_quantity FROM products WHERE stock_quantity <= 1 LIMIT 10");
 
+        // H. Monthly Investment Stats (For products created in this month)
+        // Investment = (Current Stock + Total Sold) * Buy Price
+        // Revenue = Total Sales of these products (Lifetime)
+        // Profit = Total Profit of these products (Lifetime)
+        const investmentResult = await db.execute({
+            sql: `
+                SELECT 
+                    SUM((p.stock_quantity + COALESCE((SELECT SUM(quantity) FROM sale_items WHERE item_id = p.id AND item_type='product'), 0)) * p.buy_price) as total_invest,
+                    
+                    SUM(COALESCE((SELECT SUM(si.price_at_sale * si.quantity) FROM sale_items si WHERE si.item_id = p.id AND si.item_type='product'), 0)) as total_revenue,
+                    
+                    SUM(COALESCE((SELECT SUM((si.price_at_sale - COALESCE(si.buy_price_at_sale, 0)) * si.quantity) FROM sale_items si WHERE si.item_id = p.id AND si.item_type='product'), 0)) as total_profit
+                FROM products p
+                WHERE p.created_at >= ? AND p.created_at <= ?
+            `,
+            args: [startOfMonth, endOfMonth]
+        });
+
+        const investmentStats = {
+            invest: investmentResult.rows[0].total_invest || 0,
+            revenue: investmentResult.rows[0].total_revenue || 0,
+            profit: investmentResult.rows[0].total_profit || 0
+        };
+
         return new Response(JSON.stringify({
             daily: { ...dailyStats, history: dailyHistoryRes.rows },
             monthly: {
@@ -207,7 +231,8 @@ export async function GET(request) {
                 top_products: topProductsResult.rows
             },
             user_performance: userStats,
-            alerts: lowStockResult.rows
+            alerts: lowStockResult.rows,
+            investment: investmentStats
         }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' }

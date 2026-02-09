@@ -130,21 +130,54 @@ export async function POST(request) {
                     }
                 }
 
-                await transaction.execute({
+                const itemResult = await transaction.execute({
                     sql: 'INSERT INTO sale_items (sale_id, item_type, item_id, quantity, price_at_sale, buy_price_at_sale) VALUES (?, ?, ?, ?, ?, ?)',
                     args: [saleId, item.type, item.id, item.quantity, parseFloat(item.price), buyPriceAtSale]
                 });
 
-                // Only update stock for products
+                // [NEW] FIFO Allocation Logic
                 if (item.type === 'product') {
+                    const saleItemId = itemResult.lastInsertRowid;
+
+                    // Update Stock (Standard)
                     const updateResult = await transaction.execute({
                         sql: 'UPDATE products SET stock_quantity = stock_quantity - ? WHERE id = ?',
                         args: [item.quantity, item.id]
                     });
 
-                    // Verify update was successful
                     if (updateResult.rowsAffected === 0) {
                         throw new Error(`Failed to update stock for product ${item.id}`);
+                    }
+
+                    // [NEW] Allocate from Stock Logs
+                    const logsResult = await transaction.execute({
+                        sql: `SELECT id, remaining_quantity FROM stock_logs 
+                               WHERE product_id = ? AND remaining_quantity > 0 
+                               ORDER BY created_at ASC`,
+                        args: [item.id]
+                    });
+
+                    let qtyNeeded = item.quantity;
+                    const logs = logsResult.rows;
+
+                    for (const log of logs) {
+                        if (qtyNeeded <= 0) break;
+
+                        const take = Math.min(log.remaining_quantity, qtyNeeded);
+
+                        // Deduct from log
+                        await transaction.execute({
+                            sql: `UPDATE stock_logs SET remaining_quantity = remaining_quantity - ? WHERE id = ?`,
+                            args: [take, log.id]
+                        });
+
+                        // Link sale item to this batch
+                        await transaction.execute({
+                            sql: `INSERT INTO sale_batch_allocations (sale_item_id, stock_log_id, quantity) VALUES (?, ?, ?)`,
+                            args: [saleItemId, log.id, take]
+                        });
+
+                        qtyNeeded -= take;
                     }
                 }
             }
@@ -196,17 +229,39 @@ export async function DELETE(request) {
         try {
             // 1. Get items to restore stock
             const itemsResult = await transaction.execute({
-                sql: "SELECT item_id, quantity, item_type FROM sale_items WHERE sale_id = ?",
+                sql: "SELECT id, item_id, quantity, item_type FROM sale_items WHERE sale_id = ?",
                 args: [id]
             });
 
-            // 2. Restore Stock
+            // 2. Restore Stock (Products & FIFO Logs)
             if (itemsResult.rows.length > 0) {
                 for (const item of itemsResult.rows) {
                     if (item.item_type === 'product') {
+                        // A. Restore Global Stock
                         await transaction.execute({
                             sql: "UPDATE products SET stock_quantity = stock_quantity + ? WHERE id = ?",
                             args: [item.quantity, item.item_id]
+                        });
+
+                        // B. Restore FIFO Logs (allocations)
+                        // Find allocations for this sale item
+                        const allocationsResult = await transaction.execute({
+                            sql: "SELECT stock_log_id, quantity FROM sale_batch_allocations WHERE sale_item_id = ?",
+                            args: [item.id]
+                        });
+
+                        for (const alloc of allocationsResult.rows) {
+                            // Restore quantity to the specific batch/log
+                            await transaction.execute({
+                                sql: "UPDATE stock_logs SET remaining_quantity = remaining_quantity + ? WHERE id = ?",
+                                args: [alloc.quantity, alloc.stock_log_id]
+                            });
+                        }
+
+                        // C. Delete Allocations
+                        await transaction.execute({
+                            sql: "DELETE FROM sale_batch_allocations WHERE sale_item_id = ?",
+                            args: [item.id]
                         });
                     }
                 }

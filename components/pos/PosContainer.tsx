@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import Fuse from "fuse.js";
 import { Header } from "./Header";
 import { ProductItem } from "./ProductItem";
 import { BottomBar } from "./BottomBar";
@@ -133,8 +134,8 @@ export default function PosContainer() {
 
     const engValue = normalize(value);
 
-    // Allow only numeric input
-    if (/^\d*$/.test(engValue)) {
+    // Allow numeric input (integer or decimal)
+    if (/^\d*\.?\d*$/.test(engValue)) {
       setCustomPrices((prev) => ({ ...prev, [id]: engValue }));
     }
   };
@@ -221,12 +222,13 @@ export default function PosContainer() {
         setSelectedIds(new Set());
         setQuantities({});
         setPriceOptions({});
-        // reset custom prices? Maybe keep them.
+        setCustomPrices({});
       } else {
-        alert("Sale failed");
+        const result = await res.json();
+        alert(`Sale failed: ${result.error || result.message || 'Unknown error'}`);
       }
     } catch (e) {
-      alert("Error processing sale");
+      alert(`Error processing sale: ${e instanceof Error ? e.message : 'Network error'}`);
     }
   };
 
@@ -254,22 +256,21 @@ export default function PosContainer() {
 
               const term = searchTerm.toLowerCase();
 
-              // Helper to check if item matches search
-              const matchesSearch = (p: Product) => {
-                const matchesName = p.productName.toLowerCase().includes(term);
-                const matchesBuyPrice = p.buyingPrice.toString().includes(term);
-                const matchesSellPrice = p.sellingPrice.toString().includes(term);
-                return matchesName || matchesBuyPrice || matchesSellPrice;
+              // Fuse.js Fuzzy Search Configuration
+              const fuseOptions = {
+                keys: ['productName', 'buyingPrice', 'sellingPrice'],
+                threshold: 0.4, // Matches somewhat loosely (0.0 = perfect, 1.0 = match anything)
+                distance: 100,  // Distance for fuzzy match
               };
 
-              // If user is searching, they want to see ONLY search results (User Request Step 234).
-              // "Jokhon search korte jabo... Tokhon sudhu matro jeta search korbo.... oi product gulai show korbe"
+              const fuse = new Fuse(products, fuseOptions);
 
               let displayList: Product[] = [];
 
               if (term) {
-                // Search Mode: Strict filtering, no special pinning at top (unless sorted by default)
-                displayList = products.filter(matchesSearch);
+                // Search Mode: Fuzzy Search using Fuse.js
+                const result = fuse.search(term);
+                displayList = result.map(r => r.item);
               } else {
                 // Default Mode: Pin Selected Items to Top
                 const pinnedItems = products.filter(p => selectedIds.has(p.id));

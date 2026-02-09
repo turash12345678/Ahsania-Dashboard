@@ -152,7 +152,7 @@ export function ProductItem({
                 <input
                   autoFocus
                   type="text"
-                  inputMode="numeric"
+                  inputMode="decimal"
                   value={customPrice}
                   onChange={(e) => onCustomPriceChange(e.target.value)}
                   onClick={(e) => e.stopPropagation()}

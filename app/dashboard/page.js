@@ -23,6 +23,10 @@ export default function Dashboard() {
         user_performance: { revenue: 0, orders: 0 },
         alerts: []
     });
+    // Investment Tracker State
+    const [showInvestment, setShowInvestment] = useState(false);
+    const [investmentData, setInvestmentData] = useState({ invest: 0, revenue: 0, profit: 0 });
+    const [investmentFilter, setInvestmentFilter] = useState('January'); // Default to Jan or calculate from date?
     const [loading, setLoading] = useState(true);
 
     // 1. Fetch User Session (Auth Bypass active)
@@ -35,6 +39,15 @@ export default function Dashboard() {
             })
             .catch(() => router.push('/login'));
     }, []);
+
+    // Sync investment filter with selected date on load/change, IF it's not 'All Time'
+    useEffect(() => {
+        if (investmentFilter !== 'All Time') {
+            const date = new Date(selectedDate);
+            const mName = date.toLocaleString('default', { month: 'long' });
+            setInvestmentFilter(mName);
+        }
+    }, [selectedDate]);
 
     // 2. Fetch Dashboard Data
     useEffect(() => {
@@ -67,6 +80,38 @@ export default function Dashboard() {
 
         fetchData();
     }, [selectedDate, user]);
+
+    // Fetch Investment Data independently
+    useEffect(() => {
+        if (!user) return;
+        const fetchInvestment = async () => {
+            // Determine filter param
+            let param = '';
+            if (investmentFilter === 'All Time') {
+                param = 'filter=all';
+            } else {
+                // Assume 'MonthName' implies current year of selectedDate
+                const [y] = selectedDate.split('-');
+                const mIdx = months.indexOf(investmentFilter);
+                if (mIdx !== -1) {
+                    const mStr = String(mIdx + 1).padStart(2, '0');
+                    param = `filter=${y}-${mStr}`;
+                } else {
+                    // Fallback to current
+                    param = `date=${selectedDate}`;
+                }
+            }
+
+            try {
+                const res = await fetch(`/api/dashboard/investment?${param}`);
+                const json = await res.json();
+                if (!json.error) setInvestmentData(json);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        fetchInvestment();
+    }, [investmentFilter, selectedDate, user]);
 
     // Date Navigation
     const changeDate = (days) => {
@@ -106,6 +151,24 @@ export default function Dashboard() {
     const month = dateObj.toLocaleString('default', { month: 'long' });
     const monthNum = String(mVal).padStart(2, '0');
     const year = yVal;
+
+    const months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+
+    const handleMonthSelect = (monthName) => {
+        const monthIndex = months.indexOf(monthName);
+        if (monthIndex === -1) return;
+
+        const [y, m, d] = selectedDate.split('-').map(Number);
+        const newDate = new Date(y, monthIndex, 1);
+
+        const nextY = newDate.getFullYear();
+        const nextM = String(newDate.getMonth() + 1).padStart(2, '0');
+        const nextD = '01';
+        setSelectedDate(`${nextY}-${nextM}-${nextD}`);
+    };
 
     // Monthly Navigation Handler
     const changeMonth = (offset) => {
@@ -147,7 +210,7 @@ export default function Dashboard() {
         <div className="flex flex-row justify-start items-start min-h-screen bg-[#EEF3FA] relative">
             <Sidebar />
 
-            <main className="flex flex-col items-start p-3 md:p-6 lg:p-8 gap-4 lg:gap-8 w-full max-w-[1600px] overflow-y-auto lg:ml-[260px]">
+            <main className="flex flex-col items-start p-3 md:p-6 lg:p-8 gap-4 lg:gap-8 w-full max-w-[1600px] lg:ml-[260px]">
 
                 {/* --- HEADER --- */}
                 <header className="flex flex-row justify-between items-center w-full p-4 bg-white rounded-[24px] shadow-sm h-[90px]">
@@ -179,10 +242,10 @@ export default function Dashboard() {
                 {/* --- CONTENT GRID --- */}
                 {/* --- CONTENT GRID --- */}
                 {/* Mobile: Column Reverse (Daily Top, Monthly Bottom). Desktop: Row (Monthly Left, Daily Right) */}
-                <div className="flex flex-col-reverse lg:flex-row items-start gap-8 w-full">
+                <div className="flex flex-col-reverse md:flex-row items-start gap-8 w-full">
 
                     {/* LEFT COLUMN (Desktop) / BOTTOM COLUMN (Mobile): MONTHLY REPORT */}
-                    <div className="flex flex-col gap-6 w-full lg:flex-1 lg:min-w-[0px]">
+                    <div className="flex flex-col gap-6 w-full md:flex-1 md:min-w-[0px] no-scrollbar md:pb-4">
 
                         {/* Section Header */}
                         <div className="flex justify-between items-center h-[21px]">
@@ -194,9 +257,9 @@ export default function Dashboard() {
 
                         {/* Monthly Stats Cards */}
                         {/* Mobile: Horizontal Scroll. Desktop: Grid/Flex */}
-                        <div className="flex flex-row gap-3 overflow-x-auto pb-2 no-scrollbar lg:pb-0 lg:overflow-visible min-h-[160px] lg:h-[150px]">
+                        <div className="flex flex-row gap-3 overflow-x-auto pb-2 no-scrollbar md:pb-0 md:overflow-visible min-h-[160px] md:h-[150px]">
                             {/* Net Sale (Green) */}
-                            <div className="min-w-[280px] lg:min-w-0 flex-1 bg-white rounded-[26px] p-6 shadow-sm flex flex-col justify-between">
+                            <div className="min-w-[280px] md:min-w-0 flex-1 bg-white rounded-[26px] p-6 shadow-sm flex flex-col justify-between">
                                 <div className="flex justify-between items-start">
                                     <div className="flex flex-col gap-2">
                                         <span className="text-[#7B7480] font-roboto font-medium text-[16px]">Net Sale</span>
@@ -212,7 +275,7 @@ export default function Dashboard() {
                             </div>
 
                             {/* Net Income */}
-                            <div className="min-w-[280px] lg:min-w-0 flex-1 bg-white rounded-[26px] p-6 shadow-sm flex flex-col justify-between">
+                            <div className="min-w-[280px] md:min-w-0 flex-1 bg-white rounded-[26px] p-6 shadow-sm flex flex-col justify-between">
                                 <div className="flex justify-between items-start">
                                     <div className="flex flex-col gap-2">
                                         <span className="text-[#7B7480] font-roboto font-medium text-[16px]">Net Income</span>
@@ -228,7 +291,7 @@ export default function Dashboard() {
                             </div>
 
                             {/* Orders */}
-                            <div className="min-w-[280px] lg:min-w-0 flex-1 bg-white rounded-[26px] p-6 shadow-sm flex flex-col justify-between">
+                            <div className="min-w-[280px] md:min-w-0 flex-1 bg-white rounded-[26px] p-6 shadow-sm flex flex-col justify-between">
                                 <div className="flex justify-between items-start">
                                     <div className="flex flex-col gap-2">
                                         <span className="text-[#7B7480] font-roboto font-medium text-[16px]">Orders</span>
@@ -261,10 +324,17 @@ export default function Dashboard() {
                         }}>
                             <div className="flex justify-between items-center">
                                 <h2 className="text-[20px] font-bold text-[#0C1829] font-roboto">Monthly Sales</h2>
-                                <div className="bg-[#F2F4F5] rounded-[16px] px-2 py-1 flex items-center gap-2">
-                                    <button onClick={() => changeMonth(-1)} className="p-1 hover:bg-gray-200 rounded-full transition-colors"><ChevronLeft size={16} color="#0C1829" /></button>
-                                    <span className="font-roboto font-bold text-[14px] text-[#0C1829] min-w-[60px] text-center">{month}</span>
-                                    <button onClick={() => changeMonth(1)} className="p-1 hover:bg-gray-200 rounded-full transition-colors"><ChevronRight size={16} color="#0C1829" /></button>
+                                <div className="relative">
+                                    <select
+                                        value={month}
+                                        onChange={(e) => handleMonthSelect(e.target.value)}
+                                        className="appearance-none bg-[#F2F4F5] rounded-[16px] px-4 py-2 pr-8 font-roboto font-bold text-[14px] text-[#0C1829] outline-none cursor-pointer hover:bg-gray-200 transition-colors"
+                                    >
+                                        {months.map(m => (
+                                            <option key={m} value={m}>{m}</option>
+                                        ))}
+                                    </select>
+                                    <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" size={16} color="#0C1829" />
                                 </div>
                             </div>
                             <div className="flex-1 w-full relative">
@@ -272,25 +342,114 @@ export default function Dashboard() {
                             </div>
                         </div>
 
-                        {/* Top Products */}
-                        <div className="bg-white rounded-[32px] p-6 shadow-sm min-h-[282px]">
-                            <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto mb-6">Top Selling Products ({month})</h3>
-                            <TopProducts products={data.monthly.top_products} />
+                        {/* Investment Tracker (Style Updated) */}
+                        <div className="bg-white rounded-[26px] overflow-hidden shadow-sm mb-6">
+                            {/* Header - Clickable for toggle */}
+                            <div
+                                onClick={() => setShowInvestment(!showInvestment)}
+                                className="w-full flex items-center justify-between p-6 bg-white cursor-pointer hover:bg-gray-50 transition-colors"
+                            >
+                                <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto">Investment Tracker</h3>
+
+                                <div className="flex items-center gap-4" onClick={e => e.stopPropagation()}>
+                                    {/* Month/All Dropdown */}
+                                    {showInvestment && (
+                                        <div className="relative">
+                                            <select
+                                                value={investmentFilter}
+                                                onChange={(e) => setInvestmentFilter(e.target.value)}
+                                                className="appearance-none bg-[#F2F4F5] rounded-[16px] px-4 py-2 pr-8 font-roboto font-bold text-[14px] text-[#0C1829] outline-none cursor-pointer hover:bg-gray-200 transition-colors"
+                                            >
+                                                <option value="All Time">All Time</option>
+                                                {months.map(m => (
+                                                    <option key={m} value={m}>{m}</option>
+                                                ))}
+                                            </select>
+                                            <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" size={16} color="#0C1829" />
+                                        </div>
+                                    )}
+
+                                    {/* Toggle Icon */}
+                                    <div className="p-1">
+                                        {showInvestment ? <ChevronLeft className="rotate-90" size={20} /> : <ChevronRight className="rotate-90" size={20} />}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {showInvestment && (
+                                <div className="p-6 pt-0 animate-in slide-in-from-top-2 duration-200">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                        {/* Invest - Card Style */}
+                                        <div className="bg-white rounded-[26px] p-6 border border-gray-100 shadow-sm flex flex-col justify-between min-h-[140px]">
+                                            <div className="flex justify-between items-start">
+                                                <div className="flex flex-col gap-2">
+                                                    <span className="text-[#7B7480] font-roboto font-medium text-[16px]">Net Investment</span>
+                                                    <span className="text-[#0065F4] font-nirmala font-bold text-[36px] flex items-center">
+                                                        <span className="text-[36px] mr-1 font-extrabold">৳</span>{(investmentData.invest || 0).toLocaleString()}
+                                                    </span>
+                                                </div>
+                                                <div className="w-12 h-12 rounded-full bg-[#E6F0FF] flex items-center justify-center text-[#0065F4]">
+                                                    <BadgeDollarSign size={24} />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Sold - Card Style */}
+                                        <div className="bg-white rounded-[26px] p-6 border border-gray-100 shadow-sm flex flex-col justify-between min-h-[140px]">
+                                            <div className="flex justify-between items-start">
+                                                <div className="flex flex-col gap-2">
+                                                    <span className="text-[#7B7480] font-roboto font-medium text-[16px]">Net Sold</span>
+                                                    <span className="text-[#00BC7C] font-nirmala font-bold text-[36px] flex items-center">
+                                                        <span className="text-[36px] mr-1 font-extrabold">৳</span>{(investmentData.revenue || 0).toLocaleString()}
+                                                    </span>
+                                                </div>
+                                                <div className="w-12 h-12 rounded-full bg-[#E6F8F2] flex items-center justify-center text-[#00BC7C]">
+                                                    <CircleDollarSign size={24} />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Profit - Card Style */}
+                                        <div className="bg-white rounded-[26px] p-6 border border-gray-100 shadow-sm flex flex-col justify-between min-h-[140px]">
+                                            <div className="flex justify-between items-start">
+                                                <div className="flex flex-col gap-2">
+                                                    <span className="text-[#7B7480] font-roboto font-medium text-[16px]">Net Profit</span>
+                                                    <span className="text-[#FF9900] font-nirmala font-bold text-[36px] flex items-center">
+                                                        <span className="text-[36px] mr-1 font-extrabold">৳</span>{(investmentData.profit || 0).toLocaleString()}
+                                                    </span>
+                                                </div>
+                                                <div className="w-12 h-12 rounded-full bg-[#FFF5E6] flex items-center justify-center text-[#FF9900]">
+                                                    <ShoppingCart size={24} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
-                        {/* Stock Alerts */}
-                        <div className="bg-white rounded-[32px] p-6 shadow-sm min-h-[282px]">
-                            <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto mb-6">Stock Alert</h3>
-                            <StockAlerts items={data.alerts} />
+                        {/* Compact Row: Top Products & Stock Alerts */}
+                        <div className="flex flex-col xl:flex-row gap-6 w-full">
+                            {/* Top Products */}
+                            <div className="flex-1 bg-white rounded-[32px] p-6 shadow-sm min-h-[282px]">
+                                <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto mb-6">Top Selling Products ({month})</h3>
+                                <TopProducts products={data.monthly.top_products} />
+                            </div>
+
+                            {/* Stock Alerts */}
+                            <div className="flex-1 bg-white rounded-[32px] p-6 shadow-sm min-h-[282px]">
+                                <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto mb-6">Stock Alert</h3>
+                                <StockAlerts items={data.alerts} />
+                            </div>
                         </div>
                     </div>
 
 
                     {/* RIGHT COLUMN (Desktop) / TOP COLUMN (Mobile): DAILY OVERVIEW */}
-                    <div className="flex flex-col gap-6 w-full lg:w-[506px] lg:min-w-[506px]">
+                    <div className="flex flex-col gap-6 w-full md:w-[45%] lg:w-[506px] md:min-w-[320px] lg:min-w-[506px] md:sticky md:top-8 md:h-[calc(100vh-32px)] overflow-hidden">
 
                         {/* Section Header */}
-                        <div className="flex justify-between items-center h-[21px]">
+                        <div className="flex justify-between items-center h-[21px] flex-shrink-0">
                             <h2 className="text-[#7B7480] text-[14px] font-inter font-bold uppercase tracking-wider">DAILY OVERVIEW</h2>
                             <button onClick={handleExportDaily} className="text-[#0067FD] text-[12px] font-bold flex items-center gap-1 hover:underline">
                                 <Download size={14} /> Download Daily CSV
@@ -298,7 +457,7 @@ export default function Dashboard() {
                         </div>
 
                         {/* Daily Mini Stats */}
-                        <div className="flex flex-row gap-3 h-[98px]">
+                        <div className="flex flex-row gap-3 h-[98px] flex-shrink-0">
                             {/* Total Sale */}
                             <div className="flex-1 bg-white rounded-[20px] p-4 shadow-sm flex flex-col justify-center gap-1">
                                 <span className="text-[#7B7480] font-medium text-[12px]">Total Sale</span>
@@ -308,7 +467,7 @@ export default function Dashboard() {
                             </div>
                             {/* Profit */}
                             <div className="flex-1 bg-white rounded-[20px] p-4 shadow-sm flex flex-col justify-center gap-1">
-                                <span className="text-[#7B7480] font-medium text-[12px]">Profit</span>
+                                <span className="text-[#7B7480] font-medium text-[12px]">Total Profit</span>
                                 <span className="text-[#FF5500] font-nirmala font-bold text-[25px] flex items-center">
                                     <span className="font-extrabold mr-1">৳</span>{(data.daily.profit || 0).toLocaleString()}
                                 </span>
@@ -320,14 +479,16 @@ export default function Dashboard() {
                             padding: '24px 14px',
                             gap: '11.93px',
                             width: '100%',
-                            minHeight: '279.68px',
+                            minHeight: '0', // Allow shrinking below content size if needed
                             background: '#FFFFFF',
                             boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.05)',
                             borderRadius: '32px',
                             display: 'flex',
-                            flexDirection: 'column'
+                            flexDirection: 'column',
+                            flex: 1,
+                            overflow: 'hidden'
                         }}>
-                            <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto mb-4">Transactions</h3>
+                            <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto mb-4 flex-shrink-0">Transactions</h3>
                             <SalesHistoryTable
                                 sales={data.daily.history}
                                 canEdit={true}

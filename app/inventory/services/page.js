@@ -88,7 +88,8 @@ export default function ServicesPage() {
             setEditId(null);
             fetchServices();
         } else {
-            alert(`Failed to ${isEditMode ? 'update' : 'add'} service`);
+            const result = await res.json();
+            alert(`Failed to ${isEditMode ? 'update' : 'add'} service: ${result.error || result.message || 'Unknown error'}`);
         }
     };
 

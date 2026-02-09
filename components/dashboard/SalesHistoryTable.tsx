@@ -41,10 +41,11 @@ export function SalesHistoryTable({ sales, onDeleteSale, canEdit = true }: Sales
             if (res.ok) {
                 onDeleteSale(id);
             } else {
-                alert("Failed to delete sale");
+                const errorData = await res.json();
+                alert(`Failed to delete sale: ${errorData.error || errorData.message || 'Unknown error'}`);
             }
         } catch (e) {
-            alert("Error deleting sale");
+            alert(`Error deleting sale: ${e instanceof Error ? e.message : 'Network error'}`);
         } finally {
             setDeletingId(null);
         }
@@ -83,7 +84,7 @@ export function SalesHistoryTable({ sales, onDeleteSale, canEdit = true }: Sales
             </div>
 
             {/* Table Body */}
-            <div className="flex flex-col gap-2 overflow-y-auto max-h-[500px] pr-1 custom-scrollbar">
+            <div className="flex flex-col gap-2 overflow-y-auto flex-1 min-h-0 pr-1 custom-scrollbar">
                 {sales.length > 0 ? (
                     sales.map((sale) => (
                         <div key={sale.id} className="flex flex-col border-b border-[#F2F4F5] last:border-0">

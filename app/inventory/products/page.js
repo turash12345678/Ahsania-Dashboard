@@ -11,12 +11,15 @@ export default function ProductsPage() {
     const [showModal, setShowModal] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [editId, setEditId] = useState(null);
+    const [stickyDate, setStickyDate] = useState(new Date().toISOString().split('T')[0]);
+
     const [formData, setFormData] = useState({
         name: '',
         category_id: '',
         buy_price: '',
         sell_price: '',
-        stock_quantity: ''
+        stock_quantity: '',
+        created_at: stickyDate
     });
 
     const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -88,13 +91,25 @@ export default function ProductsPage() {
         });
 
         if (res.ok) {
+            // Update sticky date from the submitted form
+            if (formData.created_at) setStickyDate(formData.created_at);
+
             setShowModal(false);
-            setFormData({ name: '', category_id: '', buy_price: '', sell_price: '', stock_quantity: '' });
+            // Reset form but keep the sticky date
+            setFormData({
+                name: '',
+                category_id: '',
+                buy_price: '',
+                sell_price: '',
+                stock_quantity: '',
+                created_at: formData.created_at || stickyDate
+            });
             setIsEditMode(false);
             setEditId(null);
             fetchProducts();
         } else {
-            alert(`Failed to ${isEditMode ? 'update' : 'add'} product`);
+            const result = await res.json();
+            alert(`Failed to ${isEditMode ? 'update' : 'add'} product: ${result.error || result.message || 'Unknown error'}\n${result.details ? result.details.join('\n') : ''}`);
         }
     };
 
@@ -104,7 +119,8 @@ export default function ProductsPage() {
             category_id: product.category_id || '',
             buy_price: product.buy_price,
             sell_price: product.sell_price,
-            stock_quantity: product.stock_quantity
+            stock_quantity: product.stock_quantity,
+            created_at: product.created_at ? product.created_at.split('T')[0] : stickyDate
         });
         setEditId(product.id);
         setIsEditMode(true);
@@ -126,7 +142,14 @@ export default function ProductsPage() {
     };
 
     const openAddModal = () => {
-        setFormData({ name: '', category_id: '', buy_price: '', sell_price: '', stock_quantity: '' });
+        setFormData({
+            name: '',
+            category_id: '',
+            buy_price: '',
+            sell_price: '',
+            stock_quantity: '',
+            created_at: stickyDate
+        });
         setIsEditMode(false);
         setEditId(null);
         setShowModal(true);
@@ -352,6 +375,17 @@ export default function ProductsPage() {
                                 <div>
                                     <label className="block text-sm font-medium text-[#374151] mb-1">Stock Quantity</label>
                                     <input type="number" className="w-full px-4 py-2 rounded-xl border border-[#D1D5DB] focus:outline-none focus:ring-2 focus:ring-[#0065F4] transition-shadow" value={formData.stock_quantity} onChange={e => setFormData({ ...formData, stock_quantity: e.target.value })} />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-[#374151] mb-1">Entry Date (Investment Month)</label>
+                                    <input
+                                        type="date"
+                                        className="w-full px-4 py-2 rounded-xl border border-[#D1D5DB] focus:outline-none focus:ring-2 focus:ring-[#0065F4] transition-shadow"
+                                        value={formData.created_at || ''}
+                                        onChange={e => setFormData({ ...formData, created_at: e.target.value })}
+                                    />
+                                    <p className="text-xs text-gray-500 mt-1">Used for Monthly Investment calculations.</p>
                                 </div>
 
                                 <div className="flex gap-3 pt-4">
