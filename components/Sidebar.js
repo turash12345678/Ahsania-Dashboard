@@ -49,6 +49,9 @@ export default function Sidebar() {
                 <div className={styles.logoContainer}>
                     <h2 className={styles.logoTitle}>Ahsania</h2>
                     <p className={styles.logoSubtitle}>Management System</p>
+                    <div className="mt-2 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded text-center uppercase tracking-widest border border-yellow-600 shadow-sm animate-pulse">
+                        DEV MODE
+                    </div>
                 </div>
 
                 <nav className={styles.nav}>
