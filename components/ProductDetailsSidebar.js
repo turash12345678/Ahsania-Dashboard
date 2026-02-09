@@ -5,6 +5,7 @@ import { X, ArrowDownRight, ArrowUpRight } from 'lucide-react';
 
 export default function ProductDetailsSidebar({ product, onClose }) {
     const [logs, setLogs] = useState([]);
+    const [totalEarned, setTotalEarned] = useState(0);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -13,7 +14,18 @@ export default function ProductDetailsSidebar({ product, onClose }) {
             fetch(`/api/inventory/logs?product_id=${product.id}`)
                 .then(res => res.json())
                 .then(data => {
-                    setLogs(Array.isArray(data) ? data : []);
+                    // Handle new composite response
+                    if (data.logs) {
+                        setLogs(data.logs);
+                        setTotalEarned(data.total_earned || 0);
+                    } else if (Array.isArray(data)) {
+                        // Fallback for old API (though we updated it)
+                        setLogs(data);
+                        setTotalEarned(0);
+                    } else {
+                        setLogs([]);
+                        setTotalEarned(0);
+                    }
                     setLoading(false);
                 })
                 .catch(err => {
@@ -27,10 +39,6 @@ export default function ProductDetailsSidebar({ product, onClose }) {
 
     // Calculate Financials
     const totalInvestment = logs.reduce((sum, log) => sum + (log.buy_price * log.quantity), 0);
-    // User Terminology: "Profit" = Total Sales
-    const totalSales = logs.reduce((sum, log) => sum + ((log.sell_price || product.sell_price) * log.quantity), 0);
-    // User Terminology: "Revenue" = Net Profit (Sales - Invest)
-    const netIncome = totalSales - totalInvestment;
 
     return (
         <div className="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-[70] transform transition-transform duration-300 ease-out border-l border-gray-100 flex flex-col">
@@ -92,21 +100,15 @@ export default function ProductDetailsSidebar({ product, onClose }) {
                 </div>
 
                 {/* Financial Overview Cards */}
-                <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-2 gap-4">
                     <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
-                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Invest</p>
+                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Total Invest</p>
                         <p className="text-2xl font-bold text-gray-900">৳ {totalInvestment.toLocaleString()}</p>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="p-4 bg-emerald-50/50 rounded-xl border border-emerald-100">
-                            <p className="text-xs font-medium text-emerald-600 uppercase tracking-wider mb-1">Profit</p>
-                            <p className="text-lg font-bold text-emerald-700">৳ {totalSales.toLocaleString()}</p>
-                        </div>
-                        <div className="p-4 bg-blue-50/50 rounded-xl border border-blue-100">
-                            <p className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-1">Revenue</p>
-                            <p className="text-lg font-bold text-blue-700">৳ {netIncome.toLocaleString()}</p>
-                        </div>
+                    <div className="p-4 bg-emerald-50/50 rounded-xl border border-emerald-100">
+                        <p className="text-xs font-medium text-emerald-600 uppercase tracking-wider mb-1">Total Earned</p>
+                        <p className="text-2xl font-bold text-emerald-700">৳ {totalEarned.toLocaleString()}</p>
                     </div>
                 </div>
 

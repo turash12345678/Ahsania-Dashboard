@@ -12,12 +12,23 @@ export async function GET(request) {
         }
 
         // Fetch logs for the product
-        const result = await db.execute({
+        const logsResult = await db.execute({
             sql: `SELECT * FROM stock_logs WHERE product_id = ? ORDER BY created_at DESC`,
             args: [productId]
         });
 
-        return new Response(JSON.stringify(result.rows), {
+        // Fetch Total Earned from Sale Items
+        const salesResult = await db.execute({
+            sql: `SELECT SUM(quantity * unit_price) as total_earned FROM sale_items WHERE item_id = ? AND item_type = 'product'`,
+            args: [productId]
+        });
+
+        const totalEarned = salesResult.rows[0]?.total_earned || 0;
+
+        return new Response(JSON.stringify({
+            logs: logsResult.rows,
+            total_earned: totalEarned
+        }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' }
         });
