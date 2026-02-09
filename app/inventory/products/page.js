@@ -228,7 +228,7 @@ export default function ProductsPage() {
         formData.append('file', file);
 
         try {
-            const res = await fetch('/api/inventory/import', {
+            const res = await fetch('/api/inventory/bulk-import', {
                 method: 'POST',
                 body: formData
             });
