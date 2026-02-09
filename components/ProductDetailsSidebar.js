@@ -27,10 +27,10 @@ export default function ProductDetailsSidebar({ product, onClose }) {
 
     // Calculate Financials
     const totalInvestment = logs.reduce((sum, log) => sum + (log.buy_price * log.quantity), 0);
-    // Potential Revenue based on current sell_price of each batch
-    // Note: If sell_price was 0 in old logs (before update), we might need fallback
-    const totalRevenue = logs.reduce((sum, log) => sum + ((log.sell_price || product.sell_price) * log.quantity), 0);
-    const totalProfit = totalRevenue - totalInvestment;
+    // User Terminology: "Profit" = Total Sales
+    const totalSales = logs.reduce((sum, log) => sum + ((log.sell_price || product.sell_price) * log.quantity), 0);
+    // User Terminology: "Revenue" = Net Profit (Sales - Invest)
+    const netIncome = totalSales - totalInvestment;
 
     return (
         <div className="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-[70] transform transition-transform duration-300 ease-out border-l border-gray-100 flex flex-col">
@@ -81,8 +81,8 @@ export default function ProductDetailsSidebar({ product, onClose }) {
                                                 <div className="text-[10px] text-gray-400 uppercase tracking-wide">{log.note || 'Restock'}</div>
                                             </td>
                                             <td className="px-4 py-3 text-right font-medium text-gray-900">{log.quantity}</td>
-                                            <td className="px-4 py-3 text-right text-gray-600">৳{log.buy_price}</td>
-                                            <td className="px-4 py-3 text-right text-emerald-600">৳{log.sell_price || '-'}</td>
+                                            <td className="px-4 py-3 text-right text-gray-600">৳ {log.buy_price}</td>
+                                            <td className="px-4 py-3 text-right text-emerald-600">৳ {log.sell_price || '-'}</td>
                                         </tr>
                                     ))
                                 )}
@@ -94,18 +94,18 @@ export default function ProductDetailsSidebar({ product, onClose }) {
                 {/* Financial Overview Cards */}
                 <div className="grid grid-cols-1 gap-4">
                     <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
-                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Total Investment</p>
-                        <p className="text-2xl font-bold text-gray-900">৳{totalInvestment.toLocaleString()}</p>
+                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Invest</p>
+                        <p className="text-2xl font-bold text-gray-900">৳ {totalInvestment.toLocaleString()}</p>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="p-4 bg-emerald-50/50 rounded-xl border border-emerald-100">
-                            <p className="text-xs font-medium text-emerald-600 uppercase tracking-wider mb-1">Est. Revenue</p>
-                            <p className="text-lg font-bold text-emerald-700">৳{totalRevenue.toLocaleString()}</p>
+                            <p className="text-xs font-medium text-emerald-600 uppercase tracking-wider mb-1">Profit</p>
+                            <p className="text-lg font-bold text-emerald-700">৳ {totalSales.toLocaleString()}</p>
                         </div>
                         <div className="p-4 bg-blue-50/50 rounded-xl border border-blue-100">
-                            <p className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-1">Est. Profit</p>
-                            <p className="text-lg font-bold text-blue-700">৳{totalProfit.toLocaleString()}</p>
+                            <p className="text-xs font-medium text-blue-600 uppercase tracking-wider mb-1">Revenue</p>
+                            <p className="text-lg font-bold text-blue-700">৳ {netIncome.toLocaleString()}</p>
                         </div>
                     </div>
                 </div>
