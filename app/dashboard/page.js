@@ -26,8 +26,10 @@ export default function Dashboard() {
     // Investment Tracker State
     const [showInvestment, setShowInvestment] = useState(false);
     const [investmentData, setInvestmentData] = useState({ invest: 0, revenue: 0, profit: 0 });
-    const [investmentFilter, setInvestmentFilter] = useState('All Time'); // Default to All Time
-    const [investmentManuallySet, setInvestmentManuallySet] = useState(false); // Track if user manually picked
+    const [investmentFilter, setInvestmentFilter] = useState(
+        () => new Date().toLocaleString('default', { month: 'long' }) // Default: current month
+    );
+    const [investmentManuallySet, setInvestmentManuallySet] = useState(false);
     const [loading, setLoading] = useState(true);
 
     // Month names — declared here so useEffect and render can both access it
@@ -49,7 +51,7 @@ export default function Dashboard() {
 
     // Sync investment filter with selected date ONLY if user hasn't manually changed it
     useEffect(() => {
-        if (investmentFilter !== 'All Time' && !investmentManuallySet) {
+        if (!investmentManuallySet) {
             const [yVal, mVal] = selectedDate.split('-').map(Number);
             const mName = new Date(yVal, mVal - 1, 1).toLocaleString('default', { month: 'long' });
             setInvestmentFilter(mName);
@@ -366,7 +368,7 @@ export default function Dashboard() {
                                                 }}
                                                 className="appearance-none bg-[#F2F4F5] rounded-[16px] px-4 py-2 pr-8 font-roboto font-bold text-[14px] text-[#0C1829] outline-none cursor-pointer hover:bg-gray-200 transition-colors"
                                             >
-                                                <option value="All Time">All Time</option>
+                                                <option value="All Time">All Month</option>
                                                 {months.map(m => (
                                                     <option key={m} value={m}>{m}</option>
                                                 ))}
