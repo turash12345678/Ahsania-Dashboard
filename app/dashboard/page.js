@@ -27,9 +27,8 @@ export default function Dashboard() {
     const [showInvestment, setShowInvestment] = useState(false);
     const [investmentData, setInvestmentData] = useState({ invest: 0, revenue: 0, profit: 0 });
     const [investmentFilter, setInvestmentFilter] = useState(
-        () => new Date().toLocaleString('default', { month: 'long' }) // Default: current month
+        () => new Date().toLocaleString('default', { month: 'long' })
     );
-    const [investmentManuallySet, setInvestmentManuallySet] = useState(false);
     const [loading, setLoading] = useState(true);
 
     // Month names — declared here so useEffect and render can both access it
@@ -49,13 +48,11 @@ export default function Dashboard() {
             .catch(() => router.push('/login'));
     }, []);
 
-    // Sync investment filter with selected date ONLY if user hasn't manually changed it
+    // Sync investment filter with selected date whenever date changes
     useEffect(() => {
-        if (!investmentManuallySet) {
-            const [yVal, mVal] = selectedDate.split('-').map(Number);
-            const mName = new Date(yVal, mVal - 1, 1).toLocaleString('default', { month: 'long' });
-            setInvestmentFilter(mName);
-        }
+        const [yVal, mVal] = selectedDate.split('-').map(Number);
+        const mName = new Date(yVal, mVal - 1, 1).toLocaleString('default', { month: 'long' });
+        setInvestmentFilter(mName);
     }, [selectedDate]);
 
     // 2. Fetch Dashboard Data
@@ -362,10 +359,7 @@ export default function Dashboard() {
                                         <div className="relative">
                                             <select
                                                 value={investmentFilter}
-                                                onChange={(e) => {
-                                                    setInvestmentFilter(e.target.value);
-                                                    setInvestmentManuallySet(true);
-                                                }}
+                                                onChange={(e) => setInvestmentFilter(e.target.value)}
                                                 className="appearance-none bg-[#F2F4F5] rounded-[16px] px-4 py-2 pr-8 font-roboto font-bold text-[14px] text-[#0C1829] outline-none cursor-pointer hover:bg-gray-200 transition-colors"
                                             >
                                                 <option value="All Time">All Month</option>
