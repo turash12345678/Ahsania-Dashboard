@@ -5,11 +5,7 @@ export async function GET(request) {
         const { searchParams } = new URL(request.url);
         const filter = searchParams.get('filter') || 'all';
 
-        // DEBUG: log exactly what we receive
-        console.log('[Investment API] filter received:', filter);
-
         const isMonthFilter = filter !== 'all' && filter.match(/^\d{4}-\d{2}$/);
-        console.log('[Investment API] isMonthFilter:', isMonthFilter, '| filter value:', filter);
 
         // 1. Total Investment
         const investResult = await db.execute(
@@ -25,8 +21,6 @@ export async function GET(request) {
                     args: []
                 }
         );
-
-        console.log('[Investment API] total_invest raw:', investResult.rows[0]?.total_invest);
 
         // 2. Revenue & Profit
         const salesResult = await db.execute(
@@ -57,7 +51,6 @@ export async function GET(request) {
             revenue: salesResult.rows[0]?.total_revenue || 0,
             profit: salesResult.rows[0]?.total_profit || 0
         };
-        console.log('[Investment API] response:', resp);
 
         return new Response(JSON.stringify(resp), {
             status: 200,
