@@ -2,6 +2,18 @@ import db from '@/lib/db';
 
 export const runtime = 'nodejs';
 
+// Normalize any date input to ISO UTC string
+// If given 'YYYY-MM-DD', treat it as noon UTC of that day (avoids timezone shift)
+// If given an ISO string already, parse and re-format
+function normalizeDate(dateInput) {
+    if (!dateInput) return new Date().toISOString();
+    // If it's already a full ISO string (has 'T'), return as-is
+    if (typeof dateInput === 'string' && dateInput.includes('T')) return dateInput;
+    // Otherwise it's YYYY-MM-DD — use noon UTC to safely stay within the intended date
+    const [y, m, d] = dateInput.split('-').map(Number);
+    return new Date(Date.UTC(y, m - 1, d, 12, 0, 0, 0)).toISOString();
+}
+
 export async function POST(request) {
     try {
         const body = await request.json();
@@ -43,7 +55,7 @@ export async function POST(request) {
         await db.execute({
             sql: `INSERT INTO stock_logs (product_id, quantity, remaining_quantity, buy_price, sell_price, note, created_at)
                   VALUES (?, ?, ?, ?, ?, 'Restock', ?)`,
-            args: [product_id, qty, qty, bPrice, sPrice, created_at || new Date().toISOString()]
+            args: [product_id, qty, qty, bPrice, sPrice, normalizeDate(created_at)]
         });
 
         return new Response(JSON.stringify({

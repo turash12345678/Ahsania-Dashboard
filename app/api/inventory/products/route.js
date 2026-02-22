@@ -1,6 +1,15 @@
 import db from '@/lib/db';
 import { validateProduct, sanitizeInput } from '@/lib/validation';
 
+// Normalize any date input to ISO UTC string
+function normalizeDate(dateInput) {
+    if (!dateInput) return new Date().toISOString();
+    if (typeof dateInput === 'string' && dateInput.includes('T')) return dateInput;
+    // YYYY-MM-DD — use noon UTC to safely stay within the intended calendar date
+    const [y, m, d] = dateInput.split('-').map(Number);
+    return new Date(Date.UTC(y, m - 1, d, 12, 0, 0, 0)).toISOString();
+}
+
 export async function GET(request) {
     try {
         const result = await db.execute(`
@@ -117,7 +126,7 @@ export async function POST(request) {
             await db.execute({
                 sql: `INSERT INTO stock_logs (product_id, quantity, remaining_quantity, buy_price, note, created_at)
                       VALUES (?, ?, ?, ?, 'Initial Stock', ?)`,
-                args: [id, initialQty, initialQty, parseFloat(buy_price), created_at || new Date().toISOString()]
+                args: [id, initialQty, initialQty, parseFloat(buy_price), normalizeDate(created_at)]
             });
         }
 
