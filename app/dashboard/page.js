@@ -212,7 +212,7 @@ export default function Dashboard() {
         <div className="flex flex-row justify-start items-start min-h-screen bg-[#EEF3FA] relative">
             <Sidebar />
 
-            <main className="flex flex-col items-start p-3 md:p-6 lg:p-8 gap-4 lg:gap-8 w-full max-w-[1600px] lg:ml-[260px]">
+            <main className="flex flex-col items-start p-3 md:p-6 lg:p-8 gap-4 lg:gap-8 w-full lg:ml-[260px]">
 
                 {/* --- HEADER --- */}
                 <header className="flex flex-row justify-between items-center w-full p-4 bg-white rounded-[24px] shadow-sm h-[90px]">
@@ -448,7 +448,7 @@ export default function Dashboard() {
 
 
                     {/* RIGHT COLUMN (Desktop) / TOP COLUMN (Mobile): DAILY OVERVIEW */}
-                    <div className="flex flex-col gap-6 w-full md:w-[45%] lg:w-[506px] md:min-w-[320px] lg:min-w-[506px] md:sticky md:top-8 md:h-[calc(100vh-32px)] overflow-hidden">
+                    <div className="flex flex-col gap-6 w-full md:w-[40%] xl:w-[450px] 2xl:w-[550px] md:sticky md:top-8 md:h-[calc(100vh-32px)] overflow-hidden">
 
                         {/* Section Header */}
                         <div className="flex justify-between items-center h-[21px] flex-shrink-0">
