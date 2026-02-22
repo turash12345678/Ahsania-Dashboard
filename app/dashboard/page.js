@@ -273,7 +273,7 @@ export default function Dashboard() {
                                         <CircleDollarSign size={24} />
                                     </div>
                                 </div>
-                                <span className="text-[#7B7480] text-[14px] font-medium">Profit</span>
+                                <span className="text-[#7B7480] text-[14px] font-medium">Revenue</span>
                             </div>
 
                             {/* Net Income */}
@@ -289,7 +289,7 @@ export default function Dashboard() {
                                         <BadgeDollarSign size={24} />
                                     </div>
                                 </div>
-                                <span className="text-[#7B7480] text-[14px] font-medium">Revenue</span>
+                                <span className="text-[#7B7480] text-[14px] font-medium">Profit</span>
                             </div>
 
                             {/* Orders */}
