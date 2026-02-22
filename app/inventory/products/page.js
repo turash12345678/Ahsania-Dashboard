@@ -231,7 +231,9 @@ export default function ProductsPage() {
         if (res.ok) {
             fetchProducts();
         } else {
-            alert("Failed to delete product");
+            const data = await res.json().catch(() => ({}));
+            const reason = data.message || data.error || 'Failed to delete product';
+            alert(`❌ Cannot Delete\n\n${reason}`);
         }
     };
 
