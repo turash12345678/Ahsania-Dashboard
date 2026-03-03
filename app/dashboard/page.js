@@ -350,7 +350,18 @@ export default function Dashboard() {
                                 <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto flex items-center gap-2">
                                     <Activity className="text-blue-500" size={20} /> Revenue Velocity
                                 </h3>
-                                <span className="text-[12px] font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded-md">Current Month Batch</span>
+                                <div className="relative">
+                                    <select
+                                        value={month}
+                                        onChange={(e) => handleMonthSelect(e.target.value)}
+                                        className="appearance-none bg-[#F2F4F5] rounded-[16px] px-4 py-1.5 pr-8 font-roboto font-bold text-[13px] text-[#0C1829] outline-none cursor-pointer hover:bg-gray-200 transition-colors"
+                                    >
+                                        {months.map(m => (
+                                            <option key={m} value={m}>{m}</option>
+                                        ))}
+                                    </select>
+                                    <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" size={14} color="#0C1829" />
+                                </div>
                             </div>
 
                             <div className="flex flex-col gap-2 relative">
@@ -509,9 +520,18 @@ export default function Dashboard() {
                                     <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto flex items-center gap-2">
                                         <Timer className="text-purple-500" size={20} /> Dead Stock Tracker
                                     </h3>
-                                    <span className="text-[12px] font-medium text-gray-400 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
-                                        No sales in 30+ days
-                                    </span>
+                                    <div className="relative">
+                                        <select
+                                            value={month}
+                                            onChange={(e) => handleMonthSelect(e.target.value)}
+                                            className="appearance-none bg-[#F2F4F5] rounded-[16px] px-4 py-1.5 pr-8 font-roboto font-bold text-[13px] text-[#0C1829] outline-none cursor-pointer hover:bg-gray-200 transition-colors"
+                                        >
+                                            {months.map(m => (
+                                                <option key={m} value={m}>{m}</option>
+                                            ))}
+                                        </select>
+                                        <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" size={14} color="#0C1829" />
+                                    </div>
                                 </div>
                                 <DeadStock items={data.monthly?.dead_stock || []} />
                             </div>

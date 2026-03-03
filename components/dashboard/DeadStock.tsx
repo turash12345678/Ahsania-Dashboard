@@ -52,7 +52,7 @@ export function DeadStock({ items }: { items: DeadStockItem[] }) {
                             <span className="text-green-600 text-xl font-bold">✓</span>
                         </div>
                         <span className="text-green-700 font-medium text-sm">Excellent! No dead stock detected.</span>
-                        <span className="text-gray-400 text-xs text-center">Every product has had at least one sale in the last 30 days.</span>
+                        <span className="text-gray-400 text-xs text-center">Every product has had at least one sale in the selected period.</span>
                     </div>
                 )}
             </div>

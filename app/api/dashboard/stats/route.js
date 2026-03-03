@@ -225,22 +225,23 @@ export async function GET(request) {
             profit: investmentResult.rows[0].total_profit || 0
         };
 
-        // I. Dead Stock Detection (No sales in 30 days)
+        // I. Dead Stock Detection (No sales in selected month)
         const deadStockResult = await db.execute({
             sql: `
                 SELECT 
                     id, name, stock_quantity, buy_price, 
                     (stock_quantity * buy_price) as blocked_capital
-                FROM products 
-                WHERE id NOT IN (
-                    SELECT DISTINCT item_id FROM sale_items 
-                    JOIN sales ON sale_items.sale_id = sales.id 
-                    WHERE sales.sale_date >= date('now', '-30 days') AND sale_items.item_type = 'product'
+                FROM products p
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM sale_items si 
+                    JOIN sales s ON si.sale_id = s.id 
+                    WHERE s.sale_date >= ? AND s.sale_date <= ? AND si.item_id = p.id AND si.item_type = 'product'
                 ) 
-                AND stock_quantity > 0
+                AND p.stock_quantity > 0
                 ORDER BY blocked_capital DESC
                 LIMIT 15
-            `
+            `,
+            args: [startOfMonth, endOfMonth]
         });
 
         // J. Revenue Tracker (Expected vs Actual for Current Month Procurements)
