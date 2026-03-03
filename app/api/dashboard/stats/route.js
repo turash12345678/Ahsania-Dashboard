@@ -184,7 +184,11 @@ export async function GET(request) {
         // F. Top Products (Monthly)
         const topProductsResult = await db.execute({
             sql: `
-                SELECT products.name, SUM(sale_items.quantity) as sold_qty 
+                SELECT 
+                    products.name, 
+                    SUM(sale_items.quantity) as sold_qty,
+                    SUM(sale_items.price_at_sale * sale_items.quantity) as revenue,
+                    SUM((sale_items.price_at_sale - COALESCE(sale_items.buy_price_at_sale, 0)) * sale_items.quantity) as profit
                 FROM sale_items
                 JOIN products ON sale_items.item_id = products.id
                 JOIN sales ON sale_items.sale_id = sales.id
@@ -194,8 +198,8 @@ export async function GET(request) {
             args: [startOfMonth, endOfMonth]
         });
 
-        // G. Stock Alerts (Only show if stock is 1 or less)
-        const lowStockResult = await db.execute("SELECT name, stock_quantity FROM products WHERE stock_quantity <= 1 LIMIT 10");
+        // G. Stock Alerts (Only show if stock is 5 or less)
+        const lowStockResult = await db.execute("SELECT id, name, stock_quantity, buy_price, sell_price FROM products WHERE stock_quantity <= 5 ORDER BY stock_quantity ASC LIMIT 15");
 
         // H. Monthly Investment Stats (For products created in this month)
         // Investment = (Current Stock + Total Sold) * Buy Price
