@@ -394,6 +394,10 @@ export default function Dashboard() {
                                                     <BadgeDollarSign size={24} />
                                                 </div>
                                             </div>
+                                            <div className="mt-4 pt-3 border-t border-gray-50 flex justify-between items-center">
+                                                <span className="text-[13px] text-[#7B7480] font-medium">Active Capital</span>
+                                                <span className="text-[14px] font-bold text-[#0C1829]">৳{((investmentData.invest || 0) - (investmentData.revenue || 0)).toLocaleString()}</span>
+                                            </div>
                                         </div>
 
                                         {/* Sold - Card Style */}
@@ -409,11 +413,15 @@ export default function Dashboard() {
                                                     <CircleDollarSign size={24} />
                                                 </div>
                                             </div>
+                                            <div className="mt-4 pt-3 border-t border-gray-50 flex justify-between items-center">
+                                                <span className="text-[13px] text-[#7B7480] font-medium">Recovery Rate</span>
+                                                <span className="text-[14px] font-bold text-[#0C1829]">{investmentData.invest > 0 ? (((investmentData.revenue || 0) / investmentData.invest) * 100).toFixed(2) : 0}%</span>
+                                            </div>
                                         </div>
 
                                         {/* Profit - Card Style */}
                                         <div className="bg-white rounded-[26px] p-6 border border-gray-100 shadow-sm flex flex-col justify-between min-h-[140px]">
-                                            <div className="flex justify-between items-start">
+                                            <div className="flex justify-between items-start mb-2">
                                                 <div className="flex flex-col gap-2">
                                                     <span className="text-[#7B7480] font-roboto font-medium text-[16px]">Net Profit</span>
                                                     <span className="text-[#FF9900] font-nirmala font-bold text-[36px] flex items-center">
@@ -422,6 +430,16 @@ export default function Dashboard() {
                                                 </div>
                                                 <div className="w-12 h-12 rounded-full bg-[#FFF5E6] flex items-center justify-center text-[#FF9900]">
                                                     <ShoppingCart size={24} />
+                                                </div>
+                                            </div>
+                                            <div className="mt-auto pt-3 border-t border-gray-50 flex justify-between items-center">
+                                                <div className="flex flex-col">
+                                                    <span className="text-[11px] text-[#7B7480] uppercase tracking-wider font-semibold">Margin</span>
+                                                    <span className="text-[14px] font-bold text-[#0C1829]">{investmentData.revenue > 0 ? (((investmentData.profit || 0) / investmentData.revenue) * 100).toFixed(2) : 0}%</span>
+                                                </div>
+                                                <div className="flex flex-col items-end">
+                                                    <span className="text-[11px] text-[#7B7480] uppercase tracking-wider font-semibold">ROI</span>
+                                                    <span className="text-[14px] font-bold text-[#0065F4]">{investmentData.invest > 0 ? (((investmentData.profit || 0) / investmentData.invest) * 100).toFixed(2) : 0}%</span>
                                                 </div>
                                             </div>
                                         </div>
