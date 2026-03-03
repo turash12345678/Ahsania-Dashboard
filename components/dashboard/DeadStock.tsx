@@ -1,4 +1,4 @@
-import { AlertCircle, ArrowRightRight, Tag } from "lucide-react";
+import { AlertCircle, Tag } from "lucide-react";
 import Link from "next/link";
 
 interface DeadStockItem {

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
-import SalesGraph from '@/components/SalesGraph';
+import { SalesGraph } from '@/components/dashboard/SalesGraph';
 import { TopProducts } from '@/components/dashboard/TopProducts';
 import { StockAlerts } from '@/components/dashboard/StockAlerts';
 import { DeadStock } from '@/components/dashboard/DeadStock';
@@ -344,242 +344,240 @@ export default function Dashboard() {
                             </div>
                         </div>
 
-                    </div>
-
-                    {/* Revenue Progress Tracker (Expected vs Actual) */}
-                    <div className="bg-white rounded-[26px] p-6 shadow-sm mb-6 flex flex-col gap-4">
-                        <div className="flex justify-between items-center mb-2">
-                            <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto flex items-center gap-2">
-                                <Activity className="text-blue-500" size={20} /> Revenue Velocity
-                            </h3>
-                            <span className="text-[12px] font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded-md">Current Month Batch</span>
-                        </div>
-
-                        <div className="flex flex-col gap-2 relative">
-                            <div className="flex justify-between items-end mb-1">
-                                <div className="flex flex-col">
-                                    <span className="text-[13px] text-gray-400 font-semibold uppercase tracking-wider">Actual Recovery</span>
-                                    <span className="text-[22px] font-bold text-blue-600">৳{(data.monthly?.revenue_progress?.actual || 0).toLocaleString()}</span>
-                                </div>
-                                <div className="flex flex-col items-end">
-                                    <span className="text-[13px] text-gray-400 font-semibold uppercase tracking-wider">Expected Potential</span>
-                                    <span className="text-[16px] font-bold text-gray-600">৳{(data.monthly?.revenue_progress?.expected || 0).toLocaleString()}</span>
-                                </div>
-                            </div>
-
-                            {/* Progress Bar */}
-                            <div className="h-4 w-full bg-gray-100 rounded-full overflow-hidden relative">
-                                <div
-                                    className="absolute top-0 left-0 h-full bg-blue-500 rounded-full transition-all duration-1000 ease-in-out"
-                                    style={{
-                                        width: `${data.monthly?.revenue_progress?.expected > 0 ? Math.min((data.monthly.revenue_progress.actual / data.monthly.revenue_progress.expected) * 100, 100) : 0}%`
-                                    }}
-                                />
-                            </div>
-
-                            <span className="text-[12px] text-gray-500 font-medium text-right mt-1">
-                                {data.monthly?.revenue_progress?.expected > 0
-                                    ? `${((data.monthly.revenue_progress.actual / data.monthly.revenue_progress.expected) * 100).toFixed(1)}% of potential revenue realized`
-                                    : 'No investments made this month'}
-                            </span>
-                        </div>
-                    </div>
-
-                    {/* Investment Tracker (Style Updated) */}
-                    <div className="bg-white rounded-[26px] overflow-hidden shadow-sm mb-6">
-                        {/* Header - Clickable for toggle */}
-                        <div
-                            onClick={() => setShowInvestment(!showInvestment)}
-                            className="w-full flex items-center justify-between p-6 bg-white cursor-pointer hover:bg-gray-50 transition-colors"
-                        >
-                            <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto">Investment Tracker</h3>
-
-                            <div className="flex items-center gap-4" onClick={e => e.stopPropagation()}>
-                                {/* Month/All Dropdown */}
-                                {showInvestment && (
-                                    <div className="relative">
-                                        <select
-                                            value={investmentFilter}
-                                            onChange={(e) => setInvestmentFilter(e.target.value)}
-                                            className="appearance-none bg-[#F2F4F5] rounded-[16px] px-4 py-2 pr-8 font-roboto font-bold text-[14px] text-[#0C1829] outline-none cursor-pointer hover:bg-gray-200 transition-colors"
-                                        >
-                                            <option value="All Time">All Month</option>
-                                            {months.map(m => (
-                                                <option key={m} value={m}>{m}</option>
-                                            ))}
-                                        </select>
-                                        <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" size={16} color="#0C1829" />
-                                    </div>
-                                )}
-
-                                {/* Toggle Icon */}
-                                <div className="p-1">
-                                    {showInvestment ? <ChevronLeft className="rotate-90" size={20} /> : <ChevronRight className="rotate-90" size={20} />}
-                                </div>
-                            </div>
-                        </div>
-
-                        {showInvestment && (
-                            <div className="p-6 pt-0 animate-in slide-in-from-top-2 duration-200">
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    {/* Invest - Card Style */}
-                                    <div className="bg-white rounded-[26px] p-6 border border-gray-100 shadow-sm flex flex-col justify-between min-h-[140px]">
-                                        <div className="flex justify-between items-start">
-                                            <div className="flex flex-col gap-2">
-                                                <span className="text-[#7B7480] font-roboto font-medium text-[16px]">Net Investment</span>
-                                                <span className="text-[#0065F4] font-nirmala font-bold text-[36px] flex items-center">
-                                                    <span className="text-[36px] mr-1 font-extrabold">৳</span>{(investmentData.invest || 0).toLocaleString()}
-                                                </span>
-                                            </div>
-                                            <div className="w-12 h-12 rounded-full bg-[#E6F0FF] flex items-center justify-center text-[#0065F4]">
-                                                <BadgeDollarSign size={24} />
-                                            </div>
-                                        </div>
-                                        <div className="mt-4 pt-3 border-t border-gray-50 flex justify-between items-center">
-                                            <span className="text-[13px] text-[#7B7480] font-medium">Active Capital</span>
-                                            <span className="text-[14px] font-bold text-[#0C1829]">৳{((investmentData.invest || 0) - (investmentData.revenue || 0)).toLocaleString()}</span>
-                                        </div>
-                                    </div>
-
-                                    {/* Sold - Card Style */}
-                                    <div className="bg-white rounded-[26px] p-6 border border-gray-100 shadow-sm flex flex-col justify-between min-h-[140px]">
-                                        <div className="flex justify-between items-start">
-                                            <div className="flex flex-col gap-2">
-                                                <span className="text-[#7B7480] font-roboto font-medium text-[16px]">Net Sold</span>
-                                                <span className="text-[#00BC7C] font-nirmala font-bold text-[36px] flex items-center">
-                                                    <span className="text-[36px] mr-1 font-extrabold">৳</span>{(investmentData.revenue || 0).toLocaleString()}
-                                                </span>
-                                            </div>
-                                            <div className="w-12 h-12 rounded-full bg-[#E6F8F2] flex items-center justify-center text-[#00BC7C]">
-                                                <CircleDollarSign size={24} />
-                                            </div>
-                                        </div>
-                                        <div className="mt-4 pt-3 border-t border-gray-50 flex justify-between items-center">
-                                            <span className="text-[13px] text-[#7B7480] font-medium">Recovery Rate</span>
-                                            <span className="text-[14px] font-bold text-[#0C1829]">{investmentData.invest > 0 ? (((investmentData.revenue || 0) / investmentData.invest) * 100).toFixed(2) : 0}%</span>
-                                        </div>
-                                    </div>
-
-                                    {/* Profit - Card Style */}
-                                    <div className="bg-white rounded-[26px] p-6 border border-gray-100 shadow-sm flex flex-col justify-between min-h-[140px]">
-                                        <div className="flex justify-between items-start mb-2">
-                                            <div className="flex flex-col gap-2">
-                                                <span className="text-[#7B7480] font-roboto font-medium text-[16px]">Net Profit</span>
-                                                <span className="text-[#FF9900] font-nirmala font-bold text-[36px] flex items-center">
-                                                    <span className="text-[36px] mr-1 font-extrabold">৳</span>{(investmentData.profit || 0).toLocaleString()}
-                                                </span>
-                                            </div>
-                                            <div className="w-12 h-12 rounded-full bg-[#FFF5E6] flex items-center justify-center text-[#FF9900]">
-                                                <ShoppingCart size={24} />
-                                            </div>
-                                        </div>
-                                        <div className="mt-auto pt-3 border-t border-gray-50 flex justify-between items-center">
-                                            <div className="flex flex-col">
-                                                <span className="text-[11px] text-[#7B7480] uppercase tracking-wider font-semibold">Margin</span>
-                                                <span className="text-[14px] font-bold text-[#0C1829]">{investmentData.revenue > 0 ? (((investmentData.profit || 0) / investmentData.revenue) * 100).toFixed(2) : 0}%</span>
-                                            </div>
-                                            <div className="flex flex-col items-end">
-                                                <span className="text-[11px] text-[#7B7480] uppercase tracking-wider font-semibold">ROI</span>
-                                                <span className="text-[14px] font-bold text-[#0065F4]">{investmentData.invest > 0 ? (((investmentData.profit || 0) / investmentData.invest) * 100).toFixed(2) : 0}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Compact Row: Top Products & Stock Alerts */}
-                    <div className="flex flex-col xl:flex-row gap-6 w-full">
-                        {/* Top Products */}
-                        <div className="flex-1 bg-white rounded-[32px] p-6 shadow-sm min-h-[282px]">
-                            <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto mb-6">Top Selling Products ({month})</h3>
-                            <TopProducts products={data.monthly.top_products} />
-                        </div>
-
-                        {/* Stock Alerts */}
-                        <div className="flex-1 bg-white rounded-[32px] p-6 shadow-sm min-h-[282px]">
-                            <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto mb-6">Low Stock Alerts</h3>
-                            <StockAlerts items={data.alerts} />
-                        </div>
-                    </div>
-
-                    {/* Secondary Compact Row: Dead Stock */}
-                    <div className="flex flex-col gap-6 w-full mt-6">
-                        <div className="w-full bg-white rounded-[32px] p-6 shadow-sm">
-                            <div className="flex justify-between items-center mb-6">
+                        {/* Revenue Progress Tracker (Expected vs Actual) */}
+                        <div className="bg-white rounded-[26px] p-6 shadow-sm mb-6 flex flex-col gap-4">
+                            <div className="flex justify-between items-center mb-2">
                                 <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto flex items-center gap-2">
-                                    <Timer className="text-purple-500" size={20} /> Dead Stock Tracker
+                                    <Activity className="text-blue-500" size={20} /> Revenue Velocity
                                 </h3>
-                                <span className="text-[12px] font-medium text-gray-400 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
-                                    No sales in 30+ days
+                                <span className="text-[12px] font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded-md">Current Month Batch</span>
+                            </div>
+
+                            <div className="flex flex-col gap-2 relative">
+                                <div className="flex justify-between items-end mb-1">
+                                    <div className="flex flex-col">
+                                        <span className="text-[13px] text-gray-400 font-semibold uppercase tracking-wider">Actual Recovery</span>
+                                        <span className="text-[22px] font-bold text-blue-600">৳{(data.monthly?.revenue_progress?.actual || 0).toLocaleString()}</span>
+                                    </div>
+                                    <div className="flex flex-col items-end">
+                                        <span className="text-[13px] text-gray-400 font-semibold uppercase tracking-wider">Expected Potential</span>
+                                        <span className="text-[16px] font-bold text-gray-600">৳{(data.monthly?.revenue_progress?.expected || 0).toLocaleString()}</span>
+                                    </div>
+                                </div>
+
+                                {/* Progress Bar */}
+                                <div className="h-4 w-full bg-gray-100 rounded-full overflow-hidden relative">
+                                    <div
+                                        className="absolute top-0 left-0 h-full bg-blue-500 rounded-full transition-all duration-1000 ease-in-out"
+                                        style={{
+                                            width: `${data.monthly?.revenue_progress?.expected > 0 ? Math.min((data.monthly.revenue_progress.actual / data.monthly.revenue_progress.expected) * 100, 100) : 0}%`
+                                        }}
+                                    />
+                                </div>
+
+                                <span className="text-[12px] text-gray-500 font-medium text-right mt-1">
+                                    {data.monthly?.revenue_progress?.expected > 0
+                                        ? `${((data.monthly.revenue_progress.actual / data.monthly.revenue_progress.expected) * 100).toFixed(1)}% of potential revenue realized`
+                                        : 'No investments made this month'}
                                 </span>
                             </div>
-                            <DeadStock items={data.monthly?.dead_stock || []} />
+                        </div>
+
+                        {/* Investment Tracker (Style Updated) */}
+                        <div className="bg-white rounded-[26px] overflow-hidden shadow-sm mb-6">
+                            {/* Header - Clickable for toggle */}
+                            <div
+                                onClick={() => setShowInvestment(!showInvestment)}
+                                className="w-full flex items-center justify-between p-6 bg-white cursor-pointer hover:bg-gray-50 transition-colors"
+                            >
+                                <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto">Investment Tracker</h3>
+
+                                <div className="flex items-center gap-4" onClick={e => e.stopPropagation()}>
+                                    {/* Month/All Dropdown */}
+                                    {showInvestment && (
+                                        <div className="relative">
+                                            <select
+                                                value={investmentFilter}
+                                                onChange={(e) => setInvestmentFilter(e.target.value)}
+                                                className="appearance-none bg-[#F2F4F5] rounded-[16px] px-4 py-2 pr-8 font-roboto font-bold text-[14px] text-[#0C1829] outline-none cursor-pointer hover:bg-gray-200 transition-colors"
+                                            >
+                                                <option value="All Time">All Month</option>
+                                                {months.map(m => (
+                                                    <option key={m} value={m}>{m}</option>
+                                                ))}
+                                            </select>
+                                            <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" size={16} color="#0C1829" />
+                                        </div>
+                                    )}
+
+                                    {/* Toggle Icon */}
+                                    <div className="p-1">
+                                        {showInvestment ? <ChevronLeft className="rotate-90" size={20} /> : <ChevronRight className="rotate-90" size={20} />}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {showInvestment && (
+                                <div className="p-6 pt-0 animate-in slide-in-from-top-2 duration-200">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                        {/* Invest - Card Style */}
+                                        <div className="bg-white rounded-[26px] p-6 border border-gray-100 shadow-sm flex flex-col justify-between min-h-[140px]">
+                                            <div className="flex justify-between items-start">
+                                                <div className="flex flex-col gap-2">
+                                                    <span className="text-[#7B7480] font-roboto font-medium text-[16px]">Net Investment</span>
+                                                    <span className="text-[#0065F4] font-nirmala font-bold text-[36px] flex items-center">
+                                                        <span className="text-[36px] mr-1 font-extrabold">৳</span>{(investmentData.invest || 0).toLocaleString()}
+                                                    </span>
+                                                </div>
+                                                <div className="w-12 h-12 rounded-full bg-[#E6F0FF] flex items-center justify-center text-[#0065F4]">
+                                                    <BadgeDollarSign size={24} />
+                                                </div>
+                                            </div>
+                                            <div className="mt-4 pt-3 border-t border-gray-50 flex justify-between items-center">
+                                                <span className="text-[13px] text-[#7B7480] font-medium">Active Capital</span>
+                                                <span className="text-[14px] font-bold text-[#0C1829]">৳{((investmentData.invest || 0) - (investmentData.revenue || 0)).toLocaleString()}</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Sold - Card Style */}
+                                        <div className="bg-white rounded-[26px] p-6 border border-gray-100 shadow-sm flex flex-col justify-between min-h-[140px]">
+                                            <div className="flex justify-between items-start">
+                                                <div className="flex flex-col gap-2">
+                                                    <span className="text-[#7B7480] font-roboto font-medium text-[16px]">Net Sold</span>
+                                                    <span className="text-[#00BC7C] font-nirmala font-bold text-[36px] flex items-center">
+                                                        <span className="text-[36px] mr-1 font-extrabold">৳</span>{(investmentData.revenue || 0).toLocaleString()}
+                                                    </span>
+                                                </div>
+                                                <div className="w-12 h-12 rounded-full bg-[#E6F8F2] flex items-center justify-center text-[#00BC7C]">
+                                                    <CircleDollarSign size={24} />
+                                                </div>
+                                            </div>
+                                            <div className="mt-4 pt-3 border-t border-gray-50 flex justify-between items-center">
+                                                <span className="text-[13px] text-[#7B7480] font-medium">Recovery Rate</span>
+                                                <span className="text-[14px] font-bold text-[#0C1829]">{investmentData.invest > 0 ? (((investmentData.revenue || 0) / investmentData.invest) * 100).toFixed(2) : 0}%</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Profit - Card Style */}
+                                        <div className="bg-white rounded-[26px] p-6 border border-gray-100 shadow-sm flex flex-col justify-between min-h-[140px]">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <div className="flex flex-col gap-2">
+                                                    <span className="text-[#7B7480] font-roboto font-medium text-[16px]">Net Profit</span>
+                                                    <span className="text-[#FF9900] font-nirmala font-bold text-[36px] flex items-center">
+                                                        <span className="text-[36px] mr-1 font-extrabold">৳</span>{(investmentData.profit || 0).toLocaleString()}
+                                                    </span>
+                                                </div>
+                                                <div className="w-12 h-12 rounded-full bg-[#FFF5E6] flex items-center justify-center text-[#FF9900]">
+                                                    <ShoppingCart size={24} />
+                                                </div>
+                                            </div>
+                                            <div className="mt-auto pt-3 border-t border-gray-50 flex justify-between items-center">
+                                                <div className="flex flex-col">
+                                                    <span className="text-[11px] text-[#7B7480] uppercase tracking-wider font-semibold">Margin</span>
+                                                    <span className="text-[14px] font-bold text-[#0C1829]">{investmentData.revenue > 0 ? (((investmentData.profit || 0) / investmentData.revenue) * 100).toFixed(2) : 0}%</span>
+                                                </div>
+                                                <div className="flex flex-col items-end">
+                                                    <span className="text-[11px] text-[#7B7480] uppercase tracking-wider font-semibold">ROI</span>
+                                                    <span className="text-[14px] font-bold text-[#0065F4]">{investmentData.invest > 0 ? (((investmentData.profit || 0) / investmentData.invest) * 100).toFixed(2) : 0}%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Compact Row: Top Products & Stock Alerts */}
+                        <div className="flex flex-col xl:flex-row gap-6 w-full">
+                            {/* Top Products */}
+                            <div className="flex-1 bg-white rounded-[32px] p-6 shadow-sm min-h-[282px]">
+                                <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto mb-6">Top Selling Products ({month})</h3>
+                                <TopProducts products={data.monthly.top_products} />
+                            </div>
+
+                            {/* Stock Alerts */}
+                            <div className="flex-1 bg-white rounded-[32px] p-6 shadow-sm min-h-[282px]">
+                                <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto mb-6">Low Stock Alerts</h3>
+                                <StockAlerts items={data.alerts} />
+                            </div>
+                        </div>
+
+                        {/* Secondary Compact Row: Dead Stock */}
+                        <div className="flex flex-col gap-6 w-full mt-6">
+                            <div className="w-full bg-white rounded-[32px] p-6 shadow-sm">
+                                <div className="flex justify-between items-center mb-6">
+                                    <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto flex items-center gap-2">
+                                        <Timer className="text-purple-500" size={20} /> Dead Stock Tracker
+                                    </h3>
+                                    <span className="text-[12px] font-medium text-gray-400 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
+                                        No sales in 30+ days
+                                    </span>
+                                </div>
+                                <DeadStock items={data.monthly?.dead_stock || []} />
+                            </div>
+                        </div>
+                    </div>
+
+
+                    {/* RIGHT COLUMN (Desktop) / TOP COLUMN (Mobile): DAILY OVERVIEW */}
+                    <div className="flex flex-col gap-6 w-full md:w-[40%] xl:w-[450px] 2xl:w-[550px] md:sticky md:top-8 md:h-[calc(100vh-32px)] overflow-hidden">
+
+                        {/* Section Header */}
+                        <div className="flex justify-between items-center h-[21px] flex-shrink-0">
+                            <h2 className="text-[#7B7480] text-[14px] font-inter font-bold uppercase tracking-wider">DAILY OVERVIEW</h2>
+                            <button onClick={handleExportDaily} className="text-[#0067FD] text-[12px] font-bold flex items-center gap-1 hover:underline">
+                                <Download size={14} /> Download Daily CSV
+                            </button>
+                        </div>
+
+                        {/* Daily Mini Stats */}
+                        <div className="flex flex-row gap-3 h-[98px] flex-shrink-0">
+                            {/* Total Sale */}
+                            <div className="flex-1 bg-white rounded-[20px] p-4 shadow-sm flex flex-col justify-center gap-1">
+                                <span className="text-[#7B7480] font-medium text-[12px]">Total Sale</span>
+                                <span className="text-[#161616] font-nirmala font-bold text-[25px] flex items-center">
+                                    <span className="font-extrabold mr-1">৳</span>{(data.daily.revenue || 0).toLocaleString()}
+                                </span>
+                            </div>
+                            {/* Profit */}
+                            <div className="flex-1 bg-white rounded-[20px] p-4 shadow-sm flex flex-col justify-center gap-1">
+                                <span className="text-[#7B7480] font-medium text-[12px]">Total Profit</span>
+                                <span className="text-[#FF5500] font-nirmala font-bold text-[25px] flex items-center">
+                                    <span className="font-extrabold mr-1">৳</span>{(data.daily.profit || 0).toLocaleString()}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Daily History - CSS Applied (Responsive Width) */}
+                        <div style={{
+                            padding: '24px 14px',
+                            gap: '11.93px',
+                            width: '100%',
+                            minHeight: '0', // Allow shrinking below content size if needed
+                            background: '#FFFFFF',
+                            boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.05)',
+                            borderRadius: '32px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            flex: 1,
+                            overflow: 'hidden'
+                        }}>
+                            <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto mb-4 flex-shrink-0">Transactions</h3>
+                            <SalesHistoryTable
+                                sales={data.daily.history}
+                                canEdit={true}
+                                onDeleteSale={(id) => {
+                                    setData(prev => ({
+                                        ...prev,
+                                        daily: {
+                                            ...prev.daily,
+                                            history: prev.daily.history.filter(s => s.id !== id)
+                                        }
+                                    }));
+                                }} />
                         </div>
                     </div>
                 </div>
-
-
-                {/* RIGHT COLUMN (Desktop) / TOP COLUMN (Mobile): DAILY OVERVIEW */}
-                <div className="flex flex-col gap-6 w-full md:w-[40%] xl:w-[450px] 2xl:w-[550px] md:sticky md:top-8 md:h-[calc(100vh-32px)] overflow-hidden">
-
-                    {/* Section Header */}
-                    <div className="flex justify-between items-center h-[21px] flex-shrink-0">
-                        <h2 className="text-[#7B7480] text-[14px] font-inter font-bold uppercase tracking-wider">DAILY OVERVIEW</h2>
-                        <button onClick={handleExportDaily} className="text-[#0067FD] text-[12px] font-bold flex items-center gap-1 hover:underline">
-                            <Download size={14} /> Download Daily CSV
-                        </button>
-                    </div>
-
-                    {/* Daily Mini Stats */}
-                    <div className="flex flex-row gap-3 h-[98px] flex-shrink-0">
-                        {/* Total Sale */}
-                        <div className="flex-1 bg-white rounded-[20px] p-4 shadow-sm flex flex-col justify-center gap-1">
-                            <span className="text-[#7B7480] font-medium text-[12px]">Total Sale</span>
-                            <span className="text-[#161616] font-nirmala font-bold text-[25px] flex items-center">
-                                <span className="font-extrabold mr-1">৳</span>{(data.daily.revenue || 0).toLocaleString()}
-                            </span>
-                        </div>
-                        {/* Profit */}
-                        <div className="flex-1 bg-white rounded-[20px] p-4 shadow-sm flex flex-col justify-center gap-1">
-                            <span className="text-[#7B7480] font-medium text-[12px]">Total Profit</span>
-                            <span className="text-[#FF5500] font-nirmala font-bold text-[25px] flex items-center">
-                                <span className="font-extrabold mr-1">৳</span>{(data.daily.profit || 0).toLocaleString()}
-                            </span>
-                        </div>
-                    </div>
-
-                    {/* Daily History - CSS Applied (Responsive Width) */}
-                    <div style={{
-                        padding: '24px 14px',
-                        gap: '11.93px',
-                        width: '100%',
-                        minHeight: '0', // Allow shrinking below content size if needed
-                        background: '#FFFFFF',
-                        boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.05)',
-                        borderRadius: '32px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        flex: 1,
-                        overflow: 'hidden'
-                    }}>
-                        <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto mb-4 flex-shrink-0">Transactions</h3>
-                        <SalesHistoryTable
-                            sales={data.daily.history}
-                            canEdit={true}
-                            onDeleteSale={(id) => {
-                                setData(prev => ({
-                                    ...prev,
-                                    daily: {
-                                        ...prev.daily,
-                                        history: prev.daily.history.filter(s => s.id !== id)
-                                    }
-                                }));
-                            }} />
-                    </div>
-                </div>
-        </div>
             </main >
         </div >
     );
