@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
-import { Search, Plus, Trash2, ArrowRight, DollarSign, ArrowDown, PackageCheck } from 'lucide-react';
+import { Search, Plus, Trash2, ArrowRight, DollarSign, ArrowDown, PackageCheck, X } from 'lucide-react';
 
 export default function ShipmentsPage() {
     const router = useRouter();
@@ -18,10 +18,20 @@ export default function ShipmentsPage() {
     const [shipmentItems, setShipmentItems] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    // New Product Modal State
+    const [showProductModal, setShowProductModal] = useState(false);
+    const [categories, setCategories] = useState([]);
+    const [formData, setFormData] = useState({ name: '', category_id: '', buy_price: '', sell_price: '', stock_quantity: '0' });
+
     useEffect(() => {
         fetch('/api/inventory/products')
             .then(r => r.json())
             .then(data => setProducts(data))
+            .catch(console.error);
+
+        fetch('/api/inventory/categories')
+            .then(r => r.json())
+            .then(data => setCategories(data))
             .catch(console.error);
 
         const handleClickOutside = (e) => {
@@ -61,6 +71,38 @@ export default function ShipmentsPage() {
         setShipmentItems(shipmentItems.map(item =>
             item.id === id ? { ...item, [field]: value } : item
         ));
+    };
+
+    const handleAddProduct = async (e) => {
+        e.preventDefault();
+        try {
+            // Shipment items add stock later, so initial stock is 0
+            const res = await fetch('/api/inventory/products', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...formData, stock_quantity: 0 })
+            });
+            if (res.ok) {
+                const { id } = await res.json();
+                const newProduct = {
+                    id,
+                    name: formData.name,
+                    category_id: formData.category_id,
+                    buy_price: parseFloat(formData.buy_price) || 0,
+                    stock_quantity: 0
+                };
+                setProducts([...products, newProduct]);
+                addProductToShipment(newProduct);
+                setShowProductModal(false);
+                setFormData({ name: '', category_id: '', buy_price: '', sell_price: '', stock_quantity: '0' });
+            } else {
+                const result = await res.json();
+                alert('Error: ' + (result.error || result.message));
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Failed to add product');
+        }
     };
 
     // --- SMART CALCULATIONS ---
@@ -207,45 +249,55 @@ export default function ShipmentsPage() {
                             </div>
                         </div>
 
-                        {/* Search Bar */}
-                        <div className="bg-white p-5 rounded-2xl shadow-sm border border-[#E5E7EB]" ref={searchRef}>
-                            <div className="relative">
-                                <Search className="absolute left-4 top-3.5 text-gray-400" size={20} />
-                                <input
-                                    type="text"
-                                    className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-md text-gray-800 focus:outline-[#0065F4]"
-                                    placeholder="Search products to add to this shipment..."
-                                    value={searchQuery}
-                                    onChange={(e) => {
-                                        setSearchQuery(e.target.value);
-                                        setIsDropdownOpen(true);
-                                    }}
-                                    onFocus={() => setIsDropdownOpen(true)}
-                                />
+                        {/* Search Bar & Add Product */}
+                        <div className="flex gap-3">
+                            <div className="bg-white p-5 rounded-2xl shadow-sm border border-[#E5E7EB] flex-1" ref={searchRef}>
+                                <div className="relative">
+                                    <Search className="absolute left-4 top-3.5 text-gray-400" size={20} />
+                                    <input
+                                        type="text"
+                                        className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-md text-gray-800 focus:outline-[#0065F4]"
+                                        placeholder="Search products to add to this shipment..."
+                                        value={searchQuery}
+                                        onChange={(e) => {
+                                            setSearchQuery(e.target.value);
+                                            setIsDropdownOpen(true);
+                                        }}
+                                        onFocus={() => setIsDropdownOpen(true)}
+                                    />
 
-                                {/* Dropdown */}
-                                {isDropdownOpen && searchQuery && (
-                                    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-xl shadow-lg z-50 max-h-64 overflow-y-auto">
-                                        {filteredProducts.length > 0 ? (
-                                            filteredProducts.map(p => (
-                                                <div
-                                                    key={p.id}
-                                                    className="flex justify-between items-center p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-50 last:border-0"
-                                                    onClick={() => addProductToShipment(p)}
-                                                >
-                                                    <div>
-                                                        <div className="font-semibold text-gray-800">{p.name}</div>
-                                                        <div className="text-xs text-gray-400">Current Cost: ৳{p.buy_price} | Stock: {p.stock_quantity}</div>
+                                    {/* Dropdown */}
+                                    {isDropdownOpen && searchQuery && (
+                                        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-xl shadow-lg z-50 max-h-64 overflow-y-auto">
+                                            {filteredProducts.length > 0 ? (
+                                                filteredProducts.map(p => (
+                                                    <div
+                                                        key={p.id}
+                                                        className="flex justify-between items-center p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-50 last:border-0"
+                                                        onClick={() => addProductToShipment(p)}
+                                                    >
+                                                        <div>
+                                                            <div className="font-semibold text-gray-800">{p.name}</div>
+                                                            <div className="text-xs text-gray-400">Current Cost: ৳{p.buy_price} | Stock: {p.stock_quantity}</div>
+                                                        </div>
+                                                        <Plus className="text-[#0065F4]" size={18} />
                                                     </div>
-                                                    <Plus className="text-[#0065F4]" size={18} />
-                                                </div>
-                                            ))
-                                        ) : (
-                                            <div className="p-4 text-center text-gray-500">No matching generic products found.</div>
-                                        )}
-                                    </div>
-                                )}
+                                                ))
+                                            ) : (
+                                                <div className="p-4 text-center text-gray-500">No matching preset products found. Click "New Product" + to create one.</div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
+
+                            <button
+                                onClick={() => setShowProductModal(true)}
+                                className="flex-shrink-0 bg-[#0065F4] text-white px-6 rounded-2xl font-bold flex flex-col items-center justify-center gap-1 hover:bg-[#0055cc] transition-colors shadow-sm"
+                            >
+                                <Plus size={24} />
+                                <span className="text-sm">New Product</span>
+                            </button>
                         </div>
 
                         {/* Main Table */}
@@ -399,6 +451,85 @@ export default function ShipmentsPage() {
 
                 </div>
             </main>
+
+            {/* ADD PRODUCT MODAL */}
+            {showProductModal && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm">
+                    <div className="bg-white rounded-3xl w-full max-w-[500px] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                        <div className="p-6">
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-xl font-bold text-[#111827]">Create New Product</h2>
+                                <button onClick={() => setShowProductModal(false)} className="text-[#9CA3AF] hover:text-[#4B5563]">
+                                    <X size={24} />
+                                </button>
+                            </div>
+
+                            <form onSubmit={handleAddProduct} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-[#374151] mb-1">Product Name</label>
+                                    <input
+                                        className="w-full px-4 py-2 rounded-xl border border-[#D1D5DB] focus:outline-none focus:ring-2 focus:ring-[#0065F4]"
+                                        required
+                                        value={formData.name}
+                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                        placeholder="e.g. Premium Scarf"
+                                        autoFocus
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-[#374151] mb-1">Category</label>
+                                    <select
+                                        className="w-full px-4 py-2 rounded-xl border border-[#D1D5DB] focus:outline-none focus:ring-2 focus:ring-[#0065F4]"
+                                        value={formData.category_id}
+                                        onChange={e => setFormData({ ...formData, category_id: e.target.value })}
+                                    >
+                                        <option value="">Select Category</option>
+                                        {(Array.isArray(categories) ? categories : []).map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                                    </select>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-[#374151] mb-1">Buy Price (Cost)</label>
+                                        <input
+                                            type="number" step="0.01"
+                                            className="w-full px-4 py-2 rounded-xl border border-[#D1D5DB] focus:outline-none focus:ring-2 focus:ring-[#0065F4]"
+                                            required
+                                            value={formData.buy_price}
+                                            onChange={e => setFormData({ ...formData, buy_price: e.target.value })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-[#374151] mb-1">Sell Price</label>
+                                        <input
+                                            type="number" step="0.01"
+                                            className="w-full px-4 py-2 rounded-xl border border-[#D1D5DB] focus:outline-none focus:ring-2 focus:ring-[#0065F4]"
+                                            required
+                                            value={formData.sell_price}
+                                            onChange={e => setFormData({ ...formData, sell_price: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="pt-6 border-t border-gray-100 flex justify-end gap-3 mt-8">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowProductModal(false)}
+                                        className="px-6 py-2.5 rounded-xl font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="px-6 py-2.5 bg-[#0065F4] text-white rounded-xl font-bold hover:bg-[#0055cc] transition-colors shadow-sm"
+                                    >
+                                        Create & Add to Shipment
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
