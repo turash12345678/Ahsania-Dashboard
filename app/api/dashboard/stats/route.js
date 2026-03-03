@@ -225,6 +225,42 @@ export async function GET(request) {
             profit: investmentResult.rows[0].total_profit || 0
         };
 
+        // I. Dead Stock Detection (No sales in 30 days)
+        const deadStockResult = await db.execute({
+            sql: `
+                SELECT 
+                    id, name, stock_quantity, buy_price, 
+                    (stock_quantity * buy_price) as blocked_capital
+                FROM products 
+                WHERE id NOT IN (
+                    SELECT DISTINCT item_id FROM sale_items 
+                    JOIN sales ON sale_items.sale_id = sales.id 
+                    WHERE sales.sale_date >= date('now', '-30 days') AND sale_items.item_type = 'product'
+                ) 
+                AND stock_quantity > 0
+                ORDER BY blocked_capital DESC
+                LIMIT 15
+            `
+        });
+
+        // J. Revenue Tracker (Expected vs Actual for Current Month Procurements)
+        // Find products created this month
+        const revenueProgressResult = await db.execute({
+            sql: `
+                SELECT 
+                    SUM((p.stock_quantity + COALESCE((SELECT SUM(quantity) FROM sale_items WHERE item_id = p.id AND item_type='product'), 0)) * p.sell_price) as expected_revenue,
+                    SUM(COALESCE((SELECT SUM(si.price_at_sale * si.quantity) FROM sale_items si WHERE si.item_id = p.id AND si.item_type='product'), 0)) as actual_revenue
+                FROM products p
+                WHERE p.created_at >= ? AND p.created_at <= ?
+            `,
+            args: [startOfMonth, endOfMonth]
+        });
+
+        const revenueProgress = {
+            expected: revenueProgressResult.rows[0].expected_revenue || 0,
+            actual: revenueProgressResult.rows[0].actual_revenue || 0
+        };
+
         return new Response(JSON.stringify({
             daily: { ...dailyStats, history: dailyHistoryRes.rows },
             monthly: {
@@ -236,7 +272,9 @@ export async function GET(request) {
             },
             user_performance: userStats,
             alerts: lowStockResult.rows,
-            investment: investmentStats
+            investment: investmentStats,
+            dead_stock: deadStockResult.rows,
+            revenue_progress: revenueProgress
         }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' }
