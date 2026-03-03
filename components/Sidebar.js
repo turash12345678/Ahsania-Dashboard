@@ -23,7 +23,6 @@ export default function Sidebar() {
     const menuItems = [
         { name: 'Overview', path: '/dashboard' },
         { name: 'Products', path: '/inventory/products' },
-        { name: 'Add Shipment', path: '/inventory/shipments' },
         { name: 'Services', path: '/inventory/services' },
         { name: 'New Sale (POS)', path: '/pos' },
     ];

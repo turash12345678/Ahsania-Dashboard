@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import Sidebar from '@/components/Sidebar';
-import { Pencil, Trash2, Plus, X, Settings, ExternalLink } from 'lucide-react';
+import { Pencil, Trash2, Plus, X, Settings, ExternalLink, PackagePlus } from 'lucide-react';
 import CategoryManagerModal from '@/components/CategoryManagerModal';
 import ProductDetailsSidebar from '@/components/ProductDetailsSidebar';
 
@@ -340,6 +341,13 @@ export default function ProductsPage() {
                                 />
                             </div>
 
+
+                            <Link
+                                href="/inventory/shipments"
+                                className="flex items-center gap-2 px-4 py-2 bg-white border border-[#E5E7EB] text-[#374151] rounded-xl font-semibold shadow-sm hover:bg-gray-50 transition-colors"
+                            >
+                                <PackagePlus size={18} /> Add Shipment
+                            </Link>
 
                             <button
                                 className="flex items-center gap-2 px-4 py-2 bg-[#0065F4] text-white rounded-xl font-semibold shadow hover:bg-[#0052cc] transition-colors"

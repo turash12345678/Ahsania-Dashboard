@@ -212,127 +212,131 @@ export default function ShipmentsPage() {
                 <div className="flex flex-col xl:flex-row gap-6">
 
                     {/* LEFT COLUMN: Configuration & Table */}
-                    <div className="flex-1 flex flex-col gap-6 w-full">
+                    <div className="flex-1 flex flex-col w-full relative z-10">
 
-                        {/* Top Config Cards */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="bg-white p-5 rounded-2xl shadow-sm border border-[#E5E7EB]">
-                                <label className="text-sm font-semibold text-gray-600 block mb-2 uppercase tracking-wide">Total Transport / Extra Cost (৳)</label>
-                                <div className="relative">
-                                    <span className="absolute left-4 top-3 text-gray-400 font-bold">৳</span>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        className="w-full pl-8 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-bold text-xl text-gray-800 focus:outline-[#0065F4]"
-                                        value={transportCost === 0 ? '' : transportCost}
-                                        onChange={(e) => setTransportCost(e.target.value === '' ? 0 : parseFloat(e.target.value))}
-                                        placeholder="0"
-                                    />
-                                </div>
-                                <p className="text-xs text-gray-400 mt-2">This will be proportionally distributed across all products below.</p>
-                            </div>
+                        <div className="bg-white rounded-3xl shadow-sm border border-[#E5E7EB] overflow-visible flex flex-col">
 
-                            <div className="bg-white p-5 rounded-2xl shadow-sm border border-[#E5E7EB]">
-                                <label className="text-sm font-semibold text-gray-600 block mb-2 uppercase tracking-wide">Target Profit Margin (%)</label>
-                                <div className="relative">
-                                    <span className="absolute left-4 top-3 text-gray-400 font-bold">%</span>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-bold text-xl text-gray-800 focus:outline-[#0065F4]"
-                                        value={targetMargin === 0 ? '' : targetMargin}
-                                        onChange={(e) => setTargetMargin(e.target.value === '' ? 0 : parseFloat(e.target.value))}
-                                        placeholder="0"
-                                    />
-                                </div>
-                                <p className="text-xs text-gray-400 mt-2">Used to auto-generate the Suggested Retail Price (SRP).</p>
-                            </div>
-                        </div>
+                            {/* Unified Header / Toolbar */}
+                            <div className="p-5 md:p-6 border-b border-[#E5E7EB] flex flex-col gap-5 bg-[#F8FAFC] rounded-t-3xl relative z-20">
 
-                        {/* Search Bar & Add Product */}
-                        <div className="flex gap-3">
-                            <div className="bg-white p-5 rounded-2xl shadow-sm border border-[#E5E7EB] flex-1" ref={searchRef}>
-                                <div className="relative">
-                                    <Search className="absolute left-4 top-3.5 text-gray-400" size={20} />
-                                    <input
-                                        type="text"
-                                        className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-md text-gray-800 focus:outline-[#0065F4]"
-                                        placeholder="Search products to add to this shipment..."
-                                        value={searchQuery}
-                                        onChange={(e) => {
-                                            setSearchQuery(e.target.value);
-                                            setIsDropdownOpen(true);
-                                        }}
-                                        onFocus={() => setIsDropdownOpen(true)}
-                                    />
-
-                                    {/* Dropdown */}
-                                    {isDropdownOpen && searchQuery && (
-                                        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-xl shadow-lg z-50 max-h-64 overflow-y-auto">
-                                            {filteredProducts.length > 0 ? (
-                                                filteredProducts.map(p => (
-                                                    <div
-                                                        key={p.id}
-                                                        className="flex justify-between items-center p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-50 last:border-0"
-                                                        onClick={() => addProductToShipment(p)}
-                                                    >
-                                                        <div>
-                                                            <div className="font-semibold text-gray-800">{p.name}</div>
-                                                            <div className="text-xs text-gray-400">Current Cost: ৳{p.buy_price} | Stock: {p.stock_quantity}</div>
-                                                        </div>
-                                                        <Plus className="text-[#0065F4]" size={18} />
-                                                    </div>
-                                                ))
-                                            ) : (
-                                                <div className="p-4 text-center text-gray-500">No matching preset products found. Click "New Product" + to create one.</div>
-                                            )}
+                                {/* Config Row */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest pl-1">Total Transport / Extra Cost (৳)</label>
+                                        <div className="relative">
+                                            <span className="absolute left-4 top-3.5 text-gray-400 font-bold">৳</span>
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                className="w-full pl-9 pr-4 py-3 bg-white border border-gray-200 rounded-2xl font-bold text-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#0065F4] focus:border-transparent transition-all shadow-sm"
+                                                value={transportCost === 0 ? '' : transportCost}
+                                                onChange={(e) => setTransportCost(e.target.value === '' ? 0 : parseFloat(e.target.value))}
+                                                placeholder="0"
+                                            />
                                         </div>
-                                    )}
+                                    </div>
+
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-[11px] font-bold text-gray-500 uppercase tracking-widest pl-1">Target Profit Margin (%)</label>
+                                        <div className="relative">
+                                            <span className="absolute left-4 top-3.5 text-gray-400 font-bold">%</span>
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                className="w-full pl-9 pr-4 py-3 bg-white border border-gray-200 rounded-2xl font-bold text-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#0065F4] focus:border-transparent transition-all shadow-sm"
+                                                value={targetMargin === 0 ? '' : targetMargin}
+                                                onChange={(e) => setTargetMargin(e.target.value === '' ? 0 : parseFloat(e.target.value))}
+                                                placeholder="0"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Search & Add Button Row */}
+                                <div className="flex gap-3 relative z-[100]" ref={searchRef}>
+                                    <div className="flex-1 relative">
+                                        <Search className="absolute left-4 top-3.5 text-gray-400" size={20} />
+                                        <input
+                                            type="text"
+                                            className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-2xl text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#0065F4] focus:border-transparent transition-all shadow-sm"
+                                            placeholder="Search products to add to this shipment..."
+                                            value={searchQuery}
+                                            onChange={(e) => {
+                                                setSearchQuery(e.target.value);
+                                                setIsDropdownOpen(true);
+                                            }}
+                                            onFocus={() => setIsDropdownOpen(true)}
+                                        />
+
+                                        {/* Dropdown */}
+                                        {isDropdownOpen && searchQuery && (
+                                            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-2xl shadow-xl z-[150] max-h-64 overflow-y-auto min-w-[300px]">
+                                                {filteredProducts.length > 0 ? (
+                                                    filteredProducts.map(p => (
+                                                        <div
+                                                            key={p.id}
+                                                            className="flex justify-between items-center p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-50 last:border-0"
+                                                            onClick={() => addProductToShipment(p)}
+                                                        >
+                                                            <div>
+                                                                <div className="font-semibold text-gray-800">{p.name}</div>
+                                                                <div className="text-xs text-gray-400">Current Cost: ৳{p.buy_price} | Stock: {p.stock_quantity}</div>
+                                                            </div>
+                                                            <div className="bg-white rounded-full p-1 shadow-sm border border-gray-100">
+                                                                <Plus className="text-[#0065F4]" size={16} />
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                ) : (
+                                                    <div className="p-4 text-center text-sm text-gray-500">No matching generic products found.</div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <button
+                                        onClick={() => setShowProductModal(true)}
+                                        className="flex-shrink-0 bg-[#0065F4] text-white px-5 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-[#0052cc] transition-colors shadow-sm"
+                                    >
+                                        <Plus size={20} />
+                                        <span className="text-sm">New Product</span>
+                                    </button>
                                 </div>
                             </div>
 
-                            <button
-                                onClick={() => setShowProductModal(true)}
-                                className="flex-shrink-0 bg-[#0065F4] text-white px-6 rounded-2xl font-bold flex flex-col items-center justify-center gap-1 hover:bg-[#0055cc] transition-colors shadow-sm"
-                            >
-                                <Plus size={24} />
-                                <span className="text-sm">New Product</span>
-                            </button>
-                        </div>
-
-                        {/* Main Table */}
-                        <div className="bg-white rounded-2xl shadow-sm border border-[#E5E7EB] overflow-hidden">
-                            <div className="overflow-x-auto">
+                            {/* Main Table */}
+                            <div className="overflow-x-auto rounded-b-3xl bg-white relative z-0">
                                 <table className="w-full text-left border-collapse min-w-[800px]">
                                     <thead>
-                                        <tr className="bg-[#F8FAFC] border-b border-[#E5E7EB]">
-                                            <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider w-[25%]">Product Name</th>
-                                            <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider w-[10%]">Qty</th>
-                                            <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider w-[15%]">Raw Buy (৳)</th>
-                                            <th className="p-4 text-xs font-bold text-blue-500 uppercase tracking-wider w-[15%]">Landing Price (৳)</th>
-                                            <th className="p-4 text-xs font-bold text-green-600 uppercase tracking-wider w-[15%]">Auto SRP (৳)</th>
-                                            <th className="p-4 text-xs font-bold text-gray-800 uppercase tracking-wider w-[15%]">Final Sell (৳)</th>
-                                            <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-center w-[5%]">X</th>
+                                        <tr className="border-b border-[#E5E7EB]">
+                                            <th className="p-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest w-[25%] bg-white">Product Name</th>
+                                            <th className="p-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest w-[10%] bg-white">Qty</th>
+                                            <th className="p-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest w-[15%] bg-white">Raw Buy (৳)</th>
+                                            <th className="p-4 text-[11px] font-bold text-blue-500 uppercase tracking-widest w-[15%] bg-blue-50/30">Landing Price (৳)</th>
+                                            <th className="p-4 text-[11px] font-bold text-green-600 uppercase tracking-widest w-[15%] bg-green-50/30">Auto SRP (৳)</th>
+                                            <th className="p-4 text-[11px] font-bold text-gray-800 uppercase tracking-widest w-[15%] bg-gray-50">Final Sell (৳)</th>
+                                            <th className="p-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center w-[5%] bg-white">Del</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-[#E5E7EB]">
                                         {calculatedItems.length === 0 ? (
                                             <tr>
-                                                <td colSpan="7" className="p-8 text-center text-gray-400">
-                                                    <PackageCheck size={32} className="mx-auto mb-3 opacity-30" />
-                                                    No products added to this shipment yet.
+                                                <td colSpan="7" className="p-12 text-center text-gray-400">
+                                                    <PackageCheck size={40} className="mx-auto mb-4 opacity-20 text-gray-400" />
+                                                    <p className="font-medium text-gray-500">No products added yet.</p>
+                                                    <p className="text-xs text-gray-400 mt-1">Search for products above to begin building this shipment.</p>
                                                 </td>
                                             </tr>
                                         ) : (
                                             calculatedItems.map((item, idx) => (
-                                                <tr key={item.id} className="hover:bg-gray-50">
+                                                <tr key={item.id} className="hover:bg-gray-50/50 transition-colors group">
                                                     <td className="p-4 text-sm font-semibold text-gray-800">
                                                         {item.name}
                                                     </td>
                                                     <td className="p-4">
                                                         <input
                                                             type="number" min="1"
-                                                            className="w-16 px-2 py-1.5 border border-gray-300 rounded-md focus:outline-[#0065F4] text-center font-semibold"
+                                                            className="w-16 px-2 py-1.5 border border-gray-200 shadow-sm rounded-lg focus:outline-[#0065F4] text-center font-semibold bg-white"
                                                             value={item.qty === 0 ? '' : item.qty}
                                                             onChange={(e) => updateItem(item.id, 'qty', e.target.value === '' ? 0 : parseInt(e.target.value))}
                                                         />
@@ -340,40 +344,42 @@ export default function ShipmentsPage() {
                                                     <td className="p-4">
                                                         <input
                                                             type="number" min="0" step="0.01"
-                                                            className="w-20 px-2 py-1.5 border border-gray-300 rounded-md focus:outline-[#0065F4] text-right font-medium"
+                                                            className="w-24 px-2 py-1.5 border border-gray-200 shadow-sm rounded-lg focus:outline-[#0065F4] text-right font-medium bg-white"
                                                             value={item.rawBuyPrice === 0 ? '' : item.rawBuyPrice}
                                                             onChange={(e) => updateItem(item.id, 'rawBuyPrice', e.target.value === '' ? 0 : parseFloat(e.target.value))}
                                                         />
                                                     </td>
-                                                    <td className="p-4">
-                                                        <div className="font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-md inline-block">
+                                                    <td className="p-4 bg-blue-50/30">
+                                                        <div className="font-bold text-blue-600 bg-blue-50/80 border border-blue-100 px-3 py-1.5 rounded-lg inline-block shadow-sm">
                                                             {item.adjustedBuyPrice.toFixed(2)}
                                                         </div>
                                                     </td>
-                                                    <td className="p-4">
+                                                    <td className="p-4 bg-green-50/30">
                                                         <div className="font-bold text-green-600 px-3 py-1.5">
                                                             {item.suggestedSRP.toFixed(2)}
                                                         </div>
                                                     </td>
-                                                    <td className="p-4">
+                                                    <td className="p-4 bg-gray-50/50">
                                                         <input
                                                             type="number" min="0" step="1"
-                                                            className="w-24 px-2 py-1.5 border border-green-400 bg-green-50 rounded-md focus:outline-green-600 text-right font-bold text-gray-900"
+                                                            className="w-24 px-2 py-1.5 border border-green-300 bg-white shadow-sm rounded-lg focus:outline-green-600 focus:ring-1 focus:ring-green-600 text-right font-bold text-gray-900"
                                                             value={item.customSRP !== null ? item.customSRP : item.suggestedSRP}
                                                             onChange={(e) => updateItem(item.id, 'customSRP', e.target.value === '' ? '' : parseFloat(e.target.value))}
                                                             placeholder={item.suggestedSRP}
                                                         />
                                                         {item.customSRP !== null && item.customSRP !== item.suggestedSRP && (
-                                                            <div className="text-[10px] text-orange-500 font-semibold mt-1">Overridden</div>
+                                                            <div className="text-[10px] text-orange-500 font-semibold mt-1.5 flex items-center gap-1">
+                                                                <span className="h-1.5 w-1.5 rounded-full bg-orange-500"></span> Overridden
+                                                            </div>
                                                         )}
                                                     </td>
                                                     <td className="p-4 text-center">
                                                         <button
                                                             onClick={() => removeItem(item.id)}
-                                                            className="text-red-400 hover:text-red-600 p-1"
+                                                            className="text-gray-300 hover:text-red-500 hover:bg-red-50 w-8 h-8 rounded-full flex items-center justify-center mx-auto transition-colors"
                                                             title="Remove from batch"
                                                         >
-                                                            <Trash2 size={18} />
+                                                            <Trash2 size={16} />
                                                         </button>
                                                     </td>
                                                 </tr>
@@ -383,7 +389,6 @@ export default function ShipmentsPage() {
                                 </table>
                             </div>
                         </div>
-
                     </div>
 
                     {/* RIGHT COLUMN: Financial Summary */}
