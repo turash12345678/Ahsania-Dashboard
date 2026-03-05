@@ -4,32 +4,89 @@
 /* Force Rebuild */
 
 :root {
-  /* Professional Light Theme */
-  --bg-app: #f8fafc;
-  /* Light gray background */
-  --bg-card: #ffffff;
-  /* White cards */
-  --bg-sidebar: #ffffff;
-  /* White sidebar */
+  /* Material Design 3 Light Theme Base Baseline */
+  
+  /* Primary */
+  --primary: 260 81% 60%; /* #6750A4 */
+  --on-primary: 0 0% 100%; /* #FFFFFF */
+  --primary-container: 261 80% 92%; /* #EADDFF */
+  --on-primary-container: 261 68% 18%; /* #21005D */
 
-  --border: #e2e8f0;
-  /* Light borders */
-  --border-highlight: #cbd5e1;
+  /* Secondary */
+  --secondary: 261 14% 44%; /* #625B71 */
+  --on-secondary: 0 0% 100%; /* #FFFFFF */
+  --secondary-container: 261 38% 91%; /* #E8DEF8 */
+  --on-secondary-container: 261 41% 15%; /* #1D192B */
 
-  --text-primary: #0f172a;
-  /* Dark blue-gray text */
-  --text-secondary: #64748b;
-  /* Muted slate text */
+  /* Tertiary */
+  --tertiary: 326 31% 47%; /* #7D5260 */
+  --on-tertiary: 0 0% 100%; /* #FFFFFF */
+  --tertiary-container: 326 69% 91%; /* #FFD8E4 */
+  --on-tertiary-container: 326 53% 18%; /* #31111D */
 
-  --accent: #2563eb;
-  /* Royal Blue primary */
-  --accent-fg: #ffffff;
-  /* White text on accent */
+  /* Error */
+  --error: 357 58% 47%; /* #B3261E */
+  --on-error: 0 0% 100%; /* #FFFFFF */
+  --error-container: 358 100% 92%; /* #F9DEDC */
+  --on-error-container: 358 100% 20%; /* #410E0B */
+  
+  /* Background */
+  --background: 261 52% 99%; /* #FEF7FF */
+  --on-background: 261 7% 12%; /* #1D1B20 */
+  
+  /* Surface */
+  --surface: 261 52% 99%; /* #FEF7FF */
+  --on-surface: 261 7% 12%; /* #1D1B20 */
+  --surface-variant: 261 7% 91%; /* #E7E0EC */
+  --on-surface-variant: 261 5% 30%; /* #49454F */
+  --outline: 261 4% 48%; /* #79747E */
+  --outline-variant: 261 7% 81%; /* #CAC4D0 */
+  
+  /* Surface Containers (for depth/tonal elevation) */
+  --surface-container-lowest: 0 0% 100%; /* #FFFFFF */
+  --surface-container-low: 261 33% 96%; /* #F7F2FA */
+  --surface-container: 261 36% 94%; /* #F3EDF7 */
+  --surface-container-high: 261 36% 92%; /* #ECE6F0 */
+  --surface-container-highest: 261 38% 90%; /* #E6E0E9 */
 
-  --danger: #ef4444;
-  --success: #22c55e;
+  /* Compatibility Mapping with existing variables */
+  --bg-app: hsl(var(--surface-container-low));
+  --bg-card: hsl(var(--surface));
+  --bg-sidebar: hsl(var(--surface-container-lowest));
+  --border: hsl(var(--outline-variant));
+  --border-highlight: hsl(var(--outline));
+  --text-primary: hsl(var(--on-surface));
+  --text-secondary: hsl(var(--on-surface-variant));
+  --accent: hsl(var(--primary));
+  --accent-fg: hsl(var(--on-primary));
+  --danger: hsl(var(--error));
+  --success: 142 71% 45%;
 
-  --radius: 8px;
+  --radius: 1rem; /* M3 relies heavily on 16px radius for cards */
+}
+
+.dark {
+  /* Dark mode mappings (can be expanded later if dark mode is requested) */
+  --primary: 261 100% 86%;
+  --on-primary: 261 58% 28%;
+  --primary-container: 261 62% 44%;
+  --on-primary-container: 261 80% 92%;
+  
+  --background: 261 11% 9%;
+  --on-background: 261 36% 91%;
+  --surface: 261 11% 9%;
+  --on-surface: 261 36% 91%;
+  
+  --surface-variant: 261 5% 30%;
+  --on-surface-variant: 261 7% 81%;
+  --outline: 261 5% 58%;
+  --outline-variant: 261 5% 30%;
+  
+  --surface-container-lowest: 261 14% 6%;
+  --surface-container-low: 261 9% 12%;
+  --surface-container: 261 9% 13%;
+  --surface-container-high: 261 9% 16%;
+  --surface-container-highest: 261 10% 21%;
 }
 
 * {

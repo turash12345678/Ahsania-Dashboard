@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { AlertTriangle, ShoppingCart, Info, ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
+import { Ripple } from "@/components/ui/ripple";
+import { Button } from "@/components/ui/button";
 
 interface AlertItem {
     id?: number;
@@ -28,40 +30,36 @@ export function StockAlerts({ items }: { items: AlertItem[] }) {
                             const estimateCost = item.buy_price ? item.buy_price * restockQty : 0;
 
                             return (
-                                <div key={idx} className={`flex flex-col p-3 rounded-2xl transition-colors border group gap-2 ${isOut ? 'border-red-100 hover:bg-red-50/30' : 'border-orange-100 hover:bg-orange-50/30'
+                                <div key={idx} className={`relative flex flex-col p-4 rounded-2xl transition-colors border overflow-hidden gap-2 ${isOut ? 'border-error/20 bg-error/5 hover:bg-error/10' : 'border-outline-variant hover:bg-surface-variant/30 bg-surface'
                                     }`}>
-                                    <div className="flex flex-row items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${isOut ? 'bg-red-50' : 'bg-orange-50'
+                                    <Ripple />
+                                    <div className="flex flex-row items-center justify-between relative z-10 pointer-events-none">
+                                        <div className="flex items-center gap-4">
+                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${isOut ? 'bg-error text-on-error' : 'bg-secondary-container text-on-secondary-container'
                                                 }`}>
-                                                <AlertTriangle size={16} className={isOut ? "text-red-500" : "text-orange-500"} />
+                                                <AlertTriangle size={20} />
                                             </div>
                                             <div className="flex flex-col">
-                                                <span className="text-[#0C1829] font-medium text-[15px] line-clamp-1">
+                                                <span className="text-foreground font-medium text-[16px] line-clamp-1">
                                                     {item.name}
                                                 </span>
-                                                <span className={`text-[12px] font-bold ${isOut ? 'text-red-500' : 'text-orange-500'}`}>
+                                                <span className={`text-[13px] font-bold ${isOut ? 'text-error' : 'text-on-surface-variant'}`}>
                                                     {isOut ? 'Out of Stock' : `${item.stock_quantity} Left`}
                                                 </span>
                                             </div>
                                         </div>
 
-                                        <Link
-                                            href="/inventory/shipments"
-                                            className={`flex flex-shrink-0 items-center justify-center w-8 h-8 rounded-full transition-all ${isOut
-                                                    ? 'bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700'
-                                                    : 'bg-orange-50 text-orange-600 hover:bg-orange-100 hover:text-orange-700'
-                                                }`}
-                                            title="Restock"
-                                        >
-                                            <ShoppingCart size={15} />
-                                        </Link>
+                                        <Button asChild variant={isOut ? "destructive" : "tonal"} size="icon" className="pointer-events-auto rounded-full w-10 h-10">
+                                            <Link href="/inventory/shipments" title="Restock">
+                                                <ShoppingCart size={18} />
+                                            </Link>
+                                        </Button>
                                     </div>
 
                                     {/* Additional Info Row */}
                                     {estimateCost > 0 && (
-                                        <div className="flex items-center gap-1.5 pl-11 text-[11px] font-medium text-gray-400 mt-0.5">
-                                            <Info size={12} />
+                                        <div className="flex items-center gap-1.5 pl-[56px] text-[12px] font-medium text-muted-foreground mt-0.5 relative z-10 pointer-events-none">
+                                            <Info size={14} />
                                             Est. ৳{estimateCost.toLocaleString()} for 10 pcs
                                         </div>
                                     )}
@@ -70,16 +68,17 @@ export function StockAlerts({ items }: { items: AlertItem[] }) {
                         })}
 
                         {sortedItems.length > 4 && (
-                            <button
+                            <Button
+                                variant="text"
                                 onClick={() => setExpanded(!expanded)}
-                                className="mt-1 w-full flex items-center justify-center gap-1.5 py-2.5 text-[13px] font-bold text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-xl transition-all"
+                                className="mt-2 w-full text-muted-foreground flex items-center justify-center gap-2"
                             >
                                 {expanded ? (
-                                    <><ChevronUp size={16} /> Hide Alerts</>
+                                    <><ChevronUp size={18} /> Hide Alerts</>
                                 ) : (
-                                    <><ChevronDown size={16} /> View {sortedItems.length - 4} More Alerts</>
+                                    <><ChevronDown size={18} /> View {sortedItems.length - 4} More Alerts</>
                                 )}
-                            </button>
+                            </Button>
                         )}
                     </>
                 ) : (

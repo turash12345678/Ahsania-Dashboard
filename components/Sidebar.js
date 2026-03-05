@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Menu, LogOut } from 'lucide-react';
+import { Ripple } from '@/components/ui/ripple';
 import styles from './Sidebar.module.css';
 
 export default function Sidebar() {
@@ -64,7 +65,8 @@ export default function Sidebar() {
                                 className={`${styles.navLink} ${isActive ? styles.activeLink : ''}`}
                                 onClick={closeSidebar} // Close on mobile when link clicked
                             >
-                                {item.name}
+                                <span className="relative z-10">{item.name}</span>
+                                <Ripple color={isActive ? "rgba(var(--primary), 0.12)" : undefined} />
                             </Link>
                         );
                     })}
@@ -74,7 +76,8 @@ export default function Sidebar() {
                     onClick={handleLogout}
                     className={styles.logoutButton}
                 >
-                    Log Out
+                    <span className="relative z-10">Log Out</span>
+                    <Ripple color="rgba(var(--error), 0.12)" />
                 </button>
             </aside>
         </>
