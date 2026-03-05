@@ -211,13 +211,13 @@ export default function Dashboard() {
     };
 
     return (
-        <div className="flex flex-row justify-start items-start min-h-screen bg-[#EEF3FA] relative">
+        <div className="flex flex-row justify-start items-start min-h-screen relative bg-surface-container-lowest">
             <Sidebar />
 
             <main className="flex flex-col items-start p-3 md:p-6 lg:p-8 gap-4 lg:gap-8 w-full lg:ml-[260px]">
 
                 {/* --- HEADER --- */}
-                <header className="flex flex-row justify-between items-center w-full px-6 py-4 bg-surface rounded-3xl border border-outline-variant shadow-sm h-[90px]">
+                <header className="flex flex-row justify-between items-center w-full px-8 py-4 bg-surface rounded-2xl border border-outline-variant shadow-m3-1 h-[90px]">
                     <div className="flex flex-col gap-1">
                         <h1 className="text-[28px] font-roboto font-bold text-foreground leading-tight">Dashboard</h1>
                         <p className="text-muted-foreground text-[14px] font-inter">Welcome back</p>
@@ -324,17 +324,19 @@ export default function Dashboard() {
                             <CardContent className="p-6 flex flex-col h-full gap-6">
                                 <div className="flex justify-between items-center">
                                     <h2 className="text-[20px] font-bold text-foreground font-roboto">Monthly Sales</h2>
-                                    <div className="relative">
+                                    <div className="relative border border-outline-variant rounded-xl overflow-hidden shadow-sm hover:shadow-m3-1 transition-shadow bg-surface-container-high">
                                         <select
                                             value={month}
                                             onChange={(e) => handleMonthSelect(e.target.value)}
-                                            className="appearance-none bg-surface-variant rounded-full px-4 py-2 pr-8 font-roboto font-bold text-[14px] text-on-surface-variant outline-none cursor-pointer hover:bg-surface-variant/80 transition-colors"
+                                            className="appearance-none bg-transparent w-full pl-4 pr-10 py-2 font-roboto font-bold text-[14px] text-on-surface-variant outline-none cursor-pointer"
                                         >
                                             {months.map(m => (
                                                 <option key={m} value={m}>{m}</option>
                                             ))}
                                         </select>
-                                        <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" size={16} />
+                                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-on-surface-variant">
+                                            <ChevronDown size={18} />
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="flex-1 w-full relative">
@@ -350,17 +352,19 @@ export default function Dashboard() {
                                     <h3 className="text-[20px] font-bold text-foreground font-roboto flex items-center gap-2">
                                         <Activity className="text-primary" size={20} /> Revenue Velocity
                                     </h3>
-                                    <div className="relative">
+                                    <div className="relative border border-outline-variant rounded-xl overflow-hidden shadow-sm bg-surface-container-high hover:shadow-m3-1 transition-shadow">
                                         <select
                                             value={month}
                                             onChange={(e) => handleMonthSelect(e.target.value)}
-                                            className="appearance-none bg-surface-variant rounded-full px-4 py-1.5 pr-8 font-roboto font-bold text-[13px] text-on-surface-variant outline-none cursor-pointer hover:bg-surface-variant/80 transition-colors"
+                                            className="appearance-none bg-transparent w-full pl-3 pr-8 py-1.5 font-roboto font-bold text-[13px] text-on-surface-variant outline-none cursor-pointer"
                                         >
                                             {months.map(m => (
                                                 <option key={m} value={m}>{m}</option>
                                             ))}
                                         </select>
-                                        <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" size={14} />
+                                        <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none text-on-surface-variant">
+                                            <ChevronDown size={16} />
+                                        </div>
                                     </div>
                                 </div>
 
@@ -407,18 +411,20 @@ export default function Dashboard() {
                                 <div className="flex items-center gap-4" onClick={e => e.stopPropagation()}>
                                     {/* Month/All Dropdown */}
                                     {showInvestment && (
-                                        <div className="relative">
+                                        <div className="relative border border-outline-variant rounded-xl overflow-hidden shadow-sm bg-surface-container-high hover:shadow-m3-1 transition-shadow">
                                             <select
                                                 value={investmentFilter}
                                                 onChange={(e) => setInvestmentFilter(e.target.value)}
-                                                className="appearance-none bg-surface-variant rounded-full px-4 py-2 pr-8 font-roboto font-bold text-[14px] text-on-surface-variant outline-none cursor-pointer hover:bg-surface-variant/80 transition-colors"
+                                                className="appearance-none bg-transparent w-full pl-3 pr-8 py-1.5 font-roboto font-bold text-[13px] text-on-surface-variant outline-none cursor-pointer"
                                             >
                                                 <option value="All Time">All Month</option>
                                                 {months.map(m => (
                                                     <option key={m} value={m}>{m}</option>
                                                 ))}
                                             </select>
-                                            <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" size={16} />
+                                            <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none text-on-surface-variant">
+                                                <ChevronDown size={16} />
+                                            </div>
                                         </div>
                                     )}
 
@@ -532,17 +538,19 @@ export default function Dashboard() {
                                         <h3 className="text-[20px] font-bold text-foreground font-roboto flex items-center gap-2">
                                             <Timer className="text-error" size={20} /> Dead Stock Tracker
                                         </h3>
-                                        <div className="relative">
+                                        <div className="relative border border-outline-variant rounded-xl overflow-hidden shadow-sm hover:shadow-m3-1 transition-shadow bg-surface-container-high">
                                             <select
                                                 value={month}
                                                 onChange={(e) => handleMonthSelect(e.target.value)}
-                                                className="appearance-none bg-surface-variant rounded-full px-4 py-1.5 pr-8 font-roboto font-bold text-[13px] text-on-surface-variant outline-none cursor-pointer hover:bg-surface-variant/80 transition-colors"
+                                                className="appearance-none bg-transparent w-full pl-3 pr-8 py-1.5 font-roboto font-bold text-[13px] text-on-surface-variant outline-none cursor-pointer"
                                             >
                                                 {months.map(m => (
                                                     <option key={m} value={m}>{m}</option>
                                                 ))}
                                             </select>
-                                            <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" size={14} />
+                                            <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none text-on-surface-variant">
+                                                <ChevronDown size={16} />
+                                            </div>
                                         </div>
                                     </div>
                                     <DeadStock items={data.monthly?.dead_stock || []} />

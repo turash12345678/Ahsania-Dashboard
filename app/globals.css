@@ -4,50 +4,79 @@
 /* Force Rebuild */
 
 :root {
-  /* Material Design 3 Light Theme Base Baseline */
-  
+  /* Material Design 3 Light Theme Base Baseline (Crisp Neutral & Blue) */
+
   /* Primary */
-  --primary: 260 81% 60%; /* #6750A4 */
-  --on-primary: 0 0% 100%; /* #FFFFFF */
-  --primary-container: 261 80% 92%; /* #EADDFF */
-  --on-primary-container: 261 68% 18%; /* #21005D */
+  --primary: 216 100% 41%;
+  /* #0A56D1 - M3 Baseline Blue */
+  --on-primary: 0 0% 100%;
+  /* #FFFFFF */
+  --primary-container: 216 100% 88%;
+  /* #D3E3FD */
+  --on-primary-container: 216 100% 12%;
+  /* #041E49 */
 
   /* Secondary */
-  --secondary: 261 14% 44%; /* #625B71 */
-  --on-secondary: 0 0% 100%; /* #FFFFFF */
-  --secondary-container: 261 38% 91%; /* #E8DEF8 */
-  --on-secondary-container: 261 41% 15%; /* #1D192B */
+  --secondary: 216 12% 43%;
+  /* #535F70 */
+  --on-secondary: 0 0% 100%;
+  /* #FFFFFF */
+  --secondary-container: 216 38% 90%;
+  /* #D7E2F9 */
+  --on-secondary-container: 216 41% 15%;
+  /* #101C2B */
 
   /* Tertiary */
-  --tertiary: 326 31% 47%; /* #7D5260 */
-  --on-tertiary: 0 0% 100%; /* #FFFFFF */
-  --tertiary-container: 326 69% 91%; /* #FFD8E4 */
-  --on-tertiary-container: 326 53% 18%; /* #31111D */
+  --tertiary: 280 31% 47%;
+  /* #705575 */
+  --on-tertiary: 0 0% 100%;
+  /* #FFFFFF */
+  --tertiary-container: 280 69% 91%;
+  /* #FAD8FD */
+  --on-tertiary-container: 280 53% 18%;
+  /* #29132E */
 
   /* Error */
-  --error: 357 58% 47%; /* #B3261E */
-  --on-error: 0 0% 100%; /* #FFFFFF */
-  --error-container: 358 100% 92%; /* #F9DEDC */
-  --on-error-container: 358 100% 20%; /* #410E0B */
-  
+  --error: 357 58% 47%;
+  /* #B3261E */
+  --on-error: 0 0% 100%;
+  /* #FFFFFF */
+  --error-container: 358 100% 92%;
+  /* #F9DEDC */
+  --on-error-container: 358 100% 20%;
+  /* #410E0B */
+
   /* Background */
-  --background: 261 52% 99%; /* #FEF7FF */
-  --on-background: 261 7% 12%; /* #1D1B20 */
-  
+  --background: 0 0% 99%;
+  /* #FDFBFF - Pure white/subtle grey */
+  --on-background: 0 0% 10%;
+  /* #1A1C1E */
+
   /* Surface */
-  --surface: 261 52% 99%; /* #FEF7FF */
-  --on-surface: 261 7% 12%; /* #1D1B20 */
-  --surface-variant: 261 7% 91%; /* #E7E0EC */
-  --on-surface-variant: 261 5% 30%; /* #49454F */
-  --outline: 261 4% 48%; /* #79747E */
-  --outline-variant: 261 7% 81%; /* #CAC4D0 */
-  
+  --surface: 0 0% 99%;
+  /* #FDFBFF */
+  --on-surface: 0 0% 10%;
+  /* #1A1C1E */
+  --surface-variant: 216 14% 89%;
+  /* #DFE2EB */
+  --on-surface-variant: 216 11% 26%;
+  /* #43474E */
+  --outline: 216 6% 46%;
+  /* #74777F */
+  --outline-variant: 216 12% 78%;
+  /* #C4C6D0 */
+
   /* Surface Containers (for depth/tonal elevation) */
-  --surface-container-lowest: 0 0% 100%; /* #FFFFFF */
-  --surface-container-low: 261 33% 96%; /* #F7F2FA */
-  --surface-container: 261 36% 94%; /* #F3EDF7 */
-  --surface-container-high: 261 36% 92%; /* #ECE6F0 */
-  --surface-container-highest: 261 38% 90%; /* #E6E0E9 */
+  --surface-container-lowest: 0 0% 100%;
+  /* #FFFFFF */
+  --surface-container-low: 216 20% 96%;
+  /* #F3F4F9 */
+  --surface-container: 216 20% 94%;
+  /* #EEF0F6 */
+  --surface-container-high: 216 20% 92%;
+  /* #E8EBF1 */
+  --surface-container-highest: 216 20% 90%;
+  /* #E2E6EC */
 
   /* Compatibility Mapping with existing variables */
   --bg-app: hsl(var(--surface-container-low));
@@ -62,7 +91,8 @@
   --danger: hsl(var(--error));
   --success: 142 71% 45%;
 
-  --radius: 1rem; /* M3 relies heavily on 16px radius for cards */
+  --radius: 1rem;
+  /* M3 relies heavily on 16px radius for cards */
 }
 
 .dark {
@@ -71,17 +101,17 @@
   --on-primary: 261 58% 28%;
   --primary-container: 261 62% 44%;
   --on-primary-container: 261 80% 92%;
-  
+
   --background: 261 11% 9%;
   --on-background: 261 36% 91%;
   --surface: 261 11% 9%;
   --on-surface: 261 36% 91%;
-  
+
   --surface-variant: 261 5% 30%;
   --on-surface-variant: 261 7% 81%;
   --outline: 261 5% 58%;
   --outline-variant: 261 5% 30%;
-  
+
   --surface-container-lowest: 261 14% 6%;
   --surface-container-low: 261 9% 12%;
   --surface-container: 261 9% 13%;

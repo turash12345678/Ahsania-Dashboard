@@ -6,6 +6,8 @@ import Sidebar from '@/components/Sidebar';
 import { Pencil, Trash2, Plus, X, Settings, ExternalLink, PackagePlus } from 'lucide-react';
 import CategoryManagerModal from '@/components/CategoryManagerModal';
 import ProductDetailsSidebar from '@/components/ProductDetailsSidebar';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 export default function ProductsPage() {
     const [products, setProducts] = useState([]);
@@ -349,13 +351,14 @@ export default function ProductsPage() {
                                 <PackagePlus size={18} /> Add Shipment
                             </Link>
 
-                            <button
-                                className="flex items-center gap-2 px-4 py-2 bg-[#0065F4] text-white rounded-xl font-semibold shadow hover:bg-[#0052cc] transition-colors"
+                            <Button
+                                variant="filled"
+                                className="flex items-center gap-2 shadow"
                                 onClick={openAddModal}
                                 title="Shortcut: Shift + N"
                             >
                                 <Plus size={18} /> Add Product
-                            </button>
+                            </Button>
                         </div>
 
                         {/* Filters & Sorting Toolbar */}
@@ -516,15 +519,14 @@ export default function ProductsPage() {
                             {/* Added onKeyDown to form to catch Enter keys */}
                             <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-[#374151] mb-1">Product Name</label>
-                                    <input
-                                        className="w-full px-4 py-2 rounded-xl border border-[#D1D5DB] focus:outline-none focus:ring-2 focus:ring-[#0065F4] focus:border-transparent transition-shadow"
+                                    <label className="block text-sm font-medium text-on-surface-variant mb-1">Product Name</label>
+                                    <Input
                                         required
                                         value={formData.name}
                                         onChange={e => setFormData({ ...formData, name: e.target.value })}
                                         placeholder="e.g. Premium Scarf"
-                                        autoFocus // Focus on name when modal opens
-                                        disabled={isEditMode && existingProduct} // Can't rename in restock mode effectively? Actually standard edit mode handles this.
+                                        autoFocus
+                                        disabled={isEditMode && existingProduct}
                                     />
 
                                     {/* Layer 2: Smart Restock Info Box */}
@@ -552,10 +554,10 @@ export default function ProductsPage() {
                                     )}
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-[#374151] mb-1">Category</label>
+                                    <label className="block text-sm font-medium text-on-surface-variant mb-1">Category</label>
                                     <div className="flex gap-2">
                                         <select
-                                            className="w-full px-4 py-2 rounded-xl border border-[#D1D5DB] focus:outline-none focus:ring-2 focus:ring-[#0065F4] transition-shadow bg-white"
+                                            className="w-full flex h-12 rounded-t-[4px] border-b-2 border-border bg-surface-variant px-4 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:border-primary transition-colors cursor-pointer"
                                             value={formData.category_id}
                                             onChange={e => setFormData({ ...formData, category_id: e.target.value })}
                                         >
@@ -584,11 +586,10 @@ export default function ProductsPage() {
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-[#374151] mb-1">Buy Price (Cost)</label>
-                                        <input
-                                            type="text" // Changed to text to allow Bangla digits initially
+                                        <label className="block text-sm font-medium text-on-surface-variant mb-1">Buy Price (Cost)</label>
+                                        <Input
+                                            type="text"
                                             inputMode="decimal"
-                                            className="w-full px-4 py-2 rounded-xl border border-[#D1D5DB] focus:outline-none focus:ring-2 focus:ring-[#0065F4] transition-shadow"
                                             required
                                             value={formData.buy_price}
                                             onChange={e => {
@@ -598,11 +599,10 @@ export default function ProductsPage() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-[#374151] mb-1">Sell Price</label>
-                                        <input
+                                        <label className="block text-sm font-medium text-on-surface-variant mb-1">Sell Price</label>
+                                        <Input
                                             type="text"
                                             inputMode="decimal"
-                                            className="w-full px-4 py-2 rounded-xl border border-[#D1D5DB] focus:outline-none focus:ring-2 focus:ring-[#0065F4] transition-shadow"
                                             required
                                             value={formData.sell_price}
                                             onChange={e => setFormData({ ...formData, sell_price: normalizeNumber(e.target.value) })}
@@ -610,40 +610,40 @@ export default function ProductsPage() {
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-[#374151] mb-1">Stock Quantity</label>
-                                    <input
+                                    <label className="block text-sm font-medium text-on-surface-variant mb-1">Stock Quantity</label>
+                                    <Input
                                         type="text"
                                         inputMode="numeric"
-                                        className="w-full px-4 py-2 rounded-xl border border-[#D1D5DB] focus:outline-none focus:ring-2 focus:ring-[#0065F4] transition-shadow"
                                         value={formData.stock_quantity}
                                         onChange={e => setFormData({ ...formData, stock_quantity: normalizeNumber(e.target.value) })}
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-[#374151] mb-1">Entry Date</label>
-                                    <input
+                                    <label className="block text-sm font-medium text-on-surface-variant mb-1">Entry Date</label>
+                                    <Input
                                         type="date"
-                                        className="w-full px-4 py-2 rounded-xl border border-[#D1D5DB] focus:outline-none focus:ring-2 focus:ring-[#0065F4] transition-shadow"
                                         value={formData.created_at || ''}
                                         onChange={e => setFormData({ ...formData, created_at: e.target.value })}
                                     />
                                 </div>
 
                                 <div className="flex gap-3 pt-4">
-                                    <button
+                                    <Button
                                         type="button"
-                                        className="flex-1 px-4 py-2 bg-white border border-[#D1D5DB] text-[#374151] rounded-xl font-medium hover:bg-[#F9FAFB] transition-colors"
+                                        variant="outlined"
+                                        className="flex-1"
                                         onClick={() => setShowModal(false)}
                                     >
                                         Cancel
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
                                         type="submit"
-                                        className="flex-1 px-4 py-2 bg-[#0065F4] text-white rounded-xl font-bold shadow hover:bg-[#0052cc] transition-colors"
+                                        variant="filled"
+                                        className="flex-1"
                                     >
                                         {isEditMode ? 'Update Product' : 'Save Product'}
-                                    </button>
+                                    </Button>
                                 </div>
                             </form>
                         </div>
@@ -656,9 +656,8 @@ export default function ProductsPage() {
                             <h2 className="text-lg font-bold text-[#111827] mb-4">Add New Category</h2>
                             <form onSubmit={handleAddCategory} className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-[#374151] mb-1">Category Name</label>
-                                    <input
-                                        className="w-full px-4 py-2 rounded-xl border border-[#D1D5DB] focus:outline-none focus:ring-2 focus:ring-[#0065F4] transition-shadow"
+                                    <label className="block text-sm font-medium text-on-surface-variant mb-1">Category Name</label>
+                                    <Input
                                         required
                                         value={newCategoryName}
                                         onChange={e => setNewCategoryName(e.target.value)}
@@ -667,8 +666,8 @@ export default function ProductsPage() {
                                     />
                                 </div>
                                 <div className="flex gap-3 justify-end pt-2">
-                                    <button type="button" className="px-4 py-2 bg-white border border-[#D1D5DB] text-[#374151] rounded-xl font-medium hover:bg-[#F9FAFB] transition-colors" onClick={() => setShowCategoryModal(false)}>Cancel</button>
-                                    <button type="submit" className="px-4 py-2 bg-[#0065F4] text-white rounded-xl font-bold shadow hover:bg-[#0052cc] transition-colors">Add</button>
+                                    <Button type="button" variant="text" onClick={() => setShowCategoryModal(false)}>Cancel</Button>
+                                    <Button type="submit" variant="filled">Add</Button>
                                 </div>
                             </form>
                         </div>
