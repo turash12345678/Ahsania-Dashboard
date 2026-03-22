@@ -1,4 +1,4 @@
-'use strict';
+'use client';
 import React, { useState, useEffect } from 'react';
 import { X, Edit2, Trash2, Check, XCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -25,8 +25,8 @@ export default function CategoryManagerModal({ isOpen, onClose, type, onUpdate }
             if (Array.isArray(data)) {
                 setCategories(data);
             }
-        } catch (error) {
-            console.error('Failed to load categories', error);
+        } catch (err) {
+            console.error('Failed to load categories', err);
         } finally {
             setLoading(false);
         }
@@ -45,35 +45,31 @@ export default function CategoryManagerModal({ isOpen, onClose, type, onUpdate }
 
     const handleSaveEdit = async (id) => {
         if (!editName.trim()) return;
-
         try {
             const res = await fetch('/api/inventory/categories', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, name: editName })
             });
-
             if (res.ok) {
                 setCategories(categories.map(c => c.id === id ? { ...c, name: editName } : c));
                 setEditingId(null);
-                if (onUpdate) onUpdate(); // Refresh parent list
+                if (onUpdate) onUpdate();
             } else {
                 const err = await res.json();
                 setError(err.error || 'Failed to update');
             }
-        } catch (error) {
+        } catch {
             setError('Failed to update');
         }
     };
 
     const handleDelete = async (id) => {
         if (!confirm('Are you sure? Products in this category will become Uncategorized.')) return;
-
         try {
             const res = await fetch(`/api/inventory/categories?id=${id}`, {
                 method: 'DELETE'
             });
-
             if (res.ok) {
                 setCategories(categories.filter(c => c.id !== id));
                 if (onUpdate) onUpdate();
@@ -81,7 +77,7 @@ export default function CategoryManagerModal({ isOpen, onClose, type, onUpdate }
                 const err = await res.json();
                 setError(err.error || 'Failed to delete');
             }
-        } catch (error) {
+        } catch {
             setError('Failed to delete');
         }
     };
