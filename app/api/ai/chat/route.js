@@ -63,6 +63,11 @@ export async function POST(request) {
             'SELECT name, stock_quantity, sell_price FROM products WHERE stock_quantity <= 5 ORDER BY stock_quantity ASC LIMIT 10'
         );
 
+        // 4b. Full active product list for Agent context
+        const activeProducts = await db.execute(
+            'SELECT name, stock_quantity, sell_price FROM products WHERE stock_quantity > 0 ORDER BY name ASC'
+        );
+
         // 5. Total active inventory value
         const inventoryValue = await db.execute(
             'SELECT COUNT(*) as total_products, SUM(stock_quantity * buy_price) as total_value, SUM(stock_quantity * sell_price) as potential_revenue FROM products WHERE stock_quantity > 0'
@@ -112,6 +117,10 @@ export async function POST(request) {
             ).join('\n')
             : '  No dead stock this month.';
 
+        const activeCatalogText = activeProducts.rows.length > 0
+            ? activeProducts.rows.map(p => `  - ${p.name}: ${p.stock_quantity} in stock (Price: ৳${Number(p.sell_price || 0)})`).join('\n')
+            : 'No active products available.';
+
         const systemPrompt = `You are an intelligent business analyst AI assistant embedded in the Ahsania Dashboard — a telecom/mobile shop inventory and sales management system. You have real-time access to the business data shown below. Your job is to answer questions, perform calculations, spot trends, and give actionable recommendations based on this data.
 
 Be concise, direct, and helpful. Use Bangladeshi Taka (৳) for currency. If the user writes in Bengali, respond in Bengali. If in English, respond in English.
@@ -146,11 +155,15 @@ ${deadStockText}
 - Total Revenue: ৳${Number(allTime?.total_revenue || 0).toLocaleString()}
 - Total Orders: ${allTime?.total_orders || 0}
 
+---
+Available Inventory Catalog (Name: Stock (Price)):
+${activeCatalogText}
+
 --- END OF DATA ---
 
 Answer the user's question based on this data. You can calculate, compare, and provide business recommendations. If asked something not covered by the data, say so politely.
 
-If the user asks to perform an action (like adding a product or recording a sale), use the available tools. For product names, try to match the exact spelling if provided.`;
+If the user asks to perform an action (like adding a product or recording a sale), use the available tools. You do not need to ask the user for permission or missing details if you can figure it out from the catalog (e.g. use the catalog price). For product names, try to match the exact spelling from the catalog. Do NOT apologize for lack of page access; use your tools to complete the request instead.`;
 
         // --- Call OpenRouter API ---
         const openrouterRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -178,9 +191,9 @@ If the user asks to perform an action (like adding a product or recording a sale
                                 properties: {
                                     product_name: { type: 'string', description: 'Exact or close name of the product being sold' },
                                     quantity: { type: 'number', description: 'Number of units sold' },
-                                    unit_price: { type: 'number', description: 'Price per unit at which it was sold' }
+                                    unit_price: { type: 'number', description: 'Price per unit at which it was sold (Optional if known)' }
                                 },
-                                required: ['product_name', 'quantity', 'unit_price']
+                                required: ['product_name', 'quantity']
                             }
                         }
                     },

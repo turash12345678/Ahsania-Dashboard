@@ -306,13 +306,14 @@ export function AIAssistant({ selectedDate }: AIAssistantProps) {
                 } else if (matchedList[0].stock_quantity < args.quantity) {
                     resultMsg = `Error: Insufficient stock. Only ${matchedList[0].stock_quantity} available for ${matchedList[0].name}.`;
                 } else {
+                    const finalPrice = args.unit_price || matchedList[0].sell_price;
                     const sellRes = await fetch('/api/sales', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            items: [{ type: 'product', id: matchedList[0].id, quantity: args.quantity, price: args.unit_price }],
+                            items: [{ type: 'product', id: matchedList[0].id, quantity: args.quantity, price: finalPrice }],
                             payment_method: 'Cash',
-                            total_amount: args.quantity * args.unit_price,
+                            total_amount: args.quantity * finalPrice,
                             user_id: 1
                         })
                     });
