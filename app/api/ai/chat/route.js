@@ -2,9 +2,9 @@ import db from '@/lib/db';
 
 export async function POST(request) {
     try {
-        const { message, selectedDate } = await request.json();
+        const { message, selectedDate, apiMessages } = await request.json();
 
-        if (!message) {
+        if (!message && !apiMessages) {
             return Response.json({ error: 'Message is required' }, { status: 400 });
         }
 
@@ -160,10 +160,10 @@ Answer the user's question based on this data. You can calculate, compare, and p
                 'X-Title': 'Ahsania Dashboard AI'
             },
             body: JSON.stringify({
-                model: 'anthropic/claude-opus-4.6',
+                model: 'anthropic/claude-3-5-haiku',
                 messages: [
                     { role: 'system', content: systemPrompt },
-                    { role: 'user', content: message }
+                    ...(apiMessages ?? [{ role: 'user', content: message }])
                 ],
                 max_tokens: 1024,
                 temperature: 0.3
