@@ -9,7 +9,7 @@ import { StockAlerts } from '@/components/dashboard/StockAlerts';
 import { DeadStock } from '@/components/dashboard/DeadStock';
 import { SalesHistoryTable } from '@/components/dashboard/SalesHistoryTable';
 import { AIAssistant } from '@/components/dashboard/AIAssistant';
-import { BadgeDollarSign, ShoppingCart, Download, ChevronLeft, ChevronRight, User, CircleDollarSign, Timer, Activity } from "lucide-react";
+import { BadgeDollarSign, ShoppingCart, Download, ChevronLeft, ChevronRight, ChevronDown, User, CircleDollarSign, Timer, Activity } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
