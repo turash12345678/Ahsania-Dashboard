@@ -72,6 +72,37 @@ export function AIAssistant({ selectedDate }: AIAssistantProps) {
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    // ── Clipboard paste (Ctrl+V image) ──────────────────────────
+    const handlePaste = async (e: React.ClipboardEvent) => {
+        const items = e.clipboardData?.items;
+        if (!items) return;
+        for (const item of Array.from(items)) {
+            if (item.type.startsWith('image/')) {
+                e.preventDefault();
+                const file = item.getAsFile();
+                if (!file) break;
+                setFileLoading(true);
+                try {
+                    const form = new FormData();
+                    form.append('file', file, 'pasted-image.png');
+                    const res = await fetch('/api/ai/file', { method: 'POST', body: form });
+                    const data = await res.json();
+                    if (!data.error) {
+                        setAttachedFile({
+                            name: 'Pasted Image',
+                            type: 'image',
+                            base64: data.base64,
+                            mimeType: data.mimeType,
+                            displayType: 'Image'
+                        });
+                    } else { alert('Image error: ' + data.error); }
+                } catch { alert('Failed to process pasted image.'); }
+                finally { setFileLoading(false); }
+                break;
+            }
+        }
+    };
+
     // ── Load sessions from localStorage ─────────────────────────
     useEffect(() => {
         try {
@@ -419,7 +450,11 @@ export function AIAssistant({ selectedDate }: AIAssistantProps) {
                                                     />
                                                 )}
                                                 {/* Bubble */}
-                                                <div className={`px-3.5 py-2.5 rounded-2xl text-[13px] font-inter leading-relaxed whitespace-pre-wrap ${msg.role === 'user' ? 'bg-primary text-on-primary rounded-br-md' : 'bg-surface-container text-on-surface rounded-bl-md border border-outline-variant'}`}>
+                                                <div className={`px-3.5 py-2.5 rounded-2xl text-[13px] font-inter leading-relaxed whitespace-pre-wrap ${
+                                                    msg.role === 'user'
+                                                        ? 'bg-primary text-white rounded-br-md'
+                                                        : 'bg-white text-gray-900 rounded-bl-md border border-gray-200 shadow-sm'
+                                                }`}>
                                                     {msg.content}
                                                 </div>
                                             </div>
@@ -491,7 +526,8 @@ export function AIAssistant({ selectedDate }: AIAssistantProps) {
                                         value={input}
                                         onChange={e => setInput(e.target.value)}
                                         onKeyDown={handleKeyDown}
-                                        placeholder="প্রশ্ন করুন বা ফাইল attach করুন..."
+                                        onPaste={handlePaste}
+                                        placeholder="প্রশ্ন করুন বা Ctrl+V দিয়ে image paste করুন..."
                                         rows={1}
                                         className="flex-1 resize-none bg-surface-container-high rounded-xl px-3.5 py-2.5 text-[13px] font-inter text-on-surface outline-none border border-transparent focus:border-primary transition-colors placeholder:text-on-surface-variant/60"
                                         style={{ maxHeight: '90px', minHeight: '38px' }}
