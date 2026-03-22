@@ -160,7 +160,7 @@ Answer the user's question based on this data. You can calculate, compare, and p
                 'X-Title': 'Ahsania Dashboard AI'
             },
             body: JSON.stringify({
-                model: 'anthropic/claude-3-5-haiku',
+                model: 'google/gemini-2.5-flash',
                 messages: [
                     { role: 'system', content: systemPrompt },
                     ...(apiMessages ?? [{ role: 'user', content: message }])
