@@ -1,12 +1,8 @@
 import { NextResponse } from 'next/server';
-import pdfParse from 'pdf-parse';
-import * as XLSX from 'xlsx';
-import mammoth from 'mammoth';
 
 export const runtime = 'nodejs';
 
-// Max file size: 10MB
-const MAX_BYTES = 10 * 1024 * 1024;
+const MAX_BYTES = 10 * 1024 * 1024; // 10MB
 
 export async function POST(request) {
     try {
@@ -30,8 +26,10 @@ export async function POST(request) {
 
         // --- PDF ---
         if (ext === 'pdf' || mimeType === 'application/pdf') {
+            // Use require to avoid Turbopack ESM issues with pdf-parse
+            const pdfParse = (await import('pdf-parse/lib/pdf-parse.js')).default;
             const data = await pdfParse(buffer);
-            const text = data.text.slice(0, 12000); // limit chars
+            const text = data.text.slice(0, 12000);
             return NextResponse.json({
                 type: 'text',
                 content: `[PDF: ${fileName}]\n\n${text}`,
@@ -39,8 +37,9 @@ export async function POST(request) {
             });
         }
 
-        // --- Excel ---
+        // --- Excel / CSV ---
         if (['xlsx', 'xls', 'csv'].includes(ext)) {
+            const XLSX = await import('xlsx');
             const workbook = XLSX.read(buffer, { type: 'buffer' });
             let content = `[Excel: ${fileName}]\n\n`;
             workbook.SheetNames.slice(0, 3).forEach(sheetName => {
@@ -53,6 +52,7 @@ export async function POST(request) {
 
         // --- Word ---
         if (['docx', 'doc'].includes(ext)) {
+            const mammoth = (await import('mammoth')).default;
             const result = await mammoth.extractRawText({ buffer });
             const text = result.value.slice(0, 12000);
             return NextResponse.json({
@@ -73,7 +73,7 @@ export async function POST(request) {
             });
         }
 
-        return NextResponse.json({ error: 'Unsupported file type' }, { status: 400 });
+        return NextResponse.json({ error: 'Unsupported file type. Supported: Image, PDF, Excel, Word' }, { status: 400 });
 
     } catch (error) {
         console.error('File processing error:', error);
