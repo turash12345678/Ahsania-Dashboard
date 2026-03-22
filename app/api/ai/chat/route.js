@@ -148,7 +148,9 @@ ${deadStockText}
 
 --- END OF DATA ---
 
-Answer the user's question based on this data. You can calculate, compare, and provide business recommendations. If asked something not covered by the data, say so politely.`;
+Answer the user's question based on this data. You can calculate, compare, and provide business recommendations. If asked something not covered by the data, say so politely.
+
+If the user asks to perform an action (like adding a product or recording a sale), use the available tools. For product names, try to match the exact spelling if provided.`;
 
         // --- Call OpenRouter API ---
         const openrouterRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -165,6 +167,41 @@ Answer the user's question based on this data. You can calculate, compare, and p
                     { role: 'system', content: systemPrompt },
                     ...(apiMessages ?? [{ role: 'user', content: message }])
                 ],
+                tools: [
+                    {
+                        type: 'function',
+                        function: {
+                            name: 'sell_product',
+                            description: 'Records a sale of a product. Use this when the user asks to sell a specific product.',
+                            parameters: {
+                                type: 'object',
+                                properties: {
+                                    product_name: { type: 'string', description: 'Exact or close name of the product being sold' },
+                                    quantity: { type: 'number', description: 'Number of units sold' },
+                                    unit_price: { type: 'number', description: 'Price per unit at which it was sold' }
+                                },
+                                required: ['product_name', 'quantity', 'unit_price']
+                            }
+                        }
+                    },
+                    {
+                        type: 'function',
+                        function: {
+                            name: 'add_product',
+                            description: 'Adds a new product to the inventory. Use this when the user wants to add a new item to the store.',
+                            parameters: {
+                                type: 'object',
+                                properties: {
+                                    product_name: { type: 'string', description: 'Name of the new product' },
+                                    buy_price: { type: 'number', description: 'Purchasing price per unit' },
+                                    sell_price: { type: 'number', description: 'Selling price per unit' },
+                                    stock: { type: 'number', description: 'Initial stock quantity' }
+                                },
+                                required: ['product_name', 'buy_price', 'sell_price', 'stock']
+                            }
+                        }
+                    }
+                ],
                 max_tokens: 1024,
                 temperature: 0.3
             })
@@ -177,8 +214,16 @@ Answer the user's question based on this data. You can calculate, compare, and p
         }
 
         const aiData = await openrouterRes.json();
-        const reply = aiData.choices?.[0]?.message?.content || 'No response from AI.';
+        const msgMatch = aiData.choices?.[0]?.message;
 
+        if (msgMatch?.tool_calls) {
+            return Response.json({
+                reply: msgMatch.content || '',
+                tool_calls: msgMatch.tool_calls
+            });
+        }
+
+        const reply = msgMatch?.content || 'No response from AI.';
         return Response.json({ reply });
 
     } catch (error) {
