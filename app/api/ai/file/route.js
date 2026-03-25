@@ -26,8 +26,9 @@ export async function POST(request) {
 
         // --- PDF ---
         if (ext === 'pdf' || mimeType === 'application/pdf') {
-            // Use require to avoid Turbopack ESM issues with pdf-parse
-            const pdfParse = (await import('pdf-parse/lib/pdf-parse.js')).default;
+            // Use standard import; pdf-parse 2.4+ uses strict exports
+            const pdfParseModule = await import('pdf-parse');
+            const pdfParse = pdfParseModule.default || pdfParseModule;
             const data = await pdfParse(buffer);
             const text = data.text.slice(0, 12000);
             return NextResponse.json({
