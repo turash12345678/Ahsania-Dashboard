@@ -26,14 +26,36 @@ export async function POST(request) {
 
         // --- PDF ---
         if (ext === 'pdf' || mimeType === 'application/pdf') {
-            // Use standard import; pdf-parse 2.4+ uses strict exports
-            const pdfParseModule = await import('pdf-parse');
-            const pdfParse = pdfParseModule.default || pdfParseModule;
-            const data = await pdfParse(buffer);
-            const text = data.text.slice(0, 12000);
+            // Extract readable text directly from the PDF buffer without external deps
+            // This works for most text-based PDFs by scanning for text stream content
+            const raw = buffer.toString('latin1');
+            const textMatches = [];
+            // Match text content blocks in PDF streams
+            const streamRegex = /stream\r?\n([\s\S]*?)\r?\nendstream/g;
+            let match;
+            while ((match = streamRegex.exec(raw)) !== null) {
+                const streamContent = match[1];
+                // Extract visible text via BT...ET blocks and Tj/TJ operators
+                const textRegex = /\(((?:[^()\\]|\\.)*)\)\s*Tj|\[((?:[^\[\]])*)\]\s*TJ/g;
+                let textMatch;
+                while ((textMatch = textRegex.exec(streamContent)) !== null) {
+                    const chunk = textMatch[1] || textMatch[2] || '';
+                    const cleaned = chunk
+                        .replace(/\\n/g, '\n')
+                        .replace(/\\r/g, '')
+                        .replace(/\\t/g, ' ')
+                        .replace(/\\\(/g, '(')
+                        .replace(/\\\)/g, ')')
+                        .replace(/\\\\/g, '\\');
+                    if (cleaned.trim()) textMatches.push(cleaned);
+                }
+            }
+            const text = textMatches.join(' ').replace(/\s+/g, ' ').trim().slice(0, 12000);
             return NextResponse.json({
                 type: 'text',
-                content: `[PDF: ${fileName}]\n\n${text}`,
+                content: text
+                    ? `[PDF: ${fileName}]\n\n${text}`
+                    : `[PDF: ${fileName}]\n\nThis PDF appears to use image-based or encrypted content which cannot be extracted as text. Please copy and paste the relevant text manually.`,
                 fileName
             });
         }
