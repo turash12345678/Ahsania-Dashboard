@@ -10,8 +10,6 @@ import { DeadStock } from '@/components/dashboard/DeadStock';
 import { SalesHistoryTable } from '@/components/dashboard/SalesHistoryTable';
 import { AIAssistant } from '@/components/dashboard/AIAssistant';
 import { BadgeDollarSign, ShoppingCart, Download, ChevronLeft, ChevronRight, ChevronDown, User, CircleDollarSign, Timer, Activity } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 
 export default function Dashboard() {
     const router = useRouter();
@@ -218,28 +216,28 @@ export default function Dashboard() {
             <main className="flex flex-col items-start p-3 md:p-6 lg:p-8 gap-4 lg:gap-8 w-full lg:ml-[260px]">
 
                 {/* --- HEADER --- */}
-                <header className="flex flex-row justify-between items-center w-full px-6 py-4 bg-surface rounded-3xl border border-outline-variant shadow-sm h-[90px]">
-                    <div className="flex flex-col gap-1">
-                        <h1 className="text-[28px] font-roboto font-bold text-foreground leading-tight">Dashboard</h1>
-                        <p className="text-muted-foreground text-[14px] font-inter">Welcome back</p>
+                <header className="flex flex-row justify-between items-center w-full p-4 bg-white rounded-[24px] shadow-sm h-[90px]">
+                    <div className="flex flex-col gap-2">
+                        <h1 className="text-[24px] font-roboto font-bold text-[#0C1829] leading-9">Dashboard</h1>
+                        <p className="text-[#7B7480] text-[14px] font-inter">Welcome back</p>
                     </div>
 
                     <div className="flex flex-row items-center gap-6">
                         {/* Date Picker (Custom UI from CSS) */}
-                        <div className="flex flex-row items-center p-1 gap-2 bg-surface-variant rounded-full h-[48px] px-2 shadow-inner">
-                            <Button variant="tonal" size="icon" onClick={() => changeDate(-1)} className="w-10 h-10 rounded-full bg-surface hover:bg-surface border border-outline-variant disabled:opacity-50">
-                                <ChevronLeft size={20} className="text-on-surface" />
-                            </Button>
-                            <div className="flex flex-row items-center gap-1 mx-2">
-                                <span className="font-roboto font-bold text-[15px] text-on-surface-variant">{monthNum}</span>
-                                <span className="font-roboto font-bold text-[15px] text-on-surface-variant">/</span>
-                                <span className="font-roboto font-bold text-[15px] text-on-surface-variant">{day}</span>
-                                <span className="font-roboto font-bold text-[15px] text-on-surface-variant">/</span>
-                                <span className="font-roboto font-bold text-[15px] text-on-surface-variant">{year}</span>
+                        <div className="flex flex-row items-center p-1 gap-2 bg-[#F2F4F5] rounded-[16px] h-[40px] px-2">
+                            <button onClick={() => changeDate(-1)} className="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm hover:bg-gray-50 active:scale-95 transition-all">
+                                <ChevronLeft size={16} color="#0C1829" />
+                            </button>
+                            <div className="flex flex-row items-center gap-1">
+                                <span className="font-roboto font-bold text-[14px] text-[#0C1829]">{monthNum}</span>
+                                <span className="font-roboto font-bold text-[14px] text-[#0C1829]">/</span>
+                                <span className="font-roboto font-bold text-[14px] text-[#0C1829]">{day}</span>
+                                <span className="font-roboto font-bold text-[14px] text-[#0C1829]">/</span>
+                                <span className="font-roboto font-bold text-[14px] text-[#0C1829]">{year}</span>
                             </div>
-                            <Button variant="tonal" size="icon" onClick={() => changeDate(1)} className="w-10 h-10 rounded-full bg-surface hover:bg-surface border border-outline-variant disabled:opacity-50">
-                                <ChevronRight size={20} className="text-on-surface" />
-                            </Button>
+                            <button onClick={() => changeDate(1)} className="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm hover:bg-gray-50 active:scale-95 transition-all">
+                                <ChevronRight size={16} color="#0C1829" />
+                            </button>
                         </div>
                     </div>
                 </header>
@@ -261,149 +259,150 @@ export default function Dashboard() {
                         </div>
 
                         {/* Monthly Stats Cards */}
+                        {/* Mobile: Horizontal Scroll. Desktop: Grid/Flex */}
                         <div className="flex flex-row gap-3 overflow-x-auto pb-2 no-scrollbar md:pb-0 md:overflow-visible min-h-[160px] md:h-[150px]">
                             {/* Net Sale (Green) */}
-                            <Card className="min-w-[280px] md:min-w-0 flex-1 flex flex-col justify-between">
-                                <CardContent className="p-6 h-full flex flex-col justify-between">
-                                    <div className="flex justify-between items-start">
-                                        <div className="flex flex-col gap-2">
-                                            <span className="text-on-surface-variant font-roboto font-medium text-[16px]">Net Sale</span>
-                                            <span className="text-primary font-nirmala font-bold text-[36px] flex items-center">
-                                                <span className="text-[36px] mr-1 font-extrabold">৳</span>{(data.monthly.revenue || 0).toLocaleString()}
-                                            </span>
-                                        </div>
-                                        <div className="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container">
-                                            <CircleDollarSign size={24} />
-                                        </div>
+                            <div className="min-w-[280px] md:min-w-0 flex-1 bg-white rounded-[26px] p-6 shadow-sm flex flex-col justify-between">
+                                <div className="flex justify-between items-start">
+                                    <div className="flex flex-col gap-2">
+                                        <span className="text-[#7B7480] font-roboto font-medium text-[16px]">Net Sale</span>
+                                        <span className="text-[#00BC7C] font-nirmala font-bold text-[36px] flex items-center">
+                                            <span className="text-[36px] mr-1 font-extrabold">৳</span>{(data.monthly.revenue || 0).toLocaleString()}
+                                        </span>
                                     </div>
-                                    <span className="text-muted-foreground text-[14px] font-medium mt-auto">Revenue</span>
-                                </CardContent>
-                            </Card>
+                                    <div className="w-12 h-12 rounded-full bg-[#E6F8F2] flex items-center justify-center text-[#00BC7C]">
+                                        <CircleDollarSign size={24} />
+                                    </div>
+                                </div>
+                                <span className="text-[#7B7480] text-[14px] font-medium">Revenue</span>
+                            </div>
 
                             {/* Net Income */}
-                            <Card className="min-w-[280px] md:min-w-0 flex-1 flex flex-col justify-between">
-                                <CardContent className="p-6 h-full flex flex-col justify-between">
-                                    <div className="flex justify-between items-start">
-                                        <div className="flex flex-col gap-2">
-                                            <span className="text-on-surface-variant font-roboto font-medium text-[16px]">Net Income</span>
-                                            <span className="text-secondary font-nirmala font-bold text-[36px] flex items-center">
-                                                <span className="text-[36px] mr-1 font-extrabold">৳</span>{(data.monthly.profit || 0).toLocaleString()}
-                                            </span>
-                                        </div>
-                                        <div className="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
-                                            <BadgeDollarSign size={24} />
-                                        </div>
+                            <div className="min-w-[280px] md:min-w-0 flex-1 bg-white rounded-[26px] p-6 shadow-sm flex flex-col justify-between">
+                                <div className="flex justify-between items-start">
+                                    <div className="flex flex-col gap-2">
+                                        <span className="text-[#7B7480] font-roboto font-medium text-[16px]">Net Income</span>
+                                        <span className="text-[#0067FD] font-nirmala font-bold text-[36px] flex items-center">
+                                            <span className="text-[36px] mr-1 font-extrabold">৳</span>{(data.monthly.profit || 0).toLocaleString()}
+                                        </span>
                                     </div>
-                                    <span className="text-muted-foreground text-[14px] font-medium mt-auto">Profit</span>
-                                </CardContent>
-                            </Card>
+                                    <div className="w-12 h-12 rounded-full bg-[#E6F0FF] flex items-center justify-center text-[#0067FD]">
+                                        <BadgeDollarSign size={24} />
+                                    </div>
+                                </div>
+                                <span className="text-[#7B7480] text-[14px] font-medium">Profit</span>
+                            </div>
 
                             {/* Orders */}
-                            <Card className="min-w-[280px] md:min-w-0 flex-1 flex flex-col justify-between">
-                                <CardContent className="p-6 h-full flex flex-col justify-between">
-                                    <div className="flex justify-between items-start">
-                                        <div className="flex flex-col gap-2">
-                                            <span className="text-on-surface-variant font-roboto font-medium text-[16px]">Orders</span>
-                                            <span className="text-tertiary font-nirmala font-bold text-[36px]">
-                                                {data.monthly.orders || 0}
-                                            </span>
-                                        </div>
-                                        <div className="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
-                                            <ShoppingCart size={24} />
-                                        </div>
+                            <div className="min-w-[280px] md:min-w-0 flex-1 bg-white rounded-[26px] p-6 shadow-sm flex flex-col justify-between">
+                                <div className="flex justify-between items-start">
+                                    <div className="flex flex-col gap-2">
+                                        <span className="text-[#7B7480] font-roboto font-medium text-[16px]">Orders</span>
+                                        <span className="text-[#FF9900] font-nirmala font-bold text-[36px]">
+                                            {data.monthly.orders || 0}
+                                        </span>
                                     </div>
-                                    <div className="flex gap-4 text-[12px] font-medium text-muted-foreground mt-4">
-                                        <span>Service : {data.monthly.service_count || 0}</span>
-                                        <span>Product : {data.monthly.product_count || 0}</span>
+                                    <div className="w-12 h-12 rounded-full bg-[#FFF5E6] flex items-center justify-center text-[#FF9900]">
+                                        <ShoppingCart size={24} />
                                     </div>
-                                </CardContent>
-                            </Card>
+                                </div>
+                                <div className="flex gap-4 text-[12px] font-medium text-[#465566]">
+                                    <span>Service : {data.monthly.service_count || 0}</span>
+                                    <span>Product : {data.monthly.product_count || 0}</span>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Monthly Graph - CSS Applied */}
-                        <Card className="w-full h-[400px] flex flex-col">
-                            <CardContent className="p-6 flex flex-col h-full gap-6">
-                                <div className="flex justify-between items-center">
-                                    <h2 className="text-[20px] font-bold text-foreground font-roboto">Monthly Sales</h2>
-                                    <div className="relative">
-                                        <select
-                                            value={month}
-                                            onChange={(e) => handleMonthSelect(e.target.value)}
-                                            className="appearance-none bg-surface-variant rounded-full px-4 py-2 pr-8 font-roboto font-bold text-[14px] text-on-surface-variant outline-none cursor-pointer hover:bg-surface-variant/80 transition-colors"
-                                        >
-                                            {months.map(m => (
-                                                <option key={m} value={m}>{m}</option>
-                                            ))}
-                                        </select>
-                                        <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" size={16} />
-                                    </div>
+                        <div style={{
+                            padding: '24px',
+                            gap: '24px',
+                            width: '100%',
+                            height: '400px',
+                            background: '#FFFFFF',
+                            boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.05)',
+                            borderRadius: '32px',
+                            display: 'flex',
+                            flexDirection: 'column'
+                        }}>
+                            <div className="flex justify-between items-center">
+                                <h2 className="text-[20px] font-bold text-[#0C1829] font-roboto">Monthly Sales</h2>
+                                <div className="relative">
+                                    <select
+                                        value={month}
+                                        onChange={(e) => handleMonthSelect(e.target.value)}
+                                        className="appearance-none bg-[#F2F4F5] rounded-[16px] px-4 py-2 pr-8 font-roboto font-bold text-[14px] text-[#0C1829] outline-none cursor-pointer hover:bg-gray-200 transition-colors"
+                                    >
+                                        {months.map(m => (
+                                            <option key={m} value={m}>{m}</option>
+                                        ))}
+                                    </select>
+                                    <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" size={16} color="#0C1829" />
                                 </div>
-                                <div className="flex-1 w-full relative">
-                                    <SalesGraph data={data.monthly.graph_data} />
-                                </div>
-                            </CardContent>
-                        </Card>
+                            </div>
+                            <div className="flex-1 w-full relative">
+                                <SalesGraph data={data.monthly.graph_data} />
+                            </div>
+                        </div>
 
                         {/* Revenue Progress Tracker (Expected vs Actual) */}
-                        <Card className="mb-6">
-                            <CardContent className="p-6 flex flex-col gap-4">
-                                <div className="flex justify-between items-center mb-2">
-                                    <h3 className="text-[20px] font-bold text-foreground font-roboto flex items-center gap-2">
-                                        <Activity className="text-primary" size={20} /> Revenue Velocity
-                                    </h3>
-                                    <div className="relative">
-                                        <select
-                                            value={month}
-                                            onChange={(e) => handleMonthSelect(e.target.value)}
-                                            className="appearance-none bg-surface-variant rounded-full px-4 py-1.5 pr-8 font-roboto font-bold text-[13px] text-on-surface-variant outline-none cursor-pointer hover:bg-surface-variant/80 transition-colors"
-                                        >
-                                            {months.map(m => (
-                                                <option key={m} value={m}>{m}</option>
-                                            ))}
-                                        </select>
-                                        <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" size={14} />
+                        <div className="bg-white rounded-[26px] p-6 shadow-sm mb-6 flex flex-col gap-4">
+                            <div className="flex justify-between items-center mb-2">
+                                <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto flex items-center gap-2">
+                                    <Activity className="text-blue-500" size={20} /> Revenue Velocity
+                                </h3>
+                                <div className="relative">
+                                    <select
+                                        value={month}
+                                        onChange={(e) => handleMonthSelect(e.target.value)}
+                                        className="appearance-none bg-[#F2F4F5] rounded-[16px] px-4 py-1.5 pr-8 font-roboto font-bold text-[13px] text-[#0C1829] outline-none cursor-pointer hover:bg-gray-200 transition-colors"
+                                    >
+                                        {months.map(m => (
+                                            <option key={m} value={m}>{m}</option>
+                                        ))}
+                                    </select>
+                                    <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" size={14} color="#0C1829" />
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col gap-2 relative">
+                                <div className="flex justify-between items-end mb-1">
+                                    <div className="flex flex-col">
+                                        <span className="text-[13px] text-gray-400 font-semibold uppercase tracking-wider">Actual Recovery</span>
+                                        <span className="text-[22px] font-bold text-blue-600">৳{(data.monthly?.revenue_progress?.actual || 0).toLocaleString()}</span>
+                                    </div>
+                                    <div className="flex flex-col items-end">
+                                        <span className="text-[13px] text-gray-400 font-semibold uppercase tracking-wider">Expected Potential</span>
+                                        <span className="text-[16px] font-bold text-gray-600">৳{(data.monthly?.revenue_progress?.expected || 0).toLocaleString()}</span>
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col gap-2 relative">
-                                    <div className="flex justify-between items-end mb-1">
-                                        <div className="flex flex-col">
-                                            <span className="text-[13px] text-muted-foreground font-semibold uppercase tracking-wider">Actual Recovery</span>
-                                            <span className="text-[22px] font-bold text-primary">৳{(data.monthly?.revenue_progress?.actual || 0).toLocaleString()}</span>
-                                        </div>
-                                        <div className="flex flex-col items-end">
-                                            <span className="text-[13px] text-muted-foreground font-semibold uppercase tracking-wider">Expected Potential</span>
-                                            <span className="text-[16px] font-bold text-on-surface-variant">৳{(data.monthly?.revenue_progress?.expected || 0).toLocaleString()}</span>
-                                        </div>
-                                    </div>
-
-                                    {/* Progress Bar */}
-                                    <div className="h-4 w-full bg-surface-variant rounded-full overflow-hidden relative">
-                                        <div
-                                            className="absolute top-0 left-0 h-full bg-primary rounded-full transition-all duration-1000 ease-in-out"
-                                            style={{
-                                                width: `${data.monthly?.revenue_progress?.expected > 0 ? Math.min((data.monthly.revenue_progress.actual / data.monthly.revenue_progress.expected) * 100, 100) : 0}%`
-                                            }}
-                                        />
-                                    </div>
-
-                                    <span className="text-[12px] text-on-surface-variant font-medium text-right mt-1">
-                                        {data.monthly?.revenue_progress?.expected > 0
-                                            ? `${((data.monthly.revenue_progress.actual / data.monthly.revenue_progress.expected) * 100).toFixed(1)}% of potential revenue realized`
-                                            : 'No investments made this month'}
-                                    </span>
+                                {/* Progress Bar */}
+                                <div className="h-4 w-full bg-gray-100 rounded-full overflow-hidden relative">
+                                    <div
+                                        className="absolute top-0 left-0 h-full bg-blue-500 rounded-full transition-all duration-1000 ease-in-out"
+                                        style={{
+                                            width: `${data.monthly?.revenue_progress?.expected > 0 ? Math.min((data.monthly.revenue_progress.actual / data.monthly.revenue_progress.expected) * 100, 100) : 0}%`
+                                        }}
+                                    />
                                 </div>
-                            </CardContent>
-                        </Card>
+
+                                <span className="text-[12px] text-gray-500 font-medium text-right mt-1">
+                                    {data.monthly?.revenue_progress?.expected > 0
+                                        ? `${((data.monthly.revenue_progress.actual / data.monthly.revenue_progress.expected) * 100).toFixed(1)}% of potential revenue realized`
+                                        : 'No investments made this month'}
+                                </span>
+                            </div>
+                        </div>
 
                         {/* Investment Tracker (Style Updated) */}
-                        <Card className="mb-6 overflow-hidden">
+                        <div className="bg-white rounded-[26px] overflow-hidden shadow-sm mb-6">
                             {/* Header - Clickable for toggle */}
                             <div
                                 onClick={() => setShowInvestment(!showInvestment)}
-                                className="w-full flex items-center justify-between p-6 bg-surface cursor-pointer hover:bg-surface-variant/30 transition-colors"
+                                className="w-full flex items-center justify-between p-6 bg-white cursor-pointer hover:bg-gray-50 transition-colors"
                             >
-                                <h3 className="text-[20px] font-bold text-foreground font-roboto">Investment Tracker</h3>
+                                <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto">Investment Tracker</h3>
 
                                 <div className="flex items-center gap-4" onClick={e => e.stopPropagation()}>
                                     {/* Month/All Dropdown */}
@@ -412,20 +411,20 @@ export default function Dashboard() {
                                             <select
                                                 value={investmentFilter}
                                                 onChange={(e) => setInvestmentFilter(e.target.value)}
-                                                className="appearance-none bg-surface-variant rounded-full px-4 py-2 pr-8 font-roboto font-bold text-[14px] text-on-surface-variant outline-none cursor-pointer hover:bg-surface-variant/80 transition-colors"
+                                                className="appearance-none bg-[#F2F4F5] rounded-[16px] px-4 py-2 pr-8 font-roboto font-bold text-[14px] text-[#0C1829] outline-none cursor-pointer hover:bg-gray-200 transition-colors"
                                             >
                                                 <option value="All Time">All Month</option>
                                                 {months.map(m => (
                                                     <option key={m} value={m}>{m}</option>
                                                 ))}
                                             </select>
-                                            <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" size={16} />
+                                            <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" size={16} color="#0C1829" />
                                         </div>
                                     )}
 
                                     {/* Toggle Icon */}
                                     <div className="p-1">
-                                        {showInvestment ? <ChevronLeft className="rotate-90 text-on-surface-variant" size={20} /> : <ChevronRight className="rotate-90 text-on-surface-variant" size={20} />}
+                                        {showInvestment ? <ChevronLeft className="rotate-90" size={20} /> : <ChevronRight className="rotate-90" size={20} />}
                                     </div>
                                 </div>
                             </div>
@@ -434,121 +433,109 @@ export default function Dashboard() {
                                 <div className="p-6 pt-0 animate-in slide-in-from-top-2 duration-200">
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                         {/* Invest - Card Style */}
-                                        <Card variant="outlined" className="flex flex-col justify-between min-h-[140px]">
-                                            <CardContent className="p-6">
-                                                <div className="flex justify-between items-start">
-                                                    <div className="flex flex-col gap-2">
-                                                        <span className="text-on-surface-variant font-roboto font-medium text-[16px]">Net Investment</span>
-                                                        <span className="text-secondary font-nirmala font-bold text-[36px] flex items-center">
-                                                            <span className="text-[36px] mr-1 font-extrabold">৳</span>{(investmentData.invest || 0).toLocaleString()}
-                                                        </span>
-                                                    </div>
-                                                    <div className="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
-                                                        <BadgeDollarSign size={24} />
-                                                    </div>
+                                        <div className="bg-white rounded-[26px] p-6 border border-gray-100 shadow-sm flex flex-col justify-between min-h-[140px]">
+                                            <div className="flex justify-between items-start">
+                                                <div className="flex flex-col gap-2">
+                                                    <span className="text-[#7B7480] font-roboto font-medium text-[16px]">Net Investment</span>
+                                                    <span className="text-[#0065F4] font-nirmala font-bold text-[36px] flex items-center">
+                                                        <span className="text-[36px] mr-1 font-extrabold">৳</span>{(investmentData.invest || 0).toLocaleString()}
+                                                    </span>
                                                 </div>
-                                                <div className="mt-4 pt-3 border-t border-border flex justify-between items-center">
-                                                    <span className="text-[13px] text-muted-foreground font-medium">Active Capital</span>
-                                                    <span className="text-[14px] font-bold text-foreground">৳{((investmentData.invest || 0) - (investmentData.revenue || 0)).toLocaleString()}</span>
+                                                <div className="w-12 h-12 rounded-full bg-[#E6F0FF] flex items-center justify-center text-[#0065F4]">
+                                                    <BadgeDollarSign size={24} />
                                                 </div>
-                                            </CardContent>
-                                        </Card>
+                                            </div>
+                                            <div className="mt-4 pt-3 border-t border-gray-50 flex justify-between items-center">
+                                                <span className="text-[13px] text-[#7B7480] font-medium">Active Capital</span>
+                                                <span className="text-[14px] font-bold text-[#0C1829]">৳{((investmentData.invest || 0) - (investmentData.revenue || 0)).toLocaleString()}</span>
+                                            </div>
+                                        </div>
 
                                         {/* Sold - Card Style */}
-                                        <Card variant="outlined" className="flex flex-col justify-between min-h-[140px]">
-                                            <CardContent className="p-6">
-                                                <div className="flex justify-between items-start">
-                                                    <div className="flex flex-col gap-2">
-                                                        <span className="text-on-surface-variant font-roboto font-medium text-[16px]">Net Sold</span>
-                                                        <span className="text-primary font-nirmala font-bold text-[36px] flex items-center">
-                                                            <span className="text-[36px] mr-1 font-extrabold">৳</span>{(investmentData.revenue || 0).toLocaleString()}
-                                                        </span>
-                                                    </div>
-                                                    <div className="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container">
-                                                        <CircleDollarSign size={24} />
-                                                    </div>
+                                        <div className="bg-white rounded-[26px] p-6 border border-gray-100 shadow-sm flex flex-col justify-between min-h-[140px]">
+                                            <div className="flex justify-between items-start">
+                                                <div className="flex flex-col gap-2">
+                                                    <span className="text-[#7B7480] font-roboto font-medium text-[16px]">Net Sold</span>
+                                                    <span className="text-[#00BC7C] font-nirmala font-bold text-[36px] flex items-center">
+                                                        <span className="text-[36px] mr-1 font-extrabold">৳</span>{(investmentData.revenue || 0).toLocaleString()}
+                                                    </span>
                                                 </div>
-                                                <div className="mt-4 pt-3 border-t border-border flex justify-between items-center">
-                                                    <span className="text-[13px] text-muted-foreground font-medium">Recovery Rate</span>
-                                                    <span className="text-[14px] font-bold text-foreground">{investmentData.invest > 0 ? (((investmentData.revenue || 0) / investmentData.invest) * 100).toFixed(2) : 0}%</span>
+                                                <div className="w-12 h-12 rounded-full bg-[#E6F8F2] flex items-center justify-center text-[#00BC7C]">
+                                                    <CircleDollarSign size={24} />
                                                 </div>
-                                            </CardContent>
-                                        </Card>
+                                            </div>
+                                            <div className="mt-4 pt-3 border-t border-gray-50 flex justify-between items-center">
+                                                <span className="text-[13px] text-[#7B7480] font-medium">Recovery Rate</span>
+                                                <span className="text-[14px] font-bold text-[#0C1829]">{investmentData.invest > 0 ? (((investmentData.revenue || 0) / investmentData.invest) * 100).toFixed(2) : 0}%</span>
+                                            </div>
+                                        </div>
 
                                         {/* Profit - Card Style */}
-                                        <Card variant="outlined" className="flex flex-col justify-between min-h-[140px]">
-                                            <CardContent className="p-6">
-                                                <div className="flex justify-between items-start mb-2">
-                                                    <div className="flex flex-col gap-2">
-                                                        <span className="text-on-surface-variant font-roboto font-medium text-[16px]">Net Profit</span>
-                                                        <span className="text-tertiary font-nirmala font-bold text-[36px] flex items-center">
-                                                            <span className="text-[36px] mr-1 font-extrabold">৳</span>{(investmentData.profit || 0).toLocaleString()}
-                                                        </span>
-                                                    </div>
-                                                    <div className="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
-                                                        <ShoppingCart size={24} />
-                                                    </div>
+                                        <div className="bg-white rounded-[26px] p-6 border border-gray-100 shadow-sm flex flex-col justify-between min-h-[140px]">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <div className="flex flex-col gap-2">
+                                                    <span className="text-[#7B7480] font-roboto font-medium text-[16px]">Net Profit</span>
+                                                    <span className="text-[#FF9900] font-nirmala font-bold text-[36px] flex items-center">
+                                                        <span className="text-[36px] mr-1 font-extrabold">৳</span>{(investmentData.profit || 0).toLocaleString()}
+                                                    </span>
                                                 </div>
-                                                <div className="mt-auto pt-3 border-t border-border flex justify-between items-center">
-                                                    <div className="flex flex-col">
-                                                        <span className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold">Margin</span>
-                                                        <span className="text-[14px] font-bold text-foreground">{investmentData.revenue > 0 ? (((investmentData.profit || 0) / investmentData.revenue) * 100).toFixed(2) : 0}%</span>
-                                                    </div>
-                                                    <div className="flex flex-col items-end">
-                                                        <span className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold">ROI</span>
-                                                        <span className="text-[14px] font-bold text-secondary">{investmentData.invest > 0 ? (((investmentData.profit || 0) / investmentData.invest) * 100).toFixed(2) : 0}%</span>
-                                                    </div>
+                                                <div className="w-12 h-12 rounded-full bg-[#FFF5E6] flex items-center justify-center text-[#FF9900]">
+                                                    <ShoppingCart size={24} />
                                                 </div>
-                                            </CardContent>
-                                        </Card>
+                                            </div>
+                                            <div className="mt-auto pt-3 border-t border-gray-50 flex justify-between items-center">
+                                                <div className="flex flex-col">
+                                                    <span className="text-[11px] text-[#7B7480] uppercase tracking-wider font-semibold">Margin</span>
+                                                    <span className="text-[14px] font-bold text-[#0C1829]">{investmentData.revenue > 0 ? (((investmentData.profit || 0) / investmentData.revenue) * 100).toFixed(2) : 0}%</span>
+                                                </div>
+                                                <div className="flex flex-col items-end">
+                                                    <span className="text-[11px] text-[#7B7480] uppercase tracking-wider font-semibold">ROI</span>
+                                                    <span className="text-[14px] font-bold text-[#0065F4]">{investmentData.invest > 0 ? (((investmentData.profit || 0) / investmentData.invest) * 100).toFixed(2) : 0}%</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             )}
-                        </Card>
+                        </div>
 
                         {/* Compact Row: Top Products & Stock Alerts */}
                         <div className="flex flex-col xl:flex-row gap-6 w-full">
                             {/* Top Products */}
-                            <Card className="flex-1 min-h-[282px]">
-                                <CardContent className="p-6">
-                                    <h3 className="text-[20px] font-bold text-foreground font-roboto mb-6">Top Selling Products ({month})</h3>
-                                    <TopProducts products={data.monthly.top_products} />
-                                </CardContent>
-                            </Card>
+                            <div className="flex-1 bg-white rounded-[32px] p-6 shadow-sm min-h-[282px]">
+                                <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto mb-6">Top Selling Products ({month})</h3>
+                                <TopProducts products={data.monthly.top_products} />
+                            </div>
 
                             {/* Stock Alerts */}
-                            <Card className="flex-1 min-h-[282px]">
-                                <CardContent className="p-6">
-                                    <h3 className="text-[20px] font-bold text-foreground font-roboto mb-6">Low Stock Alerts</h3>
-                                    <StockAlerts items={data.alerts} />
-                                </CardContent>
-                            </Card>
+                            <div className="flex-1 bg-white rounded-[32px] p-6 shadow-sm min-h-[282px]">
+                                <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto mb-6">Low Stock Alerts</h3>
+                                <StockAlerts items={data.alerts} />
+                            </div>
                         </div>
 
                         {/* Secondary Compact Row: Dead Stock */}
                         <div className="flex flex-col gap-6 w-full mt-6">
-                            <Card className="w-full">
-                                <CardContent className="p-6">
-                                    <div className="flex justify-between items-center mb-6">
-                                        <h3 className="text-[20px] font-bold text-foreground font-roboto flex items-center gap-2">
-                                            <Timer className="text-error" size={20} /> Dead Stock Tracker
-                                        </h3>
-                                        <div className="relative">
-                                            <select
-                                                value={month}
-                                                onChange={(e) => handleMonthSelect(e.target.value)}
-                                                className="appearance-none bg-surface-variant rounded-full px-4 py-1.5 pr-8 font-roboto font-bold text-[13px] text-on-surface-variant outline-none cursor-pointer hover:bg-surface-variant/80 transition-colors"
-                                            >
-                                                {months.map(m => (
-                                                    <option key={m} value={m}>{m}</option>
-                                                ))}
-                                            </select>
-                                            <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" size={14} />
-                                        </div>
+                            <div className="w-full bg-white rounded-[32px] p-6 shadow-sm">
+                                <div className="flex justify-between items-center mb-6">
+                                    <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto flex items-center gap-2">
+                                        <Timer className="text-purple-500" size={20} /> Dead Stock Tracker
+                                    </h3>
+                                    <div className="relative">
+                                        <select
+                                            value={month}
+                                            onChange={(e) => handleMonthSelect(e.target.value)}
+                                            className="appearance-none bg-[#F2F4F5] rounded-[16px] px-4 py-1.5 pr-8 font-roboto font-bold text-[13px] text-[#0C1829] outline-none cursor-pointer hover:bg-gray-200 transition-colors"
+                                        >
+                                            {months.map(m => (
+                                                <option key={m} value={m}>{m}</option>
+                                            ))}
+                                        </select>
+                                        <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 rotate-90 pointer-events-none" size={14} color="#0C1829" />
                                     </div>
-                                    <DeadStock items={data.monthly?.dead_stock || []} />
-                                </CardContent>
-                            </Card>
+                                </div>
+                                <DeadStock items={data.monthly?.dead_stock || []} />
+                            </div>
                         </div>
                     </div>
 
@@ -558,52 +545,58 @@ export default function Dashboard() {
 
                         {/* Section Header */}
                         <div className="flex justify-between items-center h-[21px] flex-shrink-0">
-                            <h2 className="text-on-surface-variant text-[14px] font-inter font-bold uppercase tracking-wider">DAILY OVERVIEW</h2>
-                            <Button variant="text" size="sm" onClick={handleExportDaily} className="text-[12px] font-bold">
+                            <h2 className="text-[#7B7480] text-[14px] font-inter font-bold uppercase tracking-wider">DAILY OVERVIEW</h2>
+                            <button onClick={handleExportDaily} className="text-[#0067FD] text-[12px] font-bold flex items-center gap-1 hover:underline">
                                 <Download size={14} /> Download Daily CSV
-                            </Button>
+                            </button>
                         </div>
 
                         {/* Daily Mini Stats */}
                         <div className="flex flex-row gap-3 h-[98px] flex-shrink-0">
                             {/* Total Sale */}
-                            <Card className="flex-1 flex flex-col justify-center">
-                                <CardContent className="p-4 gap-1">
-                                    <span className="text-muted-foreground font-medium text-[12px]">Total Sale</span>
-                                    <span className="text-foreground font-nirmala font-bold text-[25px] flex items-center">
-                                        <span className="font-extrabold mr-1">৳</span>{(data.daily.revenue || 0).toLocaleString()}
-                                    </span>
-                                </CardContent>
-                            </Card>
+                            <div className="flex-1 bg-white rounded-[20px] p-4 shadow-sm flex flex-col justify-center gap-1">
+                                <span className="text-[#7B7480] font-medium text-[12px]">Total Sale</span>
+                                <span className="text-[#161616] font-nirmala font-bold text-[25px] flex items-center">
+                                    <span className="font-extrabold mr-1">৳</span>{(data.daily.revenue || 0).toLocaleString()}
+                                </span>
+                            </div>
                             {/* Profit */}
-                            <Card className="flex-1 flex flex-col justify-center">
-                                <CardContent className="p-4 gap-1">
-                                    <span className="text-muted-foreground font-medium text-[12px]">Total Profit</span>
-                                    <span className="text-secondary font-nirmala font-bold text-[25px] flex items-center">
-                                        <span className="font-extrabold mr-1">৳</span>{(data.daily.profit || 0).toLocaleString()}
-                                    </span>
-                                </CardContent>
-                            </Card>
+                            <div className="flex-1 bg-white rounded-[20px] p-4 shadow-sm flex flex-col justify-center gap-1">
+                                <span className="text-[#7B7480] font-medium text-[12px]">Total Profit</span>
+                                <span className="text-[#FF5500] font-nirmala font-bold text-[25px] flex items-center">
+                                    <span className="font-extrabold mr-1">৳</span>{(data.daily.profit || 0).toLocaleString()}
+                                </span>
+                            </div>
                         </div>
 
                         {/* Daily History - CSS Applied (Responsive Width) */}
-                        <Card className="w-full flex-1 flex flex-col overflow-hidden">
-                            <CardContent className="p-6 flex flex-col h-full gap-3 overflow-hidden">
-                                <h3 className="text-[20px] font-bold text-foreground font-roboto mb-2 flex-shrink-0">Transactions</h3>
-                                <SalesHistoryTable
-                                    sales={data.daily.history}
-                                    canEdit={true}
-                                    onDeleteSale={(id) => {
-                                        setData(prev => ({
-                                            ...prev,
-                                            daily: {
-                                                ...prev.daily,
-                                                history: prev.daily.history.filter(s => s.id !== id)
-                                            }
-                                        }));
-                                    }} />
-                            </CardContent>
-                        </Card>
+                        <div style={{
+                            padding: '24px 14px',
+                            gap: '11.93px',
+                            width: '100%',
+                            minHeight: '0', // Allow shrinking below content size if needed
+                            background: '#FFFFFF',
+                            boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.05)',
+                            borderRadius: '32px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            flex: 1,
+                            overflow: 'hidden'
+                        }}>
+                            <h3 className="text-[20px] font-bold text-[#0C1829] font-roboto mb-4 flex-shrink-0">Transactions</h3>
+                            <SalesHistoryTable
+                                sales={data.daily.history}
+                                canEdit={true}
+                                onDeleteSale={(id) => {
+                                    setData(prev => ({
+                                        ...prev,
+                                        daily: {
+                                            ...prev.daily,
+                                            history: prev.daily.history.filter(s => s.id !== id)
+                                        }
+                                    }));
+                                }} />
+                        </div>
                     </div>
                 </div>
             </main>

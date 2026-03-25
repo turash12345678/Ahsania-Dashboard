@@ -1,7 +1,5 @@
 import { AlertCircle, Tag } from "lucide-react";
 import Link from "next/link";
-import { Ripple } from "@/components/ui/ripple";
-import { Button } from "@/components/ui/button";
 
 interface DeadStockItem {
     id: number;
@@ -17,34 +15,34 @@ export function DeadStock({ items }: { items: DeadStockItem[] }) {
             <div className="flex flex-col gap-3">
                 {items && items.length > 0 ? (
                     items.map((item, idx) => (
-                        <div key={idx} className="relative flex flex-col p-4 rounded-2xl transition-colors bg-surface-container-lowest border border-border hover:bg-surface-variant/30 overflow-hidden gap-2">
-                            <Ripple />
-                            <div className="flex flex-row items-center justify-between relative z-10 pointer-events-none">
+                        <div key={idx} className="flex flex-col p-3 rounded-2xl transition-colors border border-purple-100 hover:bg-purple-50/30 group gap-2">
+                            <div className="flex flex-row items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-error-container flex items-center justify-center flex-shrink-0">
-                                        <AlertCircle size={20} className="text-on-error-container" />
+                                    <div className="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center flex-shrink-0">
+                                        <AlertCircle size={16} className="text-purple-500" />
                                     </div>
-                                    <span className="text-foreground font-medium text-[16px] line-clamp-1">
+                                    <span className="text-[#0C1829] font-medium text-[15px] line-clamp-1">
                                         {item.name}
                                     </span>
                                 </div>
-                                <div className="flex items-center gap-1.5 px-3 py-1 bg-surface border border-outline-variant text-on-surface-variant rounded-full font-bold text-[12px] shadow-sm whitespace-nowrap">
+                                <div className="flex items-center gap-1.5 px-3 py-1 bg-white border border-purple-100 text-purple-600 rounded-full font-bold text-[12px] shadow-sm whitespace-nowrap">
                                     {item.stock_quantity} Blocked
                                 </div>
                             </div>
 
                             {/* Action & Finance Row */}
-                            <div className="flex justify-between items-center pl-[52px] pr-1 mt-1 relative z-10">
-                                <div className="flex items-center gap-1.5 text-[14px] font-bold text-on-surface-variant">
-                                    <span className="font-medium text-[12px] text-muted-foreground">Blocked Cap:</span>
+                            <div className="flex justify-between items-center pl-11 pr-1 mt-1">
+                                <div className="flex items-center gap-1.5 text-[12px] font-bold text-gray-500">
+                                    <span className="font-medium text-[11px] text-gray-400">Blocked Cap:</span>
                                     ৳{item.blocked_capital.toLocaleString()}
                                 </div>
-                                <Button asChild variant="tonal" size="sm" className="pointer-events-auto">
-                                    <Link href="/inventory/products" className="gap-1.5">
-                                        <Tag size={14} />
-                                        Review Price
-                                    </Link>
-                                </Button>
+                                <Link
+                                    href="/inventory/products"
+                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-purple-100 text-purple-700 hover:bg-purple-200 shadow-sm shadow-purple-200/50"
+                                >
+                                    <Tag size={13} />
+                                    Review Price
+                                </Link>
                             </div>
                         </div>
                     ))

@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "design:save": "git add . && git commit -m \"Design update from Pencil.dev\""
+    "start": "next start"
   },
   "dependencies": {
     "@libsql/client": "^0.15.15",
