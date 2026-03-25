@@ -45,23 +45,12 @@ export interface ButtonProps
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className, variant, size, asChild = false, disableRipple = false, children, ...props }, ref) => {
+        const Comp = asChild ? Slot : "button"
         const isOutlinedOrText = variant === "outlined" || variant === "text" || variant === "tonal" || variant === "elevated" || variant === "default";
         const rippleColor = isOutlinedOrText ? 'rgba(var(--primary), 0.12)' : 'rgba(255, 255, 255, 0.2)';
 
-        if (asChild) {
-            return (
-                <Slot
-                    className={cn(buttonVariants({ variant, size, className }))}
-                    ref={ref}
-                    {...props}
-                >
-                    {children}
-                </Slot>
-            )
-        }
-
         return (
-            <button
+            <Comp
                 className={cn(buttonVariants({ variant, size, className }))}
                 ref={ref}
                 {...props}
@@ -70,7 +59,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                     {children}
                 </div>
                 {!disableRipple && !props.disabled && <Ripple color={rippleColor} />}
-            </button>
+            </Comp>
         )
     }
 )
