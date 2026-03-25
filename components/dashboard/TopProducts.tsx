@@ -16,10 +16,10 @@ export function TopProducts({ products }: { products: ProductStat[] }) {
                         <div key={idx} className="relative flex flex-row items-center justify-between p-4 rounded-2xl bg-surface hover:bg-surface-variant/30 transition-colors border border-outline-variant overflow-hidden group">
                             <Ripple />
                             <div className="flex items-center gap-4 relative z-10 pointer-events-none">
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-[15px] ${idx === 0 ? 'text-primary bg-primary/10' :
-                                    idx === 1 ? 'text-secondary bg-secondary/10' :
-                                        idx === 2 ? 'text-tertiary bg-tertiary/10' :
-                                            'text-muted-foreground bg-surface-variant/50'
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ${idx === 0 ? 'bg-primary-container text-on-primary-container' :
+                                    idx === 1 ? 'bg-secondary-container text-on-secondary-container' :
+                                        idx === 2 ? 'bg-tertiary-container text-on-tertiary-container' :
+                                            'bg-surface-variant text-on-surface-variant'
                                     }`}>
                                     {idx + 1}
                                 </div>

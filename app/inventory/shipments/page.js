@@ -4,8 +4,6 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
 import { Search, Plus, Trash2, ArrowRight, DollarSign, ArrowDown, PackageCheck, X } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 
 export default function ShipmentsPage() {
     const router = useRouter();
@@ -473,8 +471,9 @@ export default function ShipmentsPage() {
 
                             <form onSubmit={handleAddProduct} className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-on-surface-variant mb-1">Product Name</label>
-                                    <Input
+                                    <label className="block text-sm font-medium text-[#374151] mb-1">Product Name</label>
+                                    <input
+                                        className="w-full px-4 py-2 rounded-xl border border-[#D1D5DB] focus:outline-none focus:ring-2 focus:ring-[#0065F4]"
                                         required
                                         value={formData.name}
                                         onChange={e => setFormData({ ...formData, name: e.target.value })}
@@ -483,9 +482,9 @@ export default function ShipmentsPage() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-on-surface-variant mb-1">Category</label>
+                                    <label className="block text-sm font-medium text-[#374151] mb-1">Category</label>
                                     <select
-                                        className="w-full h-12 rounded-t-[4px] border-b-2 border-border bg-surface-variant px-4 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:border-primary transition-colors cursor-pointer"
+                                        className="w-full px-4 py-2 rounded-xl border border-[#D1D5DB] focus:outline-none focus:ring-2 focus:ring-[#0065F4]"
                                         value={formData.category_id}
                                         onChange={e => setFormData({ ...formData, category_id: e.target.value })}
                                     >
@@ -495,18 +494,20 @@ export default function ShipmentsPage() {
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-on-surface-variant mb-1">Buy Price (Cost)</label>
-                                        <Input
+                                        <label className="block text-sm font-medium text-[#374151] mb-1">Buy Price (Cost)</label>
+                                        <input
                                             type="number" step="0.01"
+                                            className="w-full px-4 py-2 rounded-xl border border-[#D1D5DB] focus:outline-none focus:ring-2 focus:ring-[#0065F4]"
                                             required
                                             value={formData.buy_price}
                                             onChange={e => setFormData({ ...formData, buy_price: e.target.value })}
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-on-surface-variant mb-1">Sell Price</label>
-                                        <Input
+                                        <label className="block text-sm font-medium text-[#374151] mb-1">Sell Price</label>
+                                        <input
                                             type="number" step="0.01"
+                                            className="w-full px-4 py-2 rounded-xl border border-[#D1D5DB] focus:outline-none focus:ring-2 focus:ring-[#0065F4]"
                                             required
                                             value={formData.sell_price}
                                             onChange={e => setFormData({ ...formData, sell_price: e.target.value })}
@@ -515,19 +516,19 @@ export default function ShipmentsPage() {
                                 </div>
 
                                 <div className="pt-6 border-t border-gray-100 flex justify-end gap-3 mt-8">
-                                    <Button
+                                    <button
                                         type="button"
-                                        variant="text"
                                         onClick={() => setShowProductModal(false)}
+                                        className="px-6 py-2.5 rounded-xl font-medium text-gray-600 hover:bg-gray-100 transition-colors"
                                     >
                                         Cancel
-                                    </Button>
-                                    <Button
+                                    </button>
+                                    <button
                                         type="submit"
-                                        variant="filled"
+                                        className="px-6 py-2.5 bg-[#0065F4] text-white rounded-xl font-bold hover:bg-[#0055cc] transition-colors shadow-sm"
                                     >
                                         Create & Add to Shipment
-                                    </Button>
+                                    </button>
                                 </div>
                             </form>
                         </div>

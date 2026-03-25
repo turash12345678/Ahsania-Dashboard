@@ -76,31 +76,31 @@ export function SalesHistoryTable({ sales, onDeleteSale, canEdit = true }: Sales
     return (
         <div className="w-full h-full flex flex-col gap-4">
             {/* Table Header */}
-            <div className="flex flex-row items-center w-full h-[42px] rounded-[13px] bg-surface-variant px-3 gap-2">
-                <div className="flex-[2] text-on-surface-variant font-inter font-medium text-[10px] sm:text-[12px] uppercase tracking-wider truncate">Date & Time</div>
-                <div className="flex-1 text-on-surface-variant font-inter font-medium text-[10px] sm:text-[12px] uppercase tracking-wider truncate">Amount</div>
-                <div className="hidden sm:block flex-1 text-on-surface-variant font-inter font-medium text-[12px] uppercase tracking-wider">Method</div>
-                <div className="w-[30px] sm:w-[60px] text-right text-on-surface-variant font-inter font-medium text-[10px] sm:text-[12px] uppercase tracking-wider">Action</div>
+            <div className="flex flex-row items-center w-full h-[42px] rounded-[13px] bg-[#F8FAFC] px-3 gap-2">
+                <div className="flex-[2] text-[#60758D] font-inter font-medium text-[10px] sm:text-[12px] uppercase tracking-wider truncate">Date & Time</div>
+                <div className="flex-1 text-[#60758D] font-inter font-medium text-[10px] sm:text-[12px] uppercase tracking-wider truncate">Amount</div>
+                <div className="hidden sm:block flex-1 text-[#60758D] font-inter font-medium text-[12px] uppercase tracking-wider">Method</div>
+                <div className="w-[30px] sm:w-[60px] text-right text-[#60758D] font-inter font-medium text-[10px] sm:text-[12px] uppercase tracking-wider">Action</div>
             </div>
 
             {/* Table Body */}
             <div className="flex flex-col gap-2 overflow-y-auto flex-1 min-h-0 pr-1 custom-scrollbar">
                 {sales.length > 0 ? (
                     sales.map((sale) => (
-                        <div key={sale.id} className="flex flex-col border-b border-border last:border-0">
+                        <div key={sale.id} className="flex flex-col border-b border-[#F2F4F5] last:border-0">
                             {/* Main Row */}
                             <div
                                 onClick={() => toggleExpand(sale.id)}
-                                className="flex flex-row items-center py-3 px-3 gap-2 hover:bg-surface-variant/30 transition-colors cursor-pointer"
+                                className="flex flex-row items-center py-3 px-3 gap-2 hover:bg-gray-50 transition-colors cursor-pointer"
                             >
                                 <div className="flex-[2] flex flex-col min-w-0">
-                                    <span className="text-foreground font-inter font-medium text-[12px] sm:text-[14px] truncate">{formatDate(sale.created_at)}</span>
-                                    <span className="text-muted-foreground font-inter text-[10px] sm:text-[12px] truncate">{formatTime(sale.created_at)}</span>
+                                    <span className="text-[#0C1829] font-inter font-medium text-[12px] sm:text-[14px] truncate">{formatDate(sale.created_at)}</span>
+                                    <span className="text-[#9AA3B0] font-inter text-[10px] sm:text-[12px] truncate">{formatTime(sale.created_at)}</span>
                                 </div>
-                                <div className="flex-1 font-bold text-primary text-[12px] sm:text-[14px] truncate">
+                                <div className="flex-1 font-bold text-[#0067FD] text-[12px] sm:text-[14px] truncate">
                                     ৳{sale.total_amount}
                                 </div>
-                                <div className="hidden sm:block flex-1 text-on-surface-variant font-inter text-[14px] capitalize truncate">
+                                <div className="hidden sm:block flex-1 text-[#495564] font-inter text-[14px] capitalize truncate">
                                     {sale.payment_method}
                                 </div>
                                 <div className="w-[30px] sm:w-[60px] flex justify-end">
@@ -149,10 +149,10 @@ export function SalesHistoryTable({ sales, onDeleteSale, canEdit = true }: Sales
                     ))
                 ) : (
                     <div className="flex flex-col items-center justify-center py-10 gap-2 h-full">
-                        <div className="w-10 h-10 rounded-full border-2 border-outline flex items-center justify-center opacity-30 mb-2">
-                            <AlertCircle size={20} className="text-outline" />
+                        <div className="w-10 h-10 rounded-full border-2 border-[#9AA3B0] flex items-center justify-center opacity-30 mb-2">
+                            <AlertCircle size={20} className="text-[#9AA3B0]" />
                         </div>
-                        <span className="text-muted-foreground font-inter text-[15px]">No sales found in this period</span>
+                        <span className="text-[#9AA3B0] font-inter text-[15px]">No sales found in this period</span>
                     </div>
                 )}
             </div>

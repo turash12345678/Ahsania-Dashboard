@@ -30,12 +30,12 @@ export function StockAlerts({ items }: { items: AlertItem[] }) {
                             const estimateCost = item.buy_price ? item.buy_price * restockQty : 0;
 
                             return (
-                                <div key={idx} className={`relative flex flex-col p-4 rounded-xl transition-colors border overflow-hidden gap-2 ${isOut ? 'border-error/20 bg-error-container/30 hover:bg-error-container/50' : 'border-outline-variant hover:bg-surface-variant/30 bg-surface'
+                                <div key={idx} className={`relative flex flex-col p-4 rounded-2xl transition-colors border overflow-hidden gap-2 ${isOut ? 'border-error/20 bg-error/5 hover:bg-error/10' : 'border-outline-variant hover:bg-surface-variant/30 bg-surface'
                                     }`}>
                                     <Ripple />
                                     <div className="flex flex-row items-center justify-between relative z-10 pointer-events-none">
                                         <div className="flex items-center gap-4">
-                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${isOut ? 'bg-error-container text-on-error-container' : 'bg-secondary-container text-on-secondary-container'
+                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${isOut ? 'bg-error text-on-error' : 'bg-secondary-container text-on-secondary-container'
                                                 }`}>
                                                 <AlertTriangle size={20} />
                                             </div>
@@ -49,7 +49,7 @@ export function StockAlerts({ items }: { items: AlertItem[] }) {
                                             </div>
                                         </div>
 
-                                        <Button asChild variant="tonal" size="icon" className={`pointer-events-auto rounded-full w-10 h-10 ${isOut ? 'text-error' : ''}`}>
+                                        <Button asChild variant={isOut ? "destructive" : "tonal"} size="icon" className="pointer-events-auto rounded-full w-10 h-10">
                                             <Link href="/inventory/shipments" title="Restock">
                                                 <ShoppingCart size={18} />
                                             </Link>

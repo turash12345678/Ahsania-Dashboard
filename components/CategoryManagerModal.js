@@ -1,8 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { X, Edit2, Trash2, Check, XCircle } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 
 export default function CategoryManagerModal({ isOpen, onClose, type, onUpdate }) {
     const [categories, setCategories] = useState([]);
@@ -85,13 +83,13 @@ export default function CategoryManagerModal({ isOpen, onClose, type, onUpdate }
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-surface rounded-2xl p-6 w-full max-w-md max-h-[80vh] flex flex-col shadow-m3-3">
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-bold text-foreground">Manage Categories</h2>
-                    <Button variant="text" size="icon" onClick={onClose} className="rounded-full">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[80vh] flex flex-col">
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-bold">Manage Categories</h2>
+                    <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded-full">
                         <X size={20} />
-                    </Button>
+                    </button>
                 </div>
 
                 {error && (
@@ -111,29 +109,30 @@ export default function CategoryManagerModal({ isOpen, onClose, type, onUpdate }
                                 <li key={cat.id} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded border border-gray-100">
                                     {editingId === cat.id ? (
                                         <div className="flex items-center flex-1 gap-2">
-                                            <Input
+                                            <input
+                                                type="text"
                                                 value={editName}
                                                 onChange={(e) => setEditName(e.target.value)}
-                                                className="flex-1"
+                                                className="flex-1 border rounded px-2 py-1 text-sm"
                                                 autoFocus
                                             />
-                                            <Button variant="text" size="icon" onClick={() => handleSaveEdit(cat.id)} className="text-primary hover:text-primary/80">
+                                            <button onClick={() => handleSaveEdit(cat.id)} className="text-green-600 hover:text-green-800 p-1">
                                                 <Check size={18} />
-                                            </Button>
-                                            <Button variant="text" size="icon" onClick={handleCancelEdit} className="text-muted-foreground hover:text-foreground">
+                                            </button>
+                                            <button onClick={handleCancelEdit} className="text-gray-500 hover:text-gray-700 p-1">
                                                 <XCircle size={18} />
-                                            </Button>
+                                            </button>
                                         </div>
                                     ) : (
                                         <>
-                                            <span className="font-medium text-foreground">{cat.name}</span>
+                                            <span className="font-medium text-gray-700">{cat.name}</span>
                                             <div className="flex items-center gap-1">
-                                                <Button variant="text" size="icon" onClick={() => handleEditClick(cat)} className="text-primary" title="Edit">
+                                                <button onClick={() => handleEditClick(cat)} className="text-blue-600 hover:text-blue-800 p-1 rounded hover:bg-blue-50" title="Edit">
                                                     <Edit2 size={16} />
-                                                </Button>
-                                                <Button variant="text" size="icon" onClick={() => handleDelete(cat.id)} className="text-error hover:bg-error-container hover:text-on-error-container" title="Delete">
+                                                </button>
+                                                <button onClick={() => handleDelete(cat.id)} className="text-red-600 hover:text-red-800 p-1 rounded hover:bg-red-50" title="Delete">
                                                     <Trash2 size={16} />
-                                                </Button>
+                                                </button>
                                             </div>
                                         </>
                                     )}

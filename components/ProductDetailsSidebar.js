@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { X, ArrowDownRight, ArrowUpRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 export default function ProductDetailsSidebar({ product, onClose }) {
     const [logs, setLogs] = useState([]);
@@ -42,21 +41,19 @@ export default function ProductDetailsSidebar({ product, onClose }) {
     const totalInvestment = logs.reduce((sum, log) => sum + (log.buy_price * log.quantity), 0);
 
     return (
-        <div className="fixed inset-y-0 right-0 w-full max-w-md bg-surface shadow-m3-5 z-[100] transform transition-transform duration-300 ease-out border-l border-border flex flex-col">
+        <div className="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-[100] transform transition-transform duration-300 ease-out border-l border-gray-100 flex flex-col">
             {/* Header */}
-            <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-surface-container-low">
+            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                 <div>
                     <h2 className="text-xl font-bold text-gray-900">{product.name}</h2>
                     <p className="text-sm text-gray-500">Inventory Details</p>
                 </div>
-                <Button
-                    variant="text"
-                    size="icon"
+                <button
                     onClick={onClose}
-                    className="p-2 rounded-full"
+                    className="p-2 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-600 transition-colors"
                 >
                     <X size={20} />
-                </Button>
+                </button>
             </div>
 
             {/* Content - Scrollable */}
@@ -128,14 +125,13 @@ export default function ProductDetailsSidebar({ product, onClose }) {
             </div>
 
             {/* Footer Actions (Optional) */}
-            <div className="p-6 border-t border-border bg-surface-container-low">
-                <Button
-                    variant="outlined"
+            <div className="p-6 border-t border-gray-100 bg-gray-50/50">
+                <button
                     onClick={onClose}
-                    className="w-full"
+                    className="w-full py-3 bg-white border border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors shadow-sm"
                 >
                     Close Details
-                </Button>
+                </button>
             </div>
         </div>
     );
