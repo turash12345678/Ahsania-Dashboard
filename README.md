@@ -1,7 +1,6 @@
 # Ahsania S&S Management System
 
 A comprehensive management system for tracking inventory, services, sales, and analytics. Built with Next.js, SQLite (Turso), and designed for scalability.
-<iframe width="560" height="315" src="https://www.youtube.com/embed/CgvRYO3kh18?si=lGyivpg5W6zyLDqZ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 🚀 Features
 
