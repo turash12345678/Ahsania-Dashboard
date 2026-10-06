@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Minus, Plus, Check, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -35,6 +36,7 @@ export function ProductItem({
   onCustomPriceBlur,
   stock
 }: ProductItemProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Determine if out of stock
   // Services have stock = null, so they are never out of stock
@@ -152,6 +154,9 @@ export function ProductItem({
             onClick={(e) => {
               e.stopPropagation();
               onPriceOptionChange('custom');
+              setTimeout(() => {
+                inputRef.current?.focus();
+              }, 0);
             }}
             className="flex-1 h-[38px] bg-white border border-[#E0E0E0] rounded-[18px] p-[4px] flex items-center cursor-pointer hover:border-blue-400 transition-colors"
           >
@@ -161,13 +166,16 @@ export function ProductItem({
             )}>
               {priceOption === 'custom' ? (
                 <input
-                  autoFocus
+                  ref={inputRef}
                   type="text"
                   inputMode="decimal"
                   value={customPrice}
                   onChange={(e) => onCustomPriceChange(e.target.value)}
                   onBlur={handleCustomBlur}
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    inputRef.current?.focus();
+                  }}
                   className="w-full bg-transparent text-center font-roboto font-bold text-[18px] text-[#0F1828] outline-none placeholder:text-gray-400"
                   placeholder="0"
                 />
