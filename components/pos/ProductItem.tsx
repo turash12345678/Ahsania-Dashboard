@@ -15,6 +15,7 @@ interface ProductItemProps {
   customPrice: string;
   onPriceOptionChange: (option: 'fixed' | 'custom') => void;
   onCustomPriceChange: (value: string) => void;
+  onCustomPriceBlur?: () => void;
   stock: number | null;
 }
 
@@ -31,6 +32,7 @@ export function ProductItem({
   customPrice,
   onPriceOptionChange, // Re-added this
   onCustomPriceChange,
+  onCustomPriceBlur,
   stock
 }: ProductItemProps) {
 
@@ -38,6 +40,15 @@ export function ProductItem({
   // Services have stock = null, so they are never out of stock
   // Products have numeric stock. If 0, it's out of stock.
   const isOutOfStock = stock !== null && stock <= 0;
+
+  const handleCustomBlur = () => {
+    if (!customPrice || customPrice.trim() === "" || parseFloat(customPrice) === 0) {
+      onPriceOptionChange('fixed');
+    }
+    if (onCustomPriceBlur) {
+      onCustomPriceBlur();
+    }
+  };
 
   return (
     <div
@@ -155,6 +166,7 @@ export function ProductItem({
                   inputMode="decimal"
                   value={customPrice}
                   onChange={(e) => onCustomPriceChange(e.target.value)}
+                  onBlur={handleCustomBlur}
                   onClick={(e) => e.stopPropagation()}
                   className="w-full bg-transparent text-center font-roboto font-bold text-[18px] text-[#0F1828] outline-none placeholder:text-gray-400"
                   placeholder="0"
